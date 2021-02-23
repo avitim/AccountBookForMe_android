@@ -1,1 +1,3 @@
-# AccountBookForMe
+# 家計簿 for me
+## コンセプト
+私の、私による、私のための家計簿アプリ
