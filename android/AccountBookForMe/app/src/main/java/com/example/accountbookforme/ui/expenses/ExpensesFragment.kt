@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpensesAdapter
-import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.model.ExpenseListItem
 import com.example.accountbookforme.repository.ExpenseRepository
 import retrofit2.Call
 import retrofit2.Callback
@@ -44,15 +44,15 @@ class ExpensesFragment : Fragment() {
         recyclerView.adapter = expensesAdapter
 
         val expenseList = expenseRepository.getAll()
-        expenseList.enqueue( object : Callback<List<Expense>> {
-            override fun onResponse(call: Call<List<Expense>>?, response: Response<List<Expense>>?) {
+        expenseList.enqueue( object : Callback<List<ExpenseListItem>> {
+            override fun onResponse(call: Call<List<ExpenseListItem>>?, response: Response<List<ExpenseListItem>>?) {
 
                 if(response?.body() != null) {
                     expensesAdapter.setExpenseListItems(response.body()!!)
                 }
             }
 
-            override fun onFailure(call: Call<List<Expense>>?, t: Throwable?) {
+            override fun onFailure(call: Call<List<ExpenseListItem>>?, t: Throwable?) {
 
             }
         })

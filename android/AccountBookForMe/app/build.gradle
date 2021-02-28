@@ -19,14 +19,14 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.12:8080/api/v1/\""
+            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.12:8080\""
         }
 
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             // TODO: 本番URLが決定したら修正する
-            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.12:8080/api/v1/\""
+            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.12:8080\""
         }
     }
     compileOptions {
@@ -37,6 +37,10 @@ android {
         jvmTarget = '1.8'
     }
 
+    // ↓レベルアップしたら再チャレンジする
+//    viewBinding {
+//        enabled true
+//    }
     dataBinding {
         enabled true
     }

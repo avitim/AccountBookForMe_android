@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
-import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.model.ExpenseListItem
 
 class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapter.ExpenseItemViewHolder>() {
 
-    var expenseList: List<Expense> = listOf()
+    private var expenseList: List<ExpenseListItem> = listOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseItemViewHolder {
 
@@ -24,15 +24,15 @@ class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapt
 
         val expenseItem = expenseList[position]
 
-        holder.storeName.text = expenseItem.storeId.toString()
-        holder.firstItem.text = expenseItem.purchasedAt.toString()
-        holder.price.text = expenseItem.totalAmount.toString()
-        holder.paymentMethod.text = expenseItem.note
+        holder.purchasedAt.text = expenseItem.purchasedAt
+        holder.price.text = expenseItem.price.toString()
+        holder.paymentMethod.text = expenseItem.method
+        holder.storeName.text = expenseItem.store
     }
 
     open class ExpenseItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        val purchasedAt: TextView = view.findViewById(R.id.purchased_at)
         val storeName: TextView = view.findViewById(R.id.store_name)
-        val firstItem: TextView = view.findViewById(R.id.first_item)
         val price: TextView = view.findViewById(R.id.price)
         val paymentMethod: TextView = view.findViewById(R.id.payment_method)
     }
@@ -40,7 +40,7 @@ class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapt
     // リストのサイズ取得
     override fun getItemCount() = expenseList.size
 
-    fun setExpenseListItems(expenseList: List<Expense>) {
+    fun setExpenseListItems(expenseList: List<ExpenseListItem>) {
         this.expenseList = expenseList
         notifyDataSetChanged()
     }
