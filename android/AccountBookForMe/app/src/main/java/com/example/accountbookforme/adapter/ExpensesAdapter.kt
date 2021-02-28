@@ -24,8 +24,10 @@ class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapt
 
         val expenseItem = expenseList[position]
 
+        val priceText = "¥" + expenseItem.price.toString()
+
         holder.purchasedAt.text = expenseItem.purchasedAt
-        holder.price.text = expenseItem.price.toString()
+        holder.price.text = priceText
         holder.paymentMethod.text = expenseItem.method
         holder.storeName.text = expenseItem.store
     }

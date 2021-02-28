@@ -16,7 +16,11 @@ public class ExpenseListItem {
     @Id
     Long expenseId;
 
-    LocalDateTime purchasedAt = null;
+    // 購入日と曜日のみ
+    String purchasedAt = "";
+
+    // 詳しい購入日（年月日と時間）
+    LocalDateTime fullPurchasedAt = null;
 
     Float price = 0F;
 

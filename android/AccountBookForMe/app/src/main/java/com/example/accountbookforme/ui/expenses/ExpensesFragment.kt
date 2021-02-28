@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
@@ -40,8 +41,12 @@ class ExpensesFragment : Fragment() {
         recyclerView = view.findViewById(R.id.expense_list)
         expensesAdapter = ExpensesAdapter(this.requireContext())
 
-        recyclerView.layoutManager =  LinearLayoutManager(view.context)
+        val linearLayoutManager = LinearLayoutManager(view.context)
+        recyclerView.layoutManager = linearLayoutManager
         recyclerView.adapter = expensesAdapter
+
+        // セルの区切り線表示
+        recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
 
         val expenseList = expenseRepository.getAll()
         expenseList.enqueue( object : Callback<List<ExpenseListItem>> {
