@@ -84,7 +84,7 @@ CREATE TABLE expenses_payment_methods (
     id INT(20) NOT NULL AUTO_INCREMENT,
     expense_id INT(20) DEFAULT NULL,
     payment_method_id INT(20) DEFAULT NULL,
-    price FLOAT(12,2) DEFAULT NULL,
+    sub_amount FLOAT(12,2) DEFAULT NULL,
     created_at Datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at Datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     PRIMARY KEY (id)
