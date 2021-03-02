@@ -70,12 +70,12 @@ class DetailActivity : AppCompatActivity() {
                     paymentList = response.body()!!
 
                     listView.adapter = DialogPaymentsAdapter(this@DetailActivity, paymentList)
+                    val mBuilder = AlertDialog.Builder(this@DetailActivity)
+                        .setView(mDialogView)
+                        .setTitle("Select a payment method").create()
 
                     // 支払方法入力欄タップ時の設定
                     findViewById<TextView>(R.id.tmp_detail_method).setOnClickListener {
-                        val mBuilder = AlertDialog.Builder(this@DetailActivity)
-                            .setView(mDialogView)
-                            .setTitle("Select a payment method").create()
                         mBuilder.show()
 
                         // リストビューのアイテムのクリックイベントを設定
