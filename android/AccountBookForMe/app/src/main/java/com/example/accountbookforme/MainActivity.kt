@@ -1,7 +1,11 @@
 package com.example.accountbookforme
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -19,7 +23,7 @@ class MainActivity : AppCompatActivity() {
 
         val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
-        // 画面下部のナビゲーション設定
+        // 画面下部のナビゲーション
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -32,7 +36,35 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_settings
             )
         )
+
+        val toolbar: Toolbar = findViewById(R.id.main_toolbar)
+        // ツールバーをアクションバーの代わりに使う
+        setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+
+        // 右上のアイコンのアクション設定
+        menuInflater.inflate(R.menu.toolbar_add, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        // 画面下部のナビゲーション
+        val navController = findNavController(R.id.nav_host_fragment)
+        var intent: Intent? = null
+        when(navController.currentDestination!!.id) {
+            R.id.navigation_expenses -> {
+                intent = Intent(applicationContext, DetailActivity::class.java)
+            }
+        }
+        if (intent != null) {
+            startActivity(intent)
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 }
