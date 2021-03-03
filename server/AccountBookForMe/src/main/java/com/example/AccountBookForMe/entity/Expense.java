@@ -1,5 +1,6 @@
 package com.example.AccountBookForMe.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 
 import javax.persistence.Column;
@@ -7,7 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -19,13 +20,17 @@ public class Expense {
     Long id;
 
     @Column(name = "total_amount")
-    Float totalAmount = null;
+    Float totalAmount = 0F;
 
     @Column(name = "store_id")
-    Long storeId = null;
+    Long storeId;
+
+    @Column(name = "store_name")
+    String storeName;
 
     @Column(name = "purchased_at")
-    LocalDateTime purchasedAt = null;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    LocalDate purchasedAt = null;
 
     @Column(name = "note", length = 140)
     String note = null;

@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
 
-        // 右上のアイコンのアクション設定
+        // 右上のアイコンの設定
         menuInflater.inflate(R.menu.toolbar_add, menu)
         return true
     }

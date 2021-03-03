@@ -2,15 +2,21 @@ package com.example.accountbookforme
 
 import android.app.AlertDialog
 import android.app.DatePickerDialog
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
+import android.view.MenuItem
+import android.widget.EditText
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.accountbookforme.adapter.DialogPaymentsAdapter
+import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.model.ExpenseForm
 import com.example.accountbookforme.model.PaymentListItem
+import com.example.accountbookforme.service.ExpenseService
 import com.example.accountbookforme.service.PaymentsService
 import com.example.accountbookforme.util.RestUtil
 import retrofit2.Call
@@ -23,6 +29,7 @@ import java.util.Calendar
 class DetailActivity : AppCompatActivity() {
 
     private var paymentsService: PaymentsService = RestUtil.retrofit.create(PaymentsService::class.java)
+    private var expenseService: ExpenseService = RestUtil.retrofit.create(ExpenseService::class.java)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,27 +41,62 @@ class DetailActivity : AppCompatActivity() {
         // ツールバーに戻るボタン設置
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // 支払方法入力欄タップしたらダイアログが表示されるようにする
+        // 支払方法入力欄タップしたらダイアログを表示する
         setPaymentListDialog()
 
-        // 日付入力欄の設定
+        // 日付入力欄をタップしたらカレンダーを表示する
         findViewById<TextView>(R.id.detail_date).setOnClickListener {
             showDatePicker()
         }
     }
 
-    // 戻るボタンの挙動設定
     override fun onSupportNavigateUp(): Boolean {
+        // 戻るボタンをタップしたら前の画面に遷移する
         onBackPressed()
         return true
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-        // 右上のアイコンのアクション設定
+        // 画面右上メニューのリソースを保存ボタンに設定
         menuInflater.inflate(R.menu.toolbar_save, menu)
         return true
     }
+
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+
+        return when(item.itemId) {
+            // 保存ボタン（画面右上）をタップした場合
+            R.id.menu_save -> {
+
+                val totalAmountStr = findViewById<EditText>(R.id.tmp_total_amount_value).text.toString()
+                val totalAmount = totalAmountStr.toFloatOrNull()
+                val purchasedAt = findViewById<TextView>(R.id.detail_purchased_date_str).text.toString()
+                val storeName = findViewById<EditText>(R.id.detail_store_name).text.toString()
+                val note = findViewById<EditText>(R.id.detail_note).text.toString()
+
+                val expense = Expense(totalAmount!!, purchasedAt, null, storeName, note)
+                val paymentMethods = arrayListOf(findViewById<TextView>(R.id.tmp_payment_method_id).text.toString().toLong())
+                val expenseForm = ExpenseForm(expense, paymentMethods)
+
+                // 入力した値をDBに保存する
+                expenseService.create(expenseForm).enqueue( object : Callback<Expense> {
+                    override fun onResponse(call: Call<Expense>?, response: Response<Expense>?) {
+                        // うまく行けばExpenses画面に遷移する
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
+                    }
+
+                    override fun onFailure(call: Call<Expense>?, t: Throwable?) {
+                    }
+                })
+
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
 
     private fun setPaymentListDialog() {
 
@@ -74,11 +116,11 @@ class DetailActivity : AppCompatActivity() {
                         .setView(mDialogView)
                         .setTitle("Select a payment method").create()
 
-                    // 支払方法入力欄タップ時の設定
+                    // 支払方法入力欄をタップしたら支払方法選択ダイアログを表示する
                     findViewById<TextView>(R.id.tmp_detail_method).setOnClickListener {
                         mBuilder.show()
 
-                        // リストビューのアイテムのクリックイベントを設定
+                        // タップした支払方法リストのアイテムを値に設定してダイアログを閉じる
                         listView.setOnItemClickListener { parent, _, position, _ ->
 
                             // ダイアログを閉じる
@@ -110,7 +152,8 @@ class DetailActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             DatePickerDialog.OnDateSetListener() { view, year, month, dayOfMonth ->
-                findViewById<TextView>(R.id.detail_date).text = formatDate(year, month + 1, dayOfMonth)
+                findViewById<TextView>(R.id.detail_date).text = formatDate(year, month + 1, dayOfMonth, "E, d MMM. yyyy")
+                findViewById<TextView>(R.id.detail_purchased_date_str).text = formatDate(year, month + 1, dayOfMonth, "yyyy-MM-dd")
             },
             year, month, dayOfMonth
         )
@@ -121,11 +164,11 @@ class DetailActivity : AppCompatActivity() {
      * 画面表示用の日付フォーマッタ
      * フォーマットした日付を文字列で返す
      */
-    private fun formatDate(year: Int, month: Int, dayOfMonth: Int): String {
+    private fun formatDate(year: Int, month: Int, dayOfMonth: Int, pattern: String): String {
 
         // 日付フォーマッタ
         // 画面表示用
-        val dtfToShow = DateTimeFormatter.ofPattern("E, d MMM. yyyy")
+        val dtfToShow = DateTimeFormatter.ofPattern(pattern)
 
         val dateStr = "${year}-${zeroPaddingStr(month)}-${zeroPaddingStr(dayOfMonth)}"
         val dateTime = LocalDate.parse(dateStr)

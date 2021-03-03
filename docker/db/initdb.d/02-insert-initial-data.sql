@@ -1,9 +1,9 @@
 INSERT INTO expenses
-    (id, total_amount, store_id, purchased_at, note) 
+    (id, total_amount, store_id, store_name, purchased_at, note) 
 VALUES
-    (1, 1234.56, 1, '2021-01-24 11:22:33', 'あaいbうcえdおe！'),
-    (2, 333, 2, '2021-02-24 11:22:33', '立替'),
-    (3, 5678, 3, '2021-02-12 11:22:33', '');
+    (1, 1234.56, 1, NULL, '2021-01-24', 'あaいbうcえdおe！'),
+    (2, 333, NULL, 'オーケー', '2021-02-24', '立替'),
+    (3, 5678, 3, NULL, '2021-02-12', '');
 
 INSERT INTO payment_methods
     (id, name, color_id, icon_id)

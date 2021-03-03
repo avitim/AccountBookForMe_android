@@ -4,11 +4,8 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.example.accountbookforme.model.ExpenseListItem
-import com.example.accountbookforme.repository.ExpenseRepository
 
 class ExpensesViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val repository = ExpenseRepository.instance
 
     // 監視対象のLiveData
     var expensesLiveData: MutableLiveData<List<ExpenseListItem>> = MutableLiveData()

@@ -13,7 +13,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpensesAdapter
 import com.example.accountbookforme.model.ExpenseListItem
-import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.service.ExpenseService
+import com.example.accountbookforme.util.RestUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -26,7 +27,7 @@ class ExpensesFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var expensesAdapter: ExpensesAdapter
 
-    private val expenseRepository = ExpenseRepository.instance
+    private var expenseService: ExpenseService = RestUtil.retrofit.create(ExpenseService::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +49,7 @@ class ExpensesFragment : Fragment() {
         // セルの区切り線表示
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
 
-        val expenseList = expenseRepository.getAll()
+        val expenseList = expenseService.getAllItems()
         expenseList.enqueue( object : Callback<List<ExpenseListItem>> {
             override fun onResponse(call: Call<List<ExpenseListItem>>?, response: Response<List<ExpenseListItem>>?) {
 
