@@ -2,6 +2,7 @@ package com.example.AccountBookForMe.service;
 
 import com.example.AccountBookForMe.entity.Expense;
 import com.example.AccountBookForMe.repository.ExpenseRepository;
+import javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,10 @@ public class ExpenseService {
     public List<Expense> findAll() {
         return expenseRepository.findAll();
     }
+
+    public Expense findById(Long id) throws NotFoundException {
+        return expenseRepository.findById(id).orElseThrow(() -> new NotFoundException("Expense"));
+    };
 
     public Expense save(Expense expense) {
         return expenseRepository.save(expense);

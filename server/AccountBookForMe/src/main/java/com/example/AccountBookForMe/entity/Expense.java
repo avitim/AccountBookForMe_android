@@ -23,10 +23,10 @@ public class Expense {
     Float totalAmount = 0F;
 
     @Column(name = "store_id")
-    Long storeId;
+    Long storeId = null;
 
     @Column(name = "store_name")
-    String storeName;
+    String storeName = null;
 
     @Column(name = "purchased_at")
     @JsonFormat(pattern = "yyyy-MM-dd")

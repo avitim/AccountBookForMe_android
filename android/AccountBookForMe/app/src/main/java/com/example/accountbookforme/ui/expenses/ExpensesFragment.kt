@@ -1,5 +1,6 @@
 package com.example.accountbookforme.ui.expenses
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.DetailActivity
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpensesAdapter
 import com.example.accountbookforme.model.ExpenseListItem
@@ -37,10 +39,24 @@ class ExpensesFragment : Fragment() {
 
         val view = layoutInflater.inflate(R.layout.fragment_expenses, container, false)
 
+        // 今月を表示する処理
         getMonth(view)
 
         recyclerView = view.findViewById(R.id.expense_list)
         expensesAdapter = ExpensesAdapter(this.requireContext())
+
+        // セルのクリック処理
+        expensesAdapter.setOnExpenseItemClickListener(
+            object : ExpensesAdapter.OnExpenseItemClickListener {
+                override fun onItemClick(expenseListItem: ExpenseListItem) {
+                    val intent = Intent(context, DetailActivity::class.java)
+                    // 支出IDを渡す
+                    intent.putExtra("expenseId", expenseListItem.expenseId)
+                    // 支出詳細画面に遷移する
+                    startActivity(intent)
+                }
+            }
+        )
 
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager
@@ -49,6 +65,7 @@ class ExpensesFragment : Fragment() {
         // セルの区切り線表示
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
 
+        // 一覧に表示するデータを非同期で取得
         val expenseList = expenseService.getAllItems()
         expenseList.enqueue( object : Callback<List<ExpenseListItem>> {
             override fun onResponse(call: Call<List<ExpenseListItem>>?, response: Response<List<ExpenseListItem>>?) {

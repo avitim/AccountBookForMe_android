@@ -24,19 +24,19 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/total_amount_text"
+            android:id="@+id/detail_total_amount_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/total_amount_value"
+            app:layout_constraintEnd_toStartOf="@+id/detail_total_amount_value"
             app:layout_constraintHorizontal_weight="2.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/total_amount_value"
+            android:id="@+id/detail_total_amount_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -45,7 +45,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/total_amount_text"
+            app:layout_constraintStart_toEndOf="@id/detail_total_amount_text"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -56,19 +56,19 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/tmp_detail_method"
+            android:id="@+id/detail_payment_method"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Select payment method"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/tmp_total_amount_value"
+            app:layout_constraintEnd_toStartOf="@+id/detail_sub_payment_amount"
             app:layout_constraintHorizontal_weight="2.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/tmp_total_amount_value"
+            android:id="@+id/detail_sub_payment_amount"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -78,7 +78,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/tmp_detail_method"
+            app:layout_constraintStart_toEndOf="@id/detail_payment_method"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -117,19 +117,19 @@
         android:padding="5dp">
 
         <TextView
-            android:id="@+id/sub_amount_text"
+            android:id="@+id/detail_sub_category_amount_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/sub_amount_value"
+            app:layout_constraintEnd_toStartOf="@+id/detail_sub_category_amount_value"
             app:layout_constraintHorizontal_weight="2.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/sub_amount_value"
+            android:id="@+id/detail_sub_category_amount_value"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -138,7 +138,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/sub_amount_text"
+            app:layout_constraintStart_toEndOf="@id/detail_sub_category_amount_text"
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -178,14 +178,14 @@
 
 <!--    以下APIで送信する用の値で画面表示はしない-->
     <TextView
-        android:id="@+id/tmp_payment_method_id"
+        android:id="@+id/detail_payment_method_id"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:visibility="gone" />
 
     <TextView
-        android:id="@+id/detail_purchased_date_str"
+        android:id="@+id/detail_full_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_weight="1"

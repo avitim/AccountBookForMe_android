@@ -12,6 +12,7 @@ import com.example.accountbookforme.model.ExpenseListItem
 class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapter.ExpenseItemViewHolder>() {
 
     private var expenseList: List<ExpenseListItem> = listOf()
+    private lateinit var listener: OnExpenseItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseItemViewHolder {
 
@@ -30,6 +31,21 @@ class ExpensesAdapter(val context: Context) : RecyclerView.Adapter<ExpensesAdapt
         holder.price.text = priceText
         holder.paymentMethod.text = expenseItem.method
         holder.storeName.text = expenseItem.store
+
+        // セルのクリックイベントにリスナーをセット
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(expenseItem)
+        }
+    }
+
+    // インターフェースを作成
+    interface OnExpenseItemClickListener {
+        fun onItemClick(expenseListItem: ExpenseListItem)
+    }
+
+    // リスナーをセット
+    fun setOnExpenseItemClickListener(listener: OnExpenseItemClickListener) {
+        this.listener = listener
     }
 
     open class ExpenseItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {

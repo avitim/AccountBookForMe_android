@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AccountBookForMe</string>
+    <string name="app_name">家計簿 for me</string>
     <string name="month">Month</string>
     <string name="title_expenses">Expenses</string>
     <string name="title_categories">Categories</string>

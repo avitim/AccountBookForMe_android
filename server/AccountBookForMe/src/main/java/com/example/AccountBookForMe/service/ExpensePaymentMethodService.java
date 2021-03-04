@@ -1,14 +1,14 @@
 package com.example.AccountBookForMe.service;
 
-import com.example.AccountBookForMe.entity.Expense;
-import com.example.AccountBookForMe.entity.ExpenseForm;
+import com.example.AccountBookForMe.entity.ExpenseDetail;
 import com.example.AccountBookForMe.entity.ExpensePaymentMethod;
 import com.example.AccountBookForMe.repository.ExpensePaymentMethodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ExpensePaymentMethodService {
@@ -17,32 +17,48 @@ public class ExpensePaymentMethodService {
     private ExpensePaymentMethodRepository expensePaymentMethodRepository;
 
     /**
-     * 支出を作成するときに同時に作成する
-     * @param expenseForm: 支出詳細と支払方法IDのリストのセット
+     * 支出IDからその支出に紐付いた支払方法IDと小計のリストを返す
+     * @param expenseId
+     * @return
      */
-    public void create(ExpenseForm expenseForm) {
+    public Map<Long, Float> getByExpenseId(Long expenseId) {
 
-        expenseForm.getPaymentMethods().forEach(methodId -> {
+        Map<Long, Float> paymentList = new HashMap<>();
+
+        List<ExpensePaymentMethod> expensePaymentMethods = expensePaymentMethodRepository.findByExpenseId(expenseId);
+        expensePaymentMethods.forEach(epm -> {
+            paymentList.put(epm.getPaymentMethodId(), epm.getSubAmount());
+        });
+
+        return paymentList;
+    }
+
+    /**
+     * 支出を作成するときに同時に作成する
+     * @param expenseDetail: 支出詳細と支払方法IDのリストのセット
+     */
+    public void create(ExpenseDetail expenseDetail) {
+
+        expenseDetail.getPaymentMethods().forEach((methodId, subAmount) -> {
             ExpensePaymentMethod epm = new ExpensePaymentMethod();
-            epm.setExpenseId(expenseForm.getExpense().getId());
+            epm.setExpenseId(expenseDetail.getExpense().getId());
             epm.setPaymentMethodId(methodId);
-            // TODO: 支払方法が複数選択できるようになったら以下の処理を変える必要あり
-            epm.setSubAmount(expenseForm.getExpense().getTotalAmount());
+            epm.setSubAmount(subAmount);
             expensePaymentMethodRepository.save(epm);
         });
     }
 
     /**
      * 支出を更新するときに同時に更新する
-     * @param expenseForm: 支出詳細と支払方法IDのリストのセット
+     * @param expenseDetail: 支出詳細と支払方法IDのリストのセット
      */
-    public void update(ExpenseForm expenseForm) {
+    public void update(ExpenseDetail expenseDetail) {
 
         // 該当の支出に紐付いた既存のレコードを削除する
-        delete(expenseForm.getExpense().getId());
+        delete(expenseDetail.getExpense().getId());
 
         // あらためて新規作成する
-        create(expenseForm);
+        create(expenseDetail);
     }
 
     /**

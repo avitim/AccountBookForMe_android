@@ -15,9 +15,9 @@ VALUES
 INSERT INTO expenses_payment_methods
     (id, expense_id, payment_method_id, sub_amount)
 VALUES
-    (1, 1, 1, NULL),
-    (2, 2, 2, NULL),
-    (3, 3, 3, NULL);
+    (1, 1, 1, 1234.56),
+    (2, 2, 2, 333),
+    (3, 3, 3, 5678);
 
 INSERT INTO stores
     (id, name)

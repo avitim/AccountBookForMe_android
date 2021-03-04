@@ -51,13 +51,16 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
+    // 右上のアイコンクリックイベント
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
-        // 画面下部のナビゲーション
+        // 画面下部のナビゲーション情報を取得
         val navController = findNavController(R.id.nav_host_fragment)
+
         var intent: Intent? = null
         when(navController.currentDestination!!.id) {
             R.id.navigation_expenses -> {
+                // 現在のページがExpenseのとき
                 intent = Intent(applicationContext, DetailActivity::class.java)
             }
         }

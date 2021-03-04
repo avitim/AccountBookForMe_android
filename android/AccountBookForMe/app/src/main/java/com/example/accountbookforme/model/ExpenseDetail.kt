@@ -1,9 +1,9 @@
 package com.example.accountbookforme.model
 
-data class ExpenseForm(
+data class ExpenseDetail(
 
     var expense: Expense,
 
-    var paymentMethods: ArrayList<Long>
+    var paymentMethods: Map<Long, Float?>
 
 )

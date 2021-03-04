@@ -1,7 +1,7 @@
 package com.example.accountbookforme.service
 
 import com.example.accountbookforme.model.Expense
-import com.example.accountbookforme.model.ExpenseForm
+import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.ExpenseListItem
 import retrofit2.Call
 import retrofit2.http.Body
@@ -17,14 +17,14 @@ interface ExpenseService {
     fun getAllItems(): Call<List<ExpenseListItem>>
 
     @GET("/api/v1/expenses/{id}")
-    fun getById(@Path("id") expenseId: Long): Call<ExpenseForm>
+    fun getDetailById(@Path("id") expenseId: Long): Call<ExpenseDetail>
 
     @POST("api/v1/expenses")
-    fun create(@Body expenseForm: ExpenseForm): Call<Expense>
+    fun create(@Body expenseDetail: ExpenseDetail): Call<Expense>
 
     @PUT("/api/v1/expenses/{id}")
-    fun update(@Path("id") expenseId: Long, @Body expenseForm: ExpenseForm): Call<Expense>
+    fun update(@Path("id") expenseId: Long, @Body expenseDetail: ExpenseDetail): Call<Expense>
 
     @DELETE("/api/v1/expenses/{id}")
-    fun delete(@Path("id") expenseId: Long)
+    fun delete(@Path("id") expenseId: Long): Call<Long>
 }
