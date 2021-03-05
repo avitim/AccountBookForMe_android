@@ -7,16 +7,16 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.example.accountbookforme.R
-import com.example.accountbookforme.model.PaymentListItem
+import com.example.accountbookforme.model.Store
 
-class DialogPaymentsAdapter(context: Context, var paymentList: List<PaymentListItem>) :
-    ArrayAdapter<PaymentListItem>(context, 0, paymentList) {
+class DialogStoreAdapter(context: Context, var storeList: List<Store>) :
+    ArrayAdapter<Store>(context, 0, storeList) {
 
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val payment = paymentList[position]
+        val store = storeList[position]
 
         var view = convertView
 
@@ -25,10 +25,10 @@ class DialogPaymentsAdapter(context: Context, var paymentList: List<PaymentListI
         }
 
         val idView = view?.findViewById<TextView>(R.id.dialog_payment_id)
-        idView?.text = payment.id.toString()
+        idView?.text = store.id.toString()
 
         val nameView = view?.findViewById<TextView>(R.id.dialog_payment_name)
-        nameView?.text = payment.name
+        nameView?.text = store.name
 
         return view!!
     }

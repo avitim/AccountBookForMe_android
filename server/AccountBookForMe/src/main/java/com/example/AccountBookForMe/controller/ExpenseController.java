@@ -2,10 +2,11 @@ package com.example.AccountBookForMe.controller;
 
 import com.example.AccountBookForMe.entity.Expense;
 import com.example.AccountBookForMe.entity.ExpenseDetail;
+import com.example.AccountBookForMe.entity.PaymentListItem;
 import com.example.AccountBookForMe.service.ExpensePaymentMethodService;
 import com.example.AccountBookForMe.service.ExpenseService;
+import com.example.AccountBookForMe.service.StoreService;
 import javassist.NotFoundException;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/expenses")
@@ -29,8 +29,11 @@ public class ExpenseController {
     @Autowired
     private ExpensePaymentMethodService expensePaymentMethodService;
 
+    @Autowired
+    private StoreService storeService;
+
     @GetMapping("")
-    List<Expense> getAll() {
+    List<Expense> findAll() {
         return expenseService.findAll();
     }
 
@@ -40,7 +43,13 @@ public class ExpenseController {
         ExpenseDetail expenseDetail = new ExpenseDetail();
         try {
             Expense expense = expenseService.findById(id);
-            Map<Long, Float> paymentList = expensePaymentMethodService.getByExpenseId(id);
+
+            if (expense.getStoreName() == null) {
+                // 店舗をリストから選択していた場合、storeIdから名前を取得してセットする
+                expense.setStoreName(storeService.getNameById(expense.getStoreId()));
+            }
+
+            List<PaymentListItem> paymentList = expensePaymentMethodService.getByExpenseId(id);
 
             expenseDetail.setExpense(expense);
             expenseDetail.setPaymentMethods(paymentList);

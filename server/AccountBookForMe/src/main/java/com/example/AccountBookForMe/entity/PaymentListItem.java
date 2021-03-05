@@ -13,7 +13,10 @@ import javax.persistence.Id;
 public class PaymentListItem {
 
     @Id
-    Long paymentId;
+    Long id;
 
     String name;
+
+    Float subTotal = 0F;
+
 }

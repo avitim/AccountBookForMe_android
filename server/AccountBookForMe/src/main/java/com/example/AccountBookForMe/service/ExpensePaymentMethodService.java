@@ -2,32 +2,41 @@ package com.example.AccountBookForMe.service;
 
 import com.example.AccountBookForMe.entity.ExpenseDetail;
 import com.example.AccountBookForMe.entity.ExpensePaymentMethod;
+import com.example.AccountBookForMe.entity.PaymentListItem;
 import com.example.AccountBookForMe.repository.ExpensePaymentMethodRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ExpensePaymentMethodService {
 
     @Autowired
-    private ExpensePaymentMethodRepository expensePaymentMethodRepository;
+    private ExpensePaymentMethodRepository epmRepository;
+    
+    @Autowired
+    private PaymentMethodService pmService;
 
     /**
-     * 支出IDからその支出に紐付いた支払方法IDと小計のリストを返す
+     * 支出IDからその支出に紐付いた支払方法ID、名称と小計のリストを返す
      * @param expenseId
      * @return
      */
-    public Map<Long, Float> getByExpenseId(Long expenseId) {
+    public List<PaymentListItem> getByExpenseId(Long expenseId) {
 
-        Map<Long, Float> paymentList = new HashMap<>();
+        List<PaymentListItem> paymentList = new ArrayList<PaymentListItem>();
+        PaymentListItem paymentListItem = new PaymentListItem();
 
-        List<ExpensePaymentMethod> expensePaymentMethods = expensePaymentMethodRepository.findByExpenseId(expenseId);
+        List<ExpensePaymentMethod> expensePaymentMethods = epmRepository.findByExpenseId(expenseId);
         expensePaymentMethods.forEach(epm -> {
-            paymentList.put(epm.getPaymentMethodId(), epm.getSubAmount());
+
+            paymentListItem.setId(epm.getPaymentMethodId());
+            paymentListItem.setName(pmService.getNameById(epm.getPaymentMethodId()).orElse(""));
+            paymentListItem.setSubTotal(epm.getSubTotal());
+
+            paymentList.add(paymentListItem);
         });
 
         return paymentList;
@@ -39,12 +48,15 @@ public class ExpensePaymentMethodService {
      */
     public void create(ExpenseDetail expenseDetail) {
 
-        expenseDetail.getPaymentMethods().forEach((methodId, subAmount) -> {
-            ExpensePaymentMethod epm = new ExpensePaymentMethod();
+        ExpensePaymentMethod epm = new ExpensePaymentMethod();
+
+        expenseDetail.getPaymentMethods().forEach(pm -> {
+
             epm.setExpenseId(expenseDetail.getExpense().getId());
-            epm.setPaymentMethodId(methodId);
-            epm.setSubAmount(subAmount);
-            expensePaymentMethodRepository.save(epm);
+            epm.setPaymentMethodId(pm.getId());
+            epm.setSubTotal(pm.getSubTotal());
+
+            epmRepository.save(epm);
         });
     }
 
@@ -67,7 +79,7 @@ public class ExpensePaymentMethodService {
      */
     public void delete(Long expenseId) {
 
-        List<ExpensePaymentMethod> listToDelete = expensePaymentMethodRepository.findByExpenseId(expenseId);
-        listToDelete.forEach(item -> expensePaymentMethodRepository.delete(item));
+        List<ExpensePaymentMethod> listToDelete = epmRepository.findByExpenseId(expenseId);
+        listToDelete.forEach(item -> epmRepository.delete(item));
     }
 }

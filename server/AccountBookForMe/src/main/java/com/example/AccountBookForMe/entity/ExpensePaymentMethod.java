@@ -24,6 +24,6 @@ public class ExpensePaymentMethod {
     Long paymentMethodId = null;
 
     @Column(name = "sub_amount")
-    Float subAmount = 0F;
+    Float subTotal = 0F;
 
 }

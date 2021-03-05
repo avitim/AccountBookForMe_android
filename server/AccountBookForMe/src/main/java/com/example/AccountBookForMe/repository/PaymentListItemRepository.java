@@ -10,6 +10,6 @@ import java.util.List;
 @Repository
 public interface PaymentListItemRepository extends JpaRepository<PaymentListItem, Long> {
 
-    @Query(value = "SELECT pm.id AS payment_id, pm.name AS name FROM payment_methods pm", nativeQuery = true)
+    @Query(value = "SELECT pm.id AS id, pm.name AS name, 0 AS sub_total FROM payment_methods pm", nativeQuery = true)
     List<PaymentListItem> getPaymentList();
 }

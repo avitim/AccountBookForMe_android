@@ -4,6 +4,6 @@ data class ExpenseDetail(
 
     var expense: Expense,
 
-    var paymentMethods: Map<Long, Float?>
+    var paymentMethods: List<PaymentListItem>
 
 )
