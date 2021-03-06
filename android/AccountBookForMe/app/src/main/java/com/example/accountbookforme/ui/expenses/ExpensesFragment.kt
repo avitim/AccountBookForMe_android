@@ -5,15 +5,14 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.DetailActivity
-import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpensesAdapter
+import com.example.accountbookforme.databinding.FragmentExpensesBinding
 import com.example.accountbookforme.model.ExpenseListItem
 import com.example.accountbookforme.service.ExpenseService
 import com.example.accountbookforme.util.RestUtil
@@ -26,6 +25,9 @@ class ExpensesFragment : Fragment() {
 
     private val viewModel by lazy { ViewModelProvider(this).get(ExpensesViewModel::class.java) }
 
+    private var _binding: FragmentExpensesBinding? = null
+    private val binding get() = _binding!!
+
     private lateinit var recyclerView: RecyclerView
     private lateinit var expensesAdapter: ExpensesAdapter
 
@@ -36,13 +38,13 @@ class ExpensesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val view = layoutInflater.inflate(R.layout.fragment_expenses, container, false)
+        _binding = FragmentExpensesBinding.inflate(inflater, container, false)
+        val view = binding.root
 
         // 今月を表示する処理
         getMonth(view)
 
-        recyclerView = view.findViewById(R.id.expense_list)
+        recyclerView = binding.expenseList
         expensesAdapter = ExpensesAdapter(this.requireContext())
 
         // セルのクリック処理
@@ -85,6 +87,6 @@ class ExpensesFragment : Fragment() {
 
     private fun getMonth(view: View) {
         val nowDate: LocalDateTime = LocalDateTime.now()
-        view.findViewById<TextView>(R.id.month).text = nowDate.month.toString()
+        binding.month.text = nowDate.month.toString()
     }
 }

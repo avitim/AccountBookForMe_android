@@ -13,9 +13,9 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.Toolbar
 import com.example.accountbookforme.adapter.DialogPaymentsAdapter
 import com.example.accountbookforme.adapter.DialogStoresAdapter
+import com.example.accountbookforme.databinding.ExpenseDetailActivityBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.PaymentListItem
@@ -34,6 +34,8 @@ import java.util.Calendar
 // TODO: 肥大化しかかっているのでFragmentに分けたい
 class DetailActivity : AppCompatActivity() {
 
+    private lateinit var binding: ExpenseDetailActivityBinding
+
     private var paymentsService: PaymentsService = RestUtil.retrofit.create(PaymentsService::class.java)
     private var expenseService: ExpenseService = RestUtil.retrofit.create(ExpenseService::class.java)
     private var storeService: StoreService = RestUtil.retrofit.create(StoreService::class.java)
@@ -44,9 +46,10 @@ class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.expense_detail_activity)
+        binding = ExpenseDetailActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar_expense)
+        val toolbar = binding.toolbarExpense
         // ツールバーをアクションバーの代わりに使う
         setSupportActionBar(toolbar)
         // ツールバーに戻るボタン設置
@@ -70,15 +73,15 @@ class DetailActivity : AppCompatActivity() {
                     val expense = expenseDetail.expense
 
                     // 値を各ビューにセットする
-                    findViewById<TextView>(R.id.detail_total_amount_value).text = expense.totalAmount.toString()
+                    binding.detailTotalAmountValue.text = expense.totalAmount.toString()
                     expenseDetail.paymentMethods.forEach { payment ->
-                        findViewById<TextView>(R.id.detail_payment_method_id).text = payment.id.toString()
-                        findViewById<TextView>(R.id.detail_payment_method).text = payment.name
-                        findViewById<EditText>(R.id.detail_sub_total).setText(payment.subTotal.toString())
+                        binding.detailPaymentMethodId.text = payment.id.toString()
+                        binding.detailPaymentMethod.text = payment.name
+                        binding.detailSubTotal.setText(payment.subTotal.toString())
                     }
-                    findViewById<TextView>(R.id.detail_store_id).text = if (expense.storeId == null) "" else expense.storeId.toString()
-                    findViewById<TextView>(R.id.detail_store_name).text = expense.storeName
-                    findViewById<EditText>(R.id.detail_note).setText(if (expense.note == null) "" else expense.note)
+                    binding.detailStoreId.text = if (expense.storeId == null) "" else expense.storeId.toString()
+                    binding.detailStoreName.text = expense.storeName
+                    binding.detailNote.setText(if (expense.note == null) "" else expense.note)
                     setPurchaseDate(LocalDate.parse(expense.purchasedAt))
 
                     // 登録済みの店舗の一覧を非同期で取得し、店舗名入力欄タップしたらダイアログを表示するように設定
@@ -112,7 +115,7 @@ class DetailActivity : AppCompatActivity() {
                 .create()
 
             // 削除ボタンをタップしたら確認ダイアログを表示する
-            findViewById<TextView>(R.id.delete_expense).setOnClickListener {
+            binding.deleteExpense.setOnClickListener {
                 builder.show()
             }
         }
@@ -123,14 +126,14 @@ class DetailActivity : AppCompatActivity() {
             setPurchaseDate(DateUtil.parseLocalDateFromInt(todayYear, todayMonth, todayDayOfMonth))
 
             // 削除ボタンを非表示にする
-            findViewById<TextView>(R.id.delete_expense).visibility = View.GONE
+            binding.deleteExpense.visibility = View.GONE
         }
 
         // 支払方法の一覧を非同期で取得し、支払方法入力欄タップしたらダイアログを表示するように設定
         setPaymentListDialog()
 
         // 日付入力欄をタップしたらカレンダーを表示する
-        findViewById<TextView>(R.id.detail_date).setOnClickListener {
+        binding.detailDate.setOnClickListener {
             showDatePicker(todayYear, todayMonth - 1, todayDayOfMonth)
         }
     }
@@ -154,14 +157,14 @@ class DetailActivity : AppCompatActivity() {
             // 保存ボタン（画面右上）をタップした場合
             R.id.menu_save -> {
 
-                val subTotalStr = findViewById<EditText>(R.id.detail_sub_total).text.toString()
+                val subTotalStr = binding.detailSubTotal.text.toString()
                 val subTotal = subTotalStr.toFloatOrNull()
-                val methodId = findViewById<TextView>(R.id.detail_payment_method_id).text.toString().toLong()
-                val purchasedAt = findViewById<TextView>(R.id.detail_full_date).text.toString()
-                val storeId = findViewById<TextView>(R.id.detail_store_id).text.toString().toLongOrNull()
+                val methodId = binding.detailPaymentMethodId.text.toString().toLong()
+                val purchasedAt = binding.detailFullDate.text.toString()
+                val storeId = binding.detailStoreId.text.toString().toLongOrNull()
                 // storeIdがnullではない場合はstoreNameの値は不要なのでnullにする
-                val storeName = if (storeId != null) null else findViewById<TextView>(R.id.detail_store_name).text.toString()
-                val note = findViewById<EditText>(R.id.detail_note).text.toString()
+                val storeName = if (storeId != null) null else binding.detailStoreName.text.toString()
+                val note = binding.detailNote.text.toString()
 
                 val expense = Expense(subTotal!!, purchasedAt, storeId, storeName, note)
                 val payments = mutableListOf<PaymentListItem>()
@@ -212,7 +215,7 @@ class DetailActivity : AppCompatActivity() {
                         .setTitle("Select a payment method").create()
 
                     // 支払方法欄をタップしたら支払方法選択ダイアログを表示する
-                    findViewById<TextView>(R.id.detail_payment_method).setOnClickListener {
+                    binding.detailPaymentMethod.setOnClickListener {
                         mBuilder.show()
 
                         // タップした支払方法リストのアイテムを値に設定してダイアログを閉じる
@@ -221,8 +224,8 @@ class DetailActivity : AppCompatActivity() {
                             val item = parent.getItemAtPosition(position) as PaymentListItem
 
                             // 画面の支払方法欄の値を設定
-                            findViewById<TextView>(R.id.detail_payment_method_id).text = item.id.toString()
-                            findViewById<TextView>(R.id.detail_payment_method).text = item.name
+                            binding.detailPaymentMethodId.text = item.id.toString()
+                            binding.detailPaymentMethod.text = item.name
 
                             // ダイアログを閉じる
                             mBuilder.dismiss()
@@ -244,7 +247,7 @@ class DetailActivity : AppCompatActivity() {
             .setTitle("Enter a store").create()
 
         // 店舗名欄のタップイベント
-        val storeName = findViewById<TextView>(R.id.detail_store_name)
+        val storeName = binding.detailStoreName
         storeName.setOnClickListener {
 
             // 店舗IDがnullなら店舗名欄の値を入力欄に入れる
@@ -260,7 +263,7 @@ class DetailActivity : AppCompatActivity() {
         // ダイアログのOKボタンのタップイベント
         mDialogView.findViewById<Button>(R.id.dialog_input_confirm).setOnClickListener {
             // 画面の店舗欄の値を設定、リストから選択しない場合の店舗IDは空
-            findViewById<TextView>(R.id.detail_store_id).text = ""
+            binding.detailStoreId.text = ""
             storeName.text = mDialogView.findViewById<EditText>(R.id.dialog_input_store).text
 
             // ダイアログを閉じる
@@ -284,8 +287,8 @@ class DetailActivity : AppCompatActivity() {
                         val item = parent.getItemAtPosition(position) as Store
 
                         // 画面の店舗名欄の値を設定
-                        findViewById<TextView>(R.id.detail_store_id).text = item.id.toString()
-                        findViewById<TextView>(R.id.detail_store_name).text = item.name
+                        binding.detailStoreId.text = item.id.toString()
+                        binding.detailStoreName.text = item.name
 
                         // ダイアログの入力欄の値を空にする
                         mDialogView.findViewById<EditText>(R.id.dialog_input_store)?.setText("")
@@ -314,8 +317,8 @@ class DetailActivity : AppCompatActivity() {
     }
 
     private fun setPurchaseDate(localDate: LocalDate) {
-        findViewById<TextView>(R.id.detail_date).text = DateUtil.formatDate(localDate, DateUtil.DATE_EDMMMYYYY)
-        findViewById<TextView>(R.id.detail_full_date).text = DateUtil.formatDate(localDate, DateUtil.DATE_YYYYMMDD)
+        binding.detailDate.text = DateUtil.formatDate(localDate, DateUtil.DATE_EDMMMYYYY)
+        binding.detailFullDate.text = DateUtil.formatDate(localDate, DateUtil.DATE_YYYYMMDD)
     }
 
 }

@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.accountbookforme.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 /**
@@ -17,11 +18,14 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
  */
 class MainActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        val navView: BottomNavigationView = binding.navView
 
         // 画面下部のナビゲーション
         val navController = findNavController(R.id.nav_host_fragment)
@@ -37,7 +41,7 @@ class MainActivity : AppCompatActivity() {
             )
         )
 
-        val toolbar: Toolbar = findViewById(R.id.main_toolbar)
+        val toolbar: Toolbar = binding.mainToolbar
         // ツールバーをアクションバーの代わりに使う
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
