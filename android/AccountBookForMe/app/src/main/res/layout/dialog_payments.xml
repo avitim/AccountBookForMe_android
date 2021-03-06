@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <ListView
-        android:id="@+id/container_listView"
+        android:id="@+id/dialog_payment_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 

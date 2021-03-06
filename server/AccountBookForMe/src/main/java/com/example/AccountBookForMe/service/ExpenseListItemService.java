@@ -5,6 +5,7 @@ import com.example.AccountBookForMe.repository.ExpenseListItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -21,19 +22,25 @@ public class ExpenseListItemService {
     public List<ExpenseListItem> getExpenseList() {
 
         List<ExpenseListItem> list = expenseListItemRepository.getExpenseList();
-        return formatDate(list);
-    }
 
-    /**
-     * リストごと日付のフォーマット変換して返す
-     */
-    private List<ExpenseListItem> formatDate(List<ExpenseListItem> list) {
-
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("E, d");
         list.forEach(item -> {
-            item.setPurchasedAt(dtf.format(item.getFullPurchasedAt()));
+            // 日付をフォーマット変換して文字列に変換する
+            String formattedDate = item.getFullPurchasedAt() == null ? "-" : formatDate(item.getFullPurchasedAt(), "E, d");
+            item.setPurchasedAt(formattedDate);
         });
 
         return list;
+    }
+
+    /**
+     * 日付をフォーマット変換して返す
+     * @param localdate : LocalDate型の日付
+     * @param pattern : フォーマッタ
+     * @return
+     */
+    private String formatDate(LocalDate localdate, String pattern) {
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern(pattern);
+        return dtf.format(localdate);
     }
 }

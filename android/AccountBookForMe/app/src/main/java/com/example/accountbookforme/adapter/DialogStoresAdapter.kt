@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Store
 
-class DialogStoreAdapter(context: Context, var storeList: List<Store>) :
+class DialogStoresAdapter(context: Context, var storeList: List<Store>) :
     ArrayAdapter<Store>(context, 0, storeList) {
 
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -21,13 +21,13 @@ class DialogStoreAdapter(context: Context, var storeList: List<Store>) :
         var view = convertView
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.dialog_payments_item, parent, false)
+            view = layoutInflater.inflate(R.layout.dialog_item, parent, false)
         }
 
-        val idView = view?.findViewById<TextView>(R.id.dialog_payment_id)
+        val idView = view?.findViewById<TextView>(R.id.dialog_item_id)
         idView?.text = store.id.toString()
 
-        val nameView = view?.findViewById<TextView>(R.id.dialog_payment_name)
+        val nameView = view?.findViewById<TextView>(R.id.dialog_item_name)
         nameView?.text = store.name
 
         return view!!

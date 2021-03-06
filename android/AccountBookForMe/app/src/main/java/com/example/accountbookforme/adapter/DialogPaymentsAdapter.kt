@@ -21,13 +21,13 @@ class DialogPaymentsAdapter(context: Context, var paymentList: List<PaymentListI
         var view = convertView
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.dialog_payments_item, parent, false)
+            view = layoutInflater.inflate(R.layout.dialog_item, parent, false)
         }
 
-        val idView = view?.findViewById<TextView>(R.id.dialog_payment_id)
+        val idView = view?.findViewById<TextView>(R.id.dialog_item_id)
         idView?.text = payment.id.toString()
 
-        val nameView = view?.findViewById<TextView>(R.id.dialog_payment_name)
+        val nameView = view?.findViewById<TextView>(R.id.dialog_item_name)
         nameView?.text = payment.name
 
         return view!!
