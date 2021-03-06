@@ -52,6 +52,12 @@ class DetailActivity : AppCompatActivity() {
         // ツールバーに戻るボタン設置
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        // 今日の日付を取得
+        val calendar = Calendar.getInstance()
+        val year = calendar.get(Calendar.YEAR)
+        val month = calendar.get(Calendar.MONTH)
+        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
+
         // 支払方法の一覧を非同期で取得し、支払方法入力欄タップしたらダイアログを表示するように設定
         setPaymentListDialog()
         // 登録済みの店舗の一覧を非同期で取得し、店舗名入力欄タップしたらダイアログを表示するように設定
@@ -113,18 +119,14 @@ class DetailActivity : AppCompatActivity() {
             }
         }
         else {
-            // 新規作成の場合は削除ボタンを非表示にする
+            // 新規作成の場合
+
+            // 購入日のデフォルトを今日にする
+            setPurchaseDate(year, month + 1, dayOfMonth)
+
+            // 削除ボタンを非表示にする
             findViewById<TextView>(R.id.delete_expense).visibility = View.GONE
         }
-
-        // 今日の日付を取得
-        val calendar = Calendar.getInstance()
-        val year = calendar.get(Calendar.YEAR)
-        val month = calendar.get(Calendar.MONTH)
-        val dayOfMonth = calendar.get(Calendar.DAY_OF_MONTH)
-
-        // 日付入力欄のデフォルトを今日にする
-        setPurchaseDate(year, month + 1, dayOfMonth)
 
         // 日付入力欄をタップしたらカレンダーを表示する
         findViewById<TextView>(R.id.detail_date).setOnClickListener {
