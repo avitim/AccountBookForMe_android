@@ -63,3 +63,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### ダンプファイル置き場 ###
+dumps/
