@@ -3,12 +3,12 @@ package com.example.accountbookforme.viewmodel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
-import com.example.accountbookforme.model.ExpenseListItem
+import com.example.accountbookforme.model.Expense
 
 class ExpensesViewModel(application: Application) : AndroidViewModel(application) {
 
     // 監視対象のLiveData
-    var expensesLiveData: MutableLiveData<List<ExpenseListItem>> = MutableLiveData()
+    var expensesLiveData: MutableLiveData<List<Expense>> = MutableLiveData()
 
     // ViewModel初期化時に呼ばれる
     init {

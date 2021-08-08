@@ -17,7 +17,6 @@ import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.DialogPaymentsAdapter
 import com.example.accountbookforme.adapter.DialogStoresAdapter
 import com.example.accountbookforme.databinding.ExpenseDetailActivityBinding
-import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.PaymentListItem
 import com.example.accountbookforme.model.Store
@@ -29,7 +28,7 @@ import com.example.accountbookforme.util.RestUtil
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDate
+import java.time.LocalDateTime
 import java.util.Calendar
 
 // TODO: 肥大化しかかっているのでFragmentに分けたい
@@ -71,19 +70,18 @@ class DetailActivity : AppCompatActivity() {
             expenseRepository.getDetailById(expenseId!!).enqueue( object : Callback<ExpenseDetail> {
                 override fun onResponse(call: Call<ExpenseDetail>?, response: Response<ExpenseDetail>?) {
                     val expenseDetail = response?.body()!!
-                    val expense = expenseDetail.expense
 
                     // 値を各ビューにセットする
-                    binding.detailTotalAmountValue.text = expense.totalAmount.toString()
+                    binding.detailTotalAmountValue.text = expenseDetail.totalAmount.toString()
                     expenseDetail.paymentMethods.forEach { payment ->
                         binding.detailPaymentMethodId.text = payment.id.toString()
                         binding.detailPaymentMethod.text = payment.name
                         binding.detailSubTotal.setText(payment.subTotal.toString())
                     }
-                    binding.detailStoreId.text = if (expense.storeId == null) "" else expense.storeId.toString()
-                    binding.detailStoreName.text = expense.storeName
-                    binding.detailNote.setText(if (expense.note == null) "" else expense.note)
-                    setPurchaseDate(LocalDate.parse(expense.purchasedAt))
+                    binding.detailStoreId.text = if (expenseDetail.storeId == null) "" else expenseDetail.storeId.toString()
+                    binding.detailStoreName.text = expenseDetail.storeName
+                    binding.detailNote.setText(if (expenseDetail.note == null) "" else expenseDetail.note)
+                    setPurchaseDate(expenseDetail.purchasedAt)
 
                     // 登録済みの店舗の一覧を非同期で取得し、店舗名入力欄タップしたらダイアログを表示するように設定
                     setStoreListDialog()
@@ -124,7 +122,7 @@ class DetailActivity : AppCompatActivity() {
             // 新規作成の場合
 
             // 購入日のデフォルトを今日にする
-            setPurchaseDate(DateUtil.parseLocalDateFromInt(todayYear, todayMonth, todayDayOfMonth))
+            setPurchaseDate(DateUtil.parseLocalDateTimeFromInt(todayYear, todayMonth, todayDayOfMonth))
 
             // 削除ボタンを非表示にする
             binding.deleteExpense.visibility = View.GONE
@@ -159,7 +157,7 @@ class DetailActivity : AppCompatActivity() {
             R.id.menu_save -> {
 
                 val subTotalStr = binding.detailSubTotal.text.toString()
-                val subTotal = subTotalStr.toFloatOrNull()
+                val subTotal = subTotalStr.toBigDecimalOrNull()
                 val methodId = binding.detailPaymentMethodId.text.toString().toLong()
                 val purchasedAt = binding.detailFullDate.text.toString()
                 val storeId = binding.detailStoreId.text.toString().toLongOrNull()
@@ -167,28 +165,27 @@ class DetailActivity : AppCompatActivity() {
                 val storeName = if (storeId != null) null else binding.detailStoreName.text.toString()
                 val note = binding.detailNote.text.toString()
 
-                val expense = Expense(subTotal!!, purchasedAt, storeId, storeName, note)
                 val payments = mutableListOf<PaymentListItem>()
-                payments.add(PaymentListItem(methodId, "", subTotal))
-                val expenseDetail = ExpenseDetail(expense, payments)
+                payments.add(PaymentListItem(methodId, "", subTotal!!))
+                val expenseDetail = ExpenseDetail(subTotal, purchasedAt, storeId, storeName, note, payments)
 
                 // 入力した値をDBに保存する
-                val call: Call<Expense> = if (expenseId == null) {
+                val call: Call<ExpenseDetail> = if (expenseId == null) {
                     // 新規作成
                     expenseRepository.create(expenseDetail)
                 } else {
                     // 更新
-                    expenseRepository.update(expenseId!!, expenseDetail)
+                    expenseRepository.update(expenseDetail)
                 }
-                call.enqueue( object : Callback<Expense> {
-                    override fun onResponse(call: Call<Expense>?, response: Response<Expense>?) {
+                call.enqueue( object : Callback<ExpenseDetail> {
+                    override fun onResponse(call: Call<ExpenseDetail>?, response: Response<ExpenseDetail>?) {
                         // うまく行けばExpenses画面に遷移する
                         // TODO: Expenses画面表示用のデータを再取得してほしいのでfinish()は使わないが、Observeで実装すれば不要になりそう
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)
                     }
 
-                    override fun onFailure(call: Call<Expense>?, t: Throwable?) {
+                    override fun onFailure(call: Call<ExpenseDetail>?, t: Throwable?) {
                     }
                 })
 
@@ -310,16 +307,16 @@ class DetailActivity : AppCompatActivity() {
         val datePickerDialog = DatePickerDialog(
             this,
             { _, year, month, dayOfMonth ->
-                setPurchaseDate(DateUtil.parseLocalDateFromInt(year, month + 1, dayOfMonth))
+                setPurchaseDate(DateUtil.parseLocalDateTimeFromInt(year, month + 1, dayOfMonth))
             },
             default_year, default_month, default_dayOfMonth
         )
         datePickerDialog.show()
     }
 
-    private fun setPurchaseDate(localDate: LocalDate) {
-        binding.detailDate.text = DateUtil.formatDate(localDate, DateUtil.DATE_EDMMMYYYY)
-        binding.detailFullDate.text = DateUtil.formatDate(localDate, DateUtil.DATE_YYYYMMDD)
+    private fun setPurchaseDate(dateTime: String) {
+        binding.detailDate.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
+        binding.detailFullDate.text = DateUtil.formatDate(dateTime, DateUtil.DATE_YYYYMMDD)
     }
 
 }
