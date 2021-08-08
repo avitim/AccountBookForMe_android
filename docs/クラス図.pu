@@ -1,0 +1,33 @@
+@startuml
+title クラス図
+
+interface ExpenseRepository {
+    --
+    getList()
+}
+
+class ExpenseViewModel {
+
+}
+
+Entity Expense {
+
+}
+
+class ExpenseListAdapter {
+
+}
+
+class RetroInstance {
+
+}
+
+class MainActivity {
+
+}
+
+class ExpenseListFragment {
+
+}
+
+@enduml
