@@ -1,4 +1,4 @@
-package com.example.accountbookforme.service
+package com.example.accountbookforme.repository
 
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.ExpenseDetail
@@ -11,9 +11,9 @@ import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.Path
 
-interface ExpenseService {
+interface ExpenseRepository {
 
-    @GET("/api/v1/expenselist")
+    @GET("/expenses")
     fun getAllItems(): Call<List<ExpenseListItem>>
 
     @GET("/api/v1/expenses/{id}")

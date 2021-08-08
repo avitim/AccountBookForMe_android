@@ -1,4 +1,4 @@
-package com.example.accountbookforme
+package com.example.accountbookforme.activity
 
 import android.app.DatePickerDialog
 import android.content.Intent
@@ -13,6 +13,7 @@ import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.DialogPaymentsAdapter
 import com.example.accountbookforme.adapter.DialogStoresAdapter
 import com.example.accountbookforme.databinding.ExpenseDetailActivityBinding
@@ -20,9 +21,9 @@ import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.PaymentListItem
 import com.example.accountbookforme.model.Store
-import com.example.accountbookforme.service.ExpenseService
-import com.example.accountbookforme.service.PaymentsService
-import com.example.accountbookforme.service.StoreService
+import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.repository.PaymentRepository
+import com.example.accountbookforme.repository.StoreRepository
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.RestUtil
 import retrofit2.Call
@@ -36,9 +37,9 @@ class DetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ExpenseDetailActivityBinding
 
-    private var paymentsService: PaymentsService = RestUtil.retrofit.create(PaymentsService::class.java)
-    private var expenseService: ExpenseService = RestUtil.retrofit.create(ExpenseService::class.java)
-    private var storeService: StoreService = RestUtil.retrofit.create(StoreService::class.java)
+    private var paymentRepository: PaymentRepository = RestUtil.retrofit.create(PaymentRepository::class.java)
+    private var expenseRepository: ExpenseRepository = RestUtil.retrofit.create(ExpenseRepository::class.java)
+    private var storeRepository: StoreRepository = RestUtil.retrofit.create(StoreRepository::class.java)
 
     private var expenseId: Long? = null
     private lateinit var paymentList: List<PaymentListItem>
@@ -67,7 +68,7 @@ class DetailActivity : AppCompatActivity() {
 
         if (expenseId != null) {
             // 支出IDがnull以外の場合、そのIDをもとに表示する値を非同期で取得する
-            expenseService.getDetailById(expenseId!!).enqueue( object : Callback<ExpenseDetail> {
+            expenseRepository.getDetailById(expenseId!!).enqueue( object : Callback<ExpenseDetail> {
                 override fun onResponse(call: Call<ExpenseDetail>?, response: Response<ExpenseDetail>?) {
                     val expenseDetail = response?.body()!!
                     val expense = expenseDetail.expense
@@ -97,7 +98,7 @@ class DetailActivity : AppCompatActivity() {
                 .setMessage("Delete item?")
                 .setPositiveButton("OK") { _, _ ->
                     // OKをタップしたらデータを削除する
-                    expenseService.delete(expenseId!!).enqueue(object : Callback<Long> {
+                    expenseRepository.delete(expenseId!!).enqueue(object : Callback<Long> {
                         override fun onResponse(call: Call<Long>?, response: Response<Long>?) {
                             // 前の画面に遷移する
                             // TODO: Expenses画面表示用のデータを再取得してほしいのでfinish()は使わないが、Observeで実装すれば不要になりそう
@@ -174,10 +175,10 @@ class DetailActivity : AppCompatActivity() {
                 // 入力した値をDBに保存する
                 val call: Call<Expense> = if (expenseId == null) {
                     // 新規作成
-                    expenseService.create(expenseDetail)
+                    expenseRepository.create(expenseDetail)
                 } else {
                     // 更新
-                    expenseService.update(expenseId!!, expenseDetail)
+                    expenseRepository.update(expenseId!!, expenseDetail)
                 }
                 call.enqueue( object : Callback<Expense> {
                     override fun onResponse(call: Call<Expense>?, response: Response<Expense>?) {
@@ -202,7 +203,7 @@ class DetailActivity : AppCompatActivity() {
         val mDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_payments, null)
         val listView = mDialogView.findViewById<ListView>(R.id.dialog_payment_list)
 
-        val paymentListCall = paymentsService.getListItems()
+        val paymentListCall = paymentRepository.getListItems()
         paymentListCall.enqueue( object : Callback<List<PaymentListItem>> {
             override fun onResponse(call: Call<List<PaymentListItem>>?, response: Response<List<PaymentListItem>>?) {
 
@@ -272,7 +273,7 @@ class DetailActivity : AppCompatActivity() {
 
         val listView = mDialogView.findViewById<ListView>(R.id.dialog_favorite_store_list)
 
-        val storeListCall = storeService.getListItems()
+        val storeListCall = storeRepository.getListItems()
         storeListCall.enqueue( object : Callback<List<Store>> {
             override fun onResponse(call: Call<List<Store>>?, response: Response<List<Store>>?) {
 

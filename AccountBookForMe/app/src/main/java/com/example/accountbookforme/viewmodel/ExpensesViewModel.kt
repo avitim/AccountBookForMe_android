@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.expenses
+package com.example.accountbookforme.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel

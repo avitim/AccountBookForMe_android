@@ -1,10 +1,10 @@
-package com.example.accountbookforme.service
+package com.example.accountbookforme.repository
 
 import com.example.accountbookforme.model.PaymentListItem
 import retrofit2.Call
 import retrofit2.http.GET
 
-interface PaymentsService {
+interface PaymentRepository {
 
     @GET("/api/v1/paymentlistitem")
     fun getListItems(): Call<List<PaymentListItem>>

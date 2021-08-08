@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.expenses
+package com.example.accountbookforme.fragment
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,11 +10,12 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.accountbookforme.DetailActivity
+import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ExpensesAdapter
 import com.example.accountbookforme.databinding.FragmentExpensesBinding
 import com.example.accountbookforme.model.ExpenseListItem
-import com.example.accountbookforme.service.ExpenseService
+import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.viewmodel.ExpensesViewModel
 import com.example.accountbookforme.util.RestUtil
 import retrofit2.Call
 import retrofit2.Callback
@@ -31,7 +32,7 @@ class ExpensesFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var expensesAdapter: ExpensesAdapter
 
-    private var expenseService: ExpenseService = RestUtil.retrofit.create(ExpenseService::class.java)
+    private var expenseRepository: ExpenseRepository = RestUtil.retrofit.create(ExpenseRepository::class.java)
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,7 +69,7 @@ class ExpensesFragment : Fragment() {
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
 
         // 一覧に表示するデータを非同期で取得
-        val expenseList = expenseService.getAllItems()
+        val expenseList = expenseRepository.getAllItems()
         expenseList.enqueue( object : Callback<List<ExpenseListItem>> {
             override fun onResponse(call: Call<List<ExpenseListItem>>?, response: Response<List<ExpenseListItem>>?) {
 

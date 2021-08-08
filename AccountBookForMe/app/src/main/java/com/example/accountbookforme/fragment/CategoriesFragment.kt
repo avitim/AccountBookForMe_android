@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.categories
+package com.example.accountbookforme.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.accountbookforme.R
+import com.example.accountbookforme.viewmodel.CategoriesViewModel
 
 class CategoriesFragment : Fragment() {
 
@@ -21,8 +22,8 @@ class CategoriesFragment : Fragment() {
     ): View? {
         categoriesViewModel =
             ViewModelProvider(this).get(CategoriesViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_categories, container, false)
-        val textView: TextView = root.findViewById(R.id.text_categories)
+        val root = inflater.inflate(R.layout.fragment_filter_list, container, false)
+        val textView: TextView = root.findViewById(R.id.text_filter)
         categoriesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })

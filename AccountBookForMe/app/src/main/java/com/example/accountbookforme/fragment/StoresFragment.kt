@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.stores
+package com.example.accountbookforme.fragment
 
 import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import com.example.accountbookforme.R
+import com.example.accountbookforme.viewmodel.StoresViewModel
 
 class StoresFragment : Fragment() {
 
@@ -21,8 +22,8 @@ class StoresFragment : Fragment() {
     ): View? {
         storesViewModel =
             ViewModelProvider(this).get(StoresViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_stores, container, false)
-        val textView: TextView = root.findViewById(R.id.text_stores)
+        val root = inflater.inflate(R.layout.fragment_filter_list, container, false)
+        val textView: TextView = root.findViewById(R.id.text_filter)
         storesViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })

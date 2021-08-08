@@ -1,4 +1,4 @@
-package com.example.accountbookforme
+package com.example.accountbookforme.activity
 
 import android.content.Intent
 import android.os.Bundle
@@ -10,6 +10,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.example.accountbookforme.R
 import com.example.accountbookforme.databinding.ActivityMainBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 

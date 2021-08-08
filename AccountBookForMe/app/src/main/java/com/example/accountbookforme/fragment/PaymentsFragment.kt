@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.payments
+package com.example.accountbookforme.fragment
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.accountbookforme.R
+import com.example.accountbookforme.viewmodel.PaymentsViewModel
 
 class PaymentsFragment : Fragment() {
 
@@ -21,8 +22,8 @@ class PaymentsFragment : Fragment() {
     ): View? {
         paymentsViewModel =
             ViewModelProvider(this).get(PaymentsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_payments, container, false)
-        val textView: TextView = root.findViewById(R.id.text_payments)
+        val root = inflater.inflate(R.layout.fragment_filter_list, container, false)
+        val textView: TextView = root.findViewById(R.id.text_filter)
         paymentsViewModel.text.observe(viewLifecycleOwner, Observer {
             textView.text = it
         })

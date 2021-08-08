@@ -1,13 +1,13 @@
-package com.example.accountbookforme.ui.payments
+package com.example.accountbookforme.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class PaymentsViewModel : ViewModel() {
+class SettingsViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is payments Fragment"
+        value = "This is settings Fragment"
     }
     val text: LiveData<String> = _text
 }

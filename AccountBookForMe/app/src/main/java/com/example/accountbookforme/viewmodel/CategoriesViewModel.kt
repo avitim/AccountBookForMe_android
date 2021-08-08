@@ -1,4 +1,4 @@
-package com.example.accountbookforme.ui.categories
+package com.example.accountbookforme.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

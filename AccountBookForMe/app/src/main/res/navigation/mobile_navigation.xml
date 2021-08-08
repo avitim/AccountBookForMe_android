@@ -7,31 +7,31 @@
 
     <fragment
         android:id="@+id/navigation_expenses"
-        android:name="com.example.accountbookforme.ui.expenses.ExpensesFragment"
+        android:name="com.example.accountbookforme.fragment.ExpensesFragment"
         android:label="@string/title_expenses"
         tools:layout="@layout/fragment_expenses" />
 
     <fragment
         android:id="@+id/navigation_categories"
-        android:name="com.example.accountbookforme.ui.categories.CategoriesFragment"
+        android:name="com.example.accountbookforme.fragment.CategoriesFragment"
         android:label="@string/title_categories"
-        tools:layout="@layout/fragment_categories" />
+        tools:layout="@layout/fragment_filter_list" />
 
     <fragment
         android:id="@+id/navigation_payments"
-        android:name="com.example.accountbookforme.ui.payments.PaymentsFragment"
+        android:name="com.example.accountbookforme.fragment.PaymentsFragment"
         android:label="@string/title_payments"
-        tools:layout="@layout/fragment_payments" />
+        tools:layout="@layout/fragment_filter_list" />
 
     <fragment
         android:id="@+id/navigation_stores"
-        android:name="com.example.accountbookforme.ui.stores.StoresFragment"
+        android:name="com.example.accountbookforme.fragment.StoresFragment"
         android:label="@string/title_stores"
-        tools:layout="@layout/fragment_stores" />
+        tools:layout="@layout/fragment_filter_list" />
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.accountbookforme.ui.settings.SettingsFragment"
+        android:name="com.example.accountbookforme.fragment.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
 
