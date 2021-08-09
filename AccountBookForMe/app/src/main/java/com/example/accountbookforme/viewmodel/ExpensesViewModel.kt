@@ -1,33 +1,38 @@
 package com.example.accountbookforme.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.util.RestUtil
+import kotlinx.coroutines.launch
 
-class ExpensesViewModel(application: Application) : AndroidViewModel(application) {
+class ExpensesViewModel : ViewModel() {
 
-    // 監視対象のLiveData
-    var expensesLiveData: MutableLiveData<List<Expense>> = MutableLiveData()
+    private val expenseRepository: ExpenseRepository = RestUtil.retrofit.create(ExpenseRepository::class.java)
 
-    // ViewModel初期化時に呼ばれる
+    // 支出リスト
+    var expenseList: MutableLiveData<List<Expense>> = MutableLiveData()
+
     init {
         loadExpenseList()
     }
 
     private fun loadExpenseList() {
-        // viewModelScope->ViewModel.onCleared() のタイミングでキャンセルされるCoroutineScope
-        // TODO: のちのちLiveDataを使う方法で実装する
-//        viewModelScope.launch {
-//            try {
-//                val request = repository.getAll()
-//                if (request.isSuccessful) {
-//                    // データを取得したらLiveDataを更新
-//                    expensesLiveData.postValue(request.body())
-//                }
-//            } catch (e: Exception) {
-//                e.stackTrace
-//            }
-//        }
+
+        viewModelScope.launch {
+            try {
+                val request = expenseRepository.getList()
+                if (request.isSuccessful) {
+                    expenseList.value = request.body()
+                } else {
+                    Log.e("ExpenseViewModel", "Something is wrong: $request")
+                }
+            } catch (e: Exception) {
+                e.stackTrace
+            }
+        }
     }
 }

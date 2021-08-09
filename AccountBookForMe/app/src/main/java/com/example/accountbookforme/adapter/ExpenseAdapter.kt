@@ -1,6 +1,5 @@
 package com.example.accountbookforme.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,7 +9,7 @@ import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
 
-class ExpenseAdapter(val context: Context) : RecyclerView.Adapter<ExpenseAdapter.ExpenseItemViewHolder>() {
+class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseItemViewHolder>() {
 
     private var expenseList: List<Expense> = listOf()
     private lateinit var listener: OnExpenseItemClickListener
@@ -26,10 +25,8 @@ class ExpenseAdapter(val context: Context) : RecyclerView.Adapter<ExpenseAdapter
 
         val expenseItem = expenseList[position]
 
-        val priceText = "¥" + expenseItem.total.toString()
-
         holder.purchasedAt.text = DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
-        holder.total.text = priceText
+        holder.total.text = "¥" + expenseItem.total
         holder.storeName.text = expenseItem.storeName
 
         // セルのクリックイベントにリスナーをセット
