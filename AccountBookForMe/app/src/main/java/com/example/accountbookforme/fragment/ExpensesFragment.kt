@@ -45,7 +45,7 @@ class ExpensesFragment : Fragment() {
                 override fun onItemClick(expense: Expense) {
                     val intent = Intent(context, DetailActivity::class.java)
                     // 支出IDを渡す
-                    intent.putExtra("expenseId", expense.expenseId)
+                    intent.putExtra("expenseId", expense.id)
                     // 支出詳細画面に遷移する
                     startActivity(intent)
                 }

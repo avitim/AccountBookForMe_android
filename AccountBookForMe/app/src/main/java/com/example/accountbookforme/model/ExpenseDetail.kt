@@ -4,7 +4,9 @@ import java.math.BigDecimal
 
 data class ExpenseDetail(
 
-    var totalAmount: BigDecimal = BigDecimal.ZERO,
+    var id: Long,
+
+    var total: BigDecimal = BigDecimal.ZERO,
 
     var purchasedAt: String = "",
 
@@ -16,6 +18,8 @@ data class ExpenseDetail(
 
     var note: String? = null,
 
-    var paymentMethods: List<PaymentListItem>
+    var paymentList: List<Payment>,
 
-)
+    var itemList: List<Item>,
+
+    )

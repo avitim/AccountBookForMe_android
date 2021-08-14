@@ -1,6 +1,6 @@
 package com.example.accountbookforme.model
 
-data class Store(
+data class Filter(
 
     val id: Long,
 

@@ -1,6 +1,10 @@
 package com.example.accountbookforme.util
 
+import android.app.DatePickerDialog
+import android.content.Context
+import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 object DateUtil {
@@ -13,8 +17,8 @@ object DateUtil {
      */
     fun parseLocalDateTimeFromInt(year: Int, month: Int, dayOfMonth: Int): String {
 
-        val now = LocalDateTime.now()
-        return "${year}-${zeroPaddingStr(month)}-${zeroPaddingStr(dayOfMonth)}T${now.hour}:${now.minute}:${now.second}"
+        val now = LocalTime.now()
+        return "${year}-${zeroPaddingStr(month)}-${zeroPaddingStr(dayOfMonth)}T$now"
     }
 
     private fun parseLocalDateTime(date: String): LocalDateTime {

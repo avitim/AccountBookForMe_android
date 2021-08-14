@@ -4,7 +4,7 @@ import java.math.BigDecimal
 
 data class Expense(
 
-    val expenseId: Long,
+    val id: Long,
 
     val purchasedAt: String,
 

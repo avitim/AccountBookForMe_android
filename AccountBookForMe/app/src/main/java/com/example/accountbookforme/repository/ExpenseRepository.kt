@@ -15,15 +15,15 @@ interface ExpenseRepository {
     @GET("/expenses")
     suspend fun getList(): Response<List<Expense>>
 
-    @GET("expenses/{id}")
-    fun getDetailById(@Path("id") expenseId: Long): Call<ExpenseDetail>
+    @GET("/expenses/{id}")
+    suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>
 
     @PUT("/expenses/create")
-    fun create(@Body expenseDetail: ExpenseDetail): Call<ExpenseDetail>
+    suspend fun create(@Body expenseDetail: ExpenseDetail): Response<ExpenseDetail>
 
     @PUT("/expenses/update")
-    fun update(@Body expenseDetail: ExpenseDetail): Call<ExpenseDetail>
+    suspend fun update(@Body expenseDetail: ExpenseDetail): Response<ExpenseDetail>
 
     @DELETE("/expenses/delete/{id}")
-    fun delete(@Path("id") expenseId: Long): Call<Long>
+    suspend fun delete(@Path("id") expenseId: Long): Response<Long>
 }
