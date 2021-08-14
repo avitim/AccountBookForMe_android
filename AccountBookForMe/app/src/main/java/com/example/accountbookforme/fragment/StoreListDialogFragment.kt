@@ -4,21 +4,12 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
-import android.widget.EditText
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.DialogStoresAdapter
 import com.example.accountbookforme.databinding.DialogStoresBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.repository.StoreRepository
-import com.example.accountbookforme.util.RestUtil
-import com.example.accountbookforme.viewmodel.ExpensesViewModel
-import com.example.accountbookforme.viewmodel.StoreViewModel
-import kotlinx.coroutines.launch
 
 class StoreListDialogFragment(private var id: Long?, private var name: String?, private val storeList: List<Filter>) : DialogFragment() {
 

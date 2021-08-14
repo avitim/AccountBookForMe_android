@@ -1,6 +1,5 @@
 package com.example.accountbookforme.fragment
 
-import android.app.AlertDialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -8,26 +7,18 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.accountbookforme.R
-import com.example.accountbookforme.adapter.DialogStoresAdapter
 import com.example.accountbookforme.adapter.ExpenseItemAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentAdapter
 import com.example.accountbookforme.databinding.ExpenseDetailFragmentBinding
-import com.example.accountbookforme.repository.StoreRepository
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.util.RestUtil
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.StoreViewModel
-import kotlinx.coroutines.launch
 
 class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDateListener,
     StoreListDialogFragment.OnSelectedStoreListener {
@@ -108,16 +99,6 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
             ).show(childFragmentManager, null)
         }
 
-//        storeViewModel.storeList.observe(viewLifecycleOwner, { storeList ->
-//            // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
-//            binding.storeList.setOnClickListener {
-//                StoreListDialogFragment(
-//                    expenseDetail.expenseDetail.value?.storeId,
-//                    expenseDetail.expenseDetail.value?.storeName,
-//                    storeList
-//                ).show(childFragmentManager, null)
-//            }
-//        })
     }
 
     // メニュー表示
@@ -139,12 +120,14 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
         return true
     }
 
+    // 日付ダイアログで選択したときに呼ばれる from DatePickerDialogFragment
     override fun selectedDate(year: Int, month: Int, day: Int) {
         val dateTime = DateUtil.parseLocalDateTimeFromInt(year, month, day)
         binding.purchasedAt.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
         expenseDetail.expenseDetail.value?.purchasedAt = dateTime
     }
 
+    // 店舗を入力したときに呼ばれる from StoreListDialogFragment
     override fun selectedStore(id: Long?, name: String?) {
         binding.storeName.text = name
         expenseDetail.expenseDetail.value?.storeId = id
