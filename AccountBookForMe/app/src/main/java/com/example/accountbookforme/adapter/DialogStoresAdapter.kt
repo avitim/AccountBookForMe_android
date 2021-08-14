@@ -9,12 +9,12 @@ import android.widget.TextView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Filter
 
-
-    private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 class DialogStoresAdapter(context: Context, private var storeList: List<Filter>) :
     ArrayAdapter<Filter>(context, 0, storeList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+
+        val layoutInflater = LayoutInflater.from(parent.context)
 
         val store = storeList[position]
 
