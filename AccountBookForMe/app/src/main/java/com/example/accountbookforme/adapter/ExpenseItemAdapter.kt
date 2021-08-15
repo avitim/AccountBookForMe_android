@@ -10,6 +10,8 @@ import com.example.accountbookforme.model.Item
 
 class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHolder>(DiffCallback) {
 
+    private lateinit var listener: OnExpenseItemClickListener
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -20,6 +22,21 @@ class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHo
 
     override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {
         holder.bind(getItem(position))
+
+        // セルのクリックイベントをセット
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(getItem(position))
+        }
+    }
+
+    // リスナーのインターフェース
+    interface OnExpenseItemClickListener {
+        fun onItemClick(item: Item)
+    }
+
+    // リスナーをセット
+    fun setOnExpenseItemClickListener(listener: OnExpenseItemClickListener) {
+        this.listener = listener
     }
 
     open class ExpenseItemViewHolder(private val binding: FragmentExpenseItemBinding): RecyclerView.ViewHolder(binding.root) {

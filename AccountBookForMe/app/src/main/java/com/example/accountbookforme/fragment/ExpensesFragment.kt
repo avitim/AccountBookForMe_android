@@ -40,8 +40,8 @@ class ExpensesFragment : Fragment() {
         expenseAdapter = ExpenseAdapter()
 
         // セルのクリック処理
-        expenseAdapter.setOnExpenseItemClickListener(
-            object : ExpenseAdapter.OnExpenseItemClickListener {
+        expenseAdapter.setOnExpenseClickListener(
+            object : ExpenseAdapter.OnExpenseClickListener {
                 override fun onItemClick(expense: Expense) {
                     val intent = Intent(context, DetailActivity::class.java)
                     // 支出IDを渡す

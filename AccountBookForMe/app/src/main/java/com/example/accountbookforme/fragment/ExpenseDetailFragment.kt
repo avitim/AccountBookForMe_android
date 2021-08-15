@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -16,18 +17,23 @@ import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpenseItemAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentAdapter
 import com.example.accountbookforme.databinding.ExpenseDetailFragmentBinding
+import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.util.DateUtil
+import com.example.accountbookforme.viewmodel.CategoryViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.StoreViewModel
 
-class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDateListener,
-    StoreListDialogFragment.OnSelectedStoreListener {
+class ExpenseDetailFragment : Fragment(),
+    DatePickerDialogFragment.OnSelectedDateListener,
+    StoreListDialogFragment.OnSelectedStoreListener,
+    DialogAddItem.OnAddedItemListener{
 
     private var _binding: ExpenseDetailFragmentBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var expenseDetail: ExpenseDetailViewModel
+    private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
     private lateinit var storeViewModel: StoreViewModel
+    private lateinit var categoryViewModel: CategoryViewModel
 
     private val itemListAdapter = ExpenseItemAdapter()
     private val paymentListAdapter = ExpensePaymentAdapter()
@@ -42,13 +48,14 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
         setHasOptionsMenu(true)
         storeViewModel = ViewModelProvider(this).get(StoreViewModel::class.java)
         storeViewModel.getStoreList()
+        categoryViewModel = ViewModelProvider(this).get(CategoryViewModel::class.java)
+        categoryViewModel.getCategoryList()
+
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        expenseDetail = ViewModelProvider(this).get(ExpenseDetailViewModel::class.java)
 
         binding.lifecycleOwner = viewLifecycleOwner
         binding.vm = expenseDetail
@@ -64,8 +71,16 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
             expenseDetail.getExpenseDetail(id!!)
 
             // アイテムリストをセットする
-            val itemLinearLayoutManager = LinearLayoutManager(view.context)
+            // クリックイベントを設定
+            itemListAdapter.setOnExpenseItemClickListener(
+                object : ExpenseItemAdapter.OnExpenseItemClickListener {
+                    override fun onItemClick(item: Item) {
+                        DialogAddItem(item.id, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
+                    }
+                }
+            )
             binding.itemList.adapter = itemListAdapter
+            val itemLinearLayoutManager = LinearLayoutManager(view.context)
             binding.itemList.layoutManager = itemLinearLayoutManager
             binding.itemList.addItemDecoration(DividerItemDecoration(view.context, itemLinearLayoutManager.orientation))
 
@@ -76,11 +91,9 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
             binding.paymentList.addItemDecoration(DividerItemDecoration(view.context, paymentLinearLayoutManager.orientation))
 
         }
-        // idがnullなら新規作成
 
-        // 支出リストの監視開始
-        val expenseDetailViewModel = ViewModelProvider(this).get(ExpenseDetailViewModel::class.java)
-        expenseDetailViewModel.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
+        // 支出詳細の監視開始
+        expenseDetail.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
             itemListAdapter.submitList(expenseDetail.itemList)
             paymentListAdapter.submitList(expenseDetail.paymentList)
         })
@@ -90,13 +103,18 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
             DatePickerDialogFragment().show(childFragmentManager, null)
         }
 
+        // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
         binding.storeList.setOnClickListener {
-            // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
             StoreListDialogFragment(
                 expenseDetail.expenseDetail.value?.storeId,
                 expenseDetail.expenseDetail.value?.storeName,
                 storeViewModel.storeList.value!!
             ).show(childFragmentManager, null)
+        }
+
+        // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
+        binding.addItemBtn.setOnClickListener {
+            DialogAddItem(null, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
         }
 
     }
@@ -132,5 +150,15 @@ class ExpenseDetailFragment : Fragment(), DatePickerDialogFragment.OnSelectedDat
         binding.storeName.text = name
         expenseDetail.expenseDetail.value?.storeId = id
         expenseDetail.expenseDetail.value?.storeName = name
+    }
+
+    // 品物を入力したときに呼ばれる from DialogAddItem
+    override fun addedItem(item: Item) {
+        expenseDetail.addItem(item)
+    }
+
+    // 品物を更新したときに呼ばれる from DialogAddItem
+    override fun updatedItem() {
+        binding.itemList.adapter?.notifyDataSetChanged()
     }
 }

@@ -1,13 +1,9 @@
 package com.example.accountbookforme.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.example.accountbookforme.R
 import com.example.accountbookforme.databinding.FragmentExpenseBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
@@ -15,7 +11,7 @@ import com.example.accountbookforme.util.DateUtil
 class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
 
     private var expenseList: List<Expense> = listOf()
-    private lateinit var listener: OnExpenseItemClickListener
+    private lateinit var listener: OnExpenseClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
 
@@ -39,12 +35,12 @@ class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() 
     }
 
     // インターフェースを作成
-    interface OnExpenseItemClickListener {
+    interface OnExpenseClickListener {
         fun onItemClick(expense: Expense)
     }
 
     // リスナーをセット
-    fun setOnExpenseItemClickListener(listener: OnExpenseItemClickListener) {
+    fun setOnExpenseClickListener(listener: OnExpenseClickListener) {
         this.listener = listener
     }
 

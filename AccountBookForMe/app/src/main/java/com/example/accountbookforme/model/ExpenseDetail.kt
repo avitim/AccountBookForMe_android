@@ -18,8 +18,8 @@ data class ExpenseDetail(
 
     var note: String? = null,
 
-    var paymentList: List<Payment>,
+    var paymentList: MutableList<Payment> = mutableListOf(),
 
-    var itemList: List<Item>,
+    var itemList: MutableList<Item> = mutableListOf(),
 
     )

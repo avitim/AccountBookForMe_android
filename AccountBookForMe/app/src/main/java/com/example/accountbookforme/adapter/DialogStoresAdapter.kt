@@ -21,13 +21,13 @@ class DialogStoresAdapter(context: Context, private var storeList: List<Filter>)
         var view = convertView
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.dialog_item, parent, false)
+            view = layoutInflater.inflate(R.layout.filter_list_item, parent, false)
         }
 
-        val idView = view?.findViewById<TextView>(R.id.dialog_item_id)
+        val idView = view?.findViewById<TextView>(R.id.dialog_filter_id)
         idView?.text = store.id.toString()
 
-        val nameView = view?.findViewById<TextView>(R.id.dialog_item_name)
+        val nameView = view?.findViewById<TextView>(R.id.dialog_filter_name)
         nameView?.text = store.name
 
         return view!!

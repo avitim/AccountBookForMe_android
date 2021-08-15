@@ -4,15 +4,15 @@ import java.math.BigDecimal
 
 data class Item(
 
-    var id: Long,
+    var id: Long? = null,
 
-    var name: String,
+    var name: String = "",
 
-    var price: BigDecimal,
+    var price: BigDecimal = BigDecimal.ZERO,
 
-    var categoryId: Long,
+    var categoryId: Long? = null,
 
-    var expenseId: Long,
+    var expenseId: Long? = null,
 
-    var deleted: Boolean,
+    var deleted: Boolean = false,
 )

@@ -6,7 +6,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
-import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.DialogStoresAdapter
 import com.example.accountbookforme.databinding.DialogStoresBinding
 import com.example.accountbookforme.model.Filter
@@ -35,7 +34,6 @@ class StoreListDialogFragment(private var id: Long?, private var name: String?, 
 
         _binding = DialogStoresBinding.inflate(LayoutInflater.from(context))
 
-        val mDialogView = LayoutInflater.from(context).inflate(R.layout.dialog_stores, null)
         val mBuilder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle("Enter a store").create()
@@ -52,6 +50,7 @@ class StoreListDialogFragment(private var id: Long?, private var name: String?, 
             this.dismiss()
         }
 
+        // 登録済み店舗リスト表示
         binding.dialogFavoriteStoreList.adapter = DialogStoresAdapter(requireContext(), storeList)
 
         // タップした店舗リストのアイテムを返却してダイアログを閉じる
@@ -68,40 +67,6 @@ class StoreListDialogFragment(private var id: Long?, private var name: String?, 
             // ダイアログを閉じる
             mBuilder.dismiss()
         }
-
-
-//        val listView = mDialogView.findViewById<ListView>(R.id.dialog_favorite_store_list)
-//
-//        val storeListCall = storeRepository.getListItems()
-//        storeListCall.enqueue( object : Callback<List<Filter>> {
-//            override fun onResponse(call: Call<List<Filter>>?, response: Response<List<Filter>>?) {
-//
-//                if(response?.body() != null) {
-//                    filterList = response.body()!!
-//
-//                    listView.adapter = DialogStoresAdapter(this@DetailActivity, filterList)
-//
-//                    // タップした店舗リストのアイテムを値に設定してダイアログを閉じる
-//                    listView.setOnItemClickListener { parent, _, position, _ ->
-//
-//                        val item = parent.getItemAtPosition(position) as Filter
-//
-//                        // 画面の店舗名欄の値を設定
-//                        binding.detailStoreId.text = item.id.toString()
-//                        binding.detailStoreName.text = item.name
-//
-//                        // ダイアログの入力欄の値を空にする
-//                        mDialogView.findViewById<EditText>(R.id.dialog_input_store)?.setText("")
-//
-//                        // ダイアログを閉じる
-//                        mBuilder.dismiss()
-//                    }
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<List<Filter>>?, t: Throwable?) {
-//            }
-//        })
 
         return mBuilder
     }
