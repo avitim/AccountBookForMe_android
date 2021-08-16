@@ -24,6 +24,7 @@ import com.example.accountbookforme.viewmodel.CategoryViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentViewModel
 import com.example.accountbookforme.viewmodel.StoreViewModel
+import java.math.BigDecimal
 
 class ExpenseDetailFragment : Fragment(),
     DatePickerDialogFragment.OnSelectedDateListener,
@@ -106,13 +107,18 @@ class ExpenseDetailFragment : Fragment(),
             val paymentLinearLayoutManager = LinearLayoutManager(view.context)
             binding.paymentList.layoutManager = paymentLinearLayoutManager
             binding.paymentList.addItemDecoration(DividerItemDecoration(view.context, paymentLinearLayoutManager.orientation))
-
         }
 
         // 支出詳細の監視開始
         expenseDetail.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
             itemListAdapter.submitList(expenseDetail.itemList)
             paymentListAdapter.submitList(expenseDetail.paymentList)
+
+            // 品物の合計額表示
+            updateItemTotal()
+
+            // 支払いの合計額表示
+            updatePaymentTotal()
         })
 
         // 日付入力欄をタップしたらカレンダーダイアログを表示する
@@ -177,18 +183,47 @@ class ExpenseDetailFragment : Fragment(),
     // 品物を入力したときに呼ばれる from AddItemDialogFragment
     override fun addedItem(item: Item) {
         expenseDetail.addItem(item)
+        // 品物の合計額更新
+        updateItemTotal()
     }
 
     // 品物を更新したときに呼ばれる from AddItemDialogFragment
     override fun updatedItem() {
         binding.itemList.adapter?.notifyDataSetChanged()
+        // 品物の合計額更新
+        updateItemTotal()
     }
 
+    // 支払いを入力したときに呼ばれる from AddPaymentDialogFragment
     override fun addedPayment(payment: Payment) {
         expenseDetail.addPayment(payment)
+        // 支払いの合計額更新
+        updatePaymentTotal()
     }
 
+    // 支払いを更新したときに呼ばれる from AddPaymentDialogFragment
     override fun updatedPayment() {
         binding.paymentList.adapter?.notifyDataSetChanged()
+        // 支払いの合計額更新
+        updatePaymentTotal()
     }
+
+    // 品物の合計額を計算して表示
+    private fun updateItemTotal() {
+
+        val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
+            acc + item.price
+        }
+        binding.numTotalItem.text = total.toString()
+    }
+
+    // 支払いの合計額を計算して表示
+    private fun updatePaymentTotal() {
+
+        val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
+            acc + payment.total
+        }
+        binding.numTotalPayment.text = total.toString()
+    }
+
 }

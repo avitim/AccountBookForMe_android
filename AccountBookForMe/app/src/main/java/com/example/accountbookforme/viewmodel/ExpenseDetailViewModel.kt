@@ -36,6 +36,14 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
+    fun getItemList(): List<Item>? {
+        return expenseDetail.value?.itemList?.toList()
+    }
+
+    fun getPaymentList(): List<Payment>? {
+        return expenseDetail.value?.paymentList?.toList()
+    }
+
     // アイテムIDでItem取得
     fun getItemById(id: Long): Item? {
 
