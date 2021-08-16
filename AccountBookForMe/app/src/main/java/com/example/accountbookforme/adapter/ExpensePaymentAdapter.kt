@@ -10,6 +10,14 @@ import com.example.accountbookforme.model.Payment
 
 class ExpensePaymentAdapter: ListAdapter<Payment, ExpensePaymentAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
 
+    open class ExpensePaymentViewHolder(private val binding: FragmentExpensePaymentBinding): RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(payment: Payment) {
+            binding.name.text = payment.paymentId.toString()
+            binding.total.text = payment.total.toString()
+        }
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
@@ -21,15 +29,6 @@ class ExpensePaymentAdapter: ListAdapter<Payment, ExpensePaymentAdapter.ExpenseP
     override fun onBindViewHolder(holder: ExpensePaymentViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
-    open class ExpensePaymentViewHolder(private val binding: FragmentExpensePaymentBinding): RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(payment: Payment) {
-            binding.name.text = payment.paymentId.toString()
-            binding.total.text = payment.total.toString()
-        }
-    }
-
 }
 
 private object DiffCallbackPayment: DiffUtil.ItemCallback<Payment>() {

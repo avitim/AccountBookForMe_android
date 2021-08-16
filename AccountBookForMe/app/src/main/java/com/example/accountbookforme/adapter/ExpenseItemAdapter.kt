@@ -12,24 +12,7 @@ class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHo
 
     private lateinit var listener: OnExpenseItemClickListener
 
-    override fun onCreateViewHolder(
-        parent: ViewGroup,
-        viewType: Int
-    ): ExpenseItemViewHolder {
-        val binding = FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ExpenseItemViewHolder(binding)
-    }
-
-    override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {
-        holder.bind(getItem(position))
-
-        // セルのクリックイベントをセット
-        holder.itemView.setOnClickListener {
-            listener.onItemClick(getItem(position))
-        }
-    }
-
-    // リスナーのインターフェース
+    // 結果を渡すリスナー
     interface OnExpenseItemClickListener {
         fun onItemClick(item: Item)
     }
@@ -48,6 +31,22 @@ class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHo
         }
     }
 
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): ExpenseItemViewHolder {
+        val binding = FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return ExpenseItemViewHolder(binding)
+    }
+
+    override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {
+        holder.bind(getItem(position))
+
+        // セルのクリックイベントをセット
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(getItem(position))
+        }
+    }
 }
 
 private object DiffCallback: DiffUtil.ItemCallback<Item>() {

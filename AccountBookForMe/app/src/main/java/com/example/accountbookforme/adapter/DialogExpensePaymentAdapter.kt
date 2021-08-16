@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Payment
 
-class DialogPaymentsAdapter(context: Context, var paymentList: List<Payment>) :
+class DialogExpensePaymentAdapter(context: Context, var paymentList: List<Payment>) :
     ArrayAdapter<Payment>(context, 0, paymentList) {
 
     private val layoutInflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
@@ -21,7 +21,7 @@ class DialogPaymentsAdapter(context: Context, var paymentList: List<Payment>) :
         var view = convertView
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.filter_list_item, parent, false)
+            view = layoutInflater.inflate(R.layout.list_filter_item, parent, false)
         }
 
         val idView = view?.findViewById<TextView>(R.id.dialog_filter_id)

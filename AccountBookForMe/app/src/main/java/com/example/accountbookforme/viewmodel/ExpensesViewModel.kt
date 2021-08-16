@@ -24,7 +24,7 @@ class ExpensesViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val request = expenseRepository.getList()
+                val request = expenseRepository.getAll()
                 if (request.isSuccessful) {
                     expenseList.value = request.body()
                 } else {

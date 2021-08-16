@@ -10,8 +10,24 @@ import com.example.accountbookforme.util.DateUtil
 
 class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
 
-    private var expenseList: List<Expense> = listOf()
     private lateinit var listener: OnExpenseClickListener
+    private var expenseList: List<Expense> = listOf()
+
+    // 結果を渡すリスナー
+    interface OnExpenseClickListener {
+        fun onItemClick(expense: Expense)
+    }
+
+    // リスナーをセット
+    fun setOnExpenseClickListener(listener: OnExpenseClickListener) {
+        this.listener = listener
+    }
+
+    open class ExpenseViewHolder(binding: FragmentExpenseBinding) : RecyclerView.ViewHolder(binding.root) {
+        val purchasedAt: TextView = binding.purchasedAt
+        val storeName: TextView = binding.storeName
+        val total: TextView = binding.total
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
 
@@ -34,25 +50,10 @@ class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() 
         }
     }
 
-    // インターフェースを作成
-    interface OnExpenseClickListener {
-        fun onItemClick(expense: Expense)
-    }
-
-    // リスナーをセット
-    fun setOnExpenseClickListener(listener: OnExpenseClickListener) {
-        this.listener = listener
-    }
-
-    open class ExpenseViewHolder(binding: FragmentExpenseBinding) : RecyclerView.ViewHolder(binding.root) {
-        val purchasedAt: TextView = binding.purchasedAt
-        val storeName: TextView = binding.storeName
-        val total: TextView = binding.total
-    }
-
     // リストのサイズ取得
     override fun getItemCount() = expenseList.size
 
+    // 支出リストセットして変更を通知
     fun setExpenseListItems(expenseList: List<Expense>) {
         this.expenseList = expenseList
         notifyDataSetChanged()

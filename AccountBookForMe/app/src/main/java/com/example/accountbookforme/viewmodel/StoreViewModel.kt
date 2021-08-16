@@ -20,7 +20,7 @@ class StoreViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val request = storeRepository.getList()
+                val request = storeRepository.getAll()
                 if (request.isSuccessful) {
                     storeList.value = request.body()
                 } else {

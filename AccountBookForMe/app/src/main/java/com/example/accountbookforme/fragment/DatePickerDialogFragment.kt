@@ -10,12 +10,12 @@ import java.util.Calendar
 
 class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
+    private lateinit var listener: OnSelectedDateListener
+
     // 結果を渡すリスナー
     interface OnSelectedDateListener {
         fun selectedDate(year: Int, month: Int, day: Int)
     }
-
-    private lateinit var listener: OnSelectedDateListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

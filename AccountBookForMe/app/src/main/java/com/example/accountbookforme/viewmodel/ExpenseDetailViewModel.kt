@@ -25,7 +25,6 @@ class ExpenseDetailViewModel : ViewModel() {
             try {
                 val request = expenseRepository.getDetailById(id)
                 if (request.isSuccessful) {
-                    Log.i("ExpenseDetailViewModel", "There is no problem: $request")
                     expenseDetail.value = request.body()
                 } else {
                     Log.e("ExpenseDetailViewModel", "Something is wrong: $request")

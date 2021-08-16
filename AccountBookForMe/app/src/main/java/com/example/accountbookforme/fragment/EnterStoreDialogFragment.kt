@@ -6,21 +6,21 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
-import com.example.accountbookforme.adapter.DialogStoresAdapter
-import com.example.accountbookforme.databinding.DialogStoresBinding
+import com.example.accountbookforme.adapter.DialogExpenseStoreAdapter
+import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
 
-class StoreListDialogFragment(private var id: Long?, private var name: String?, private val storeList: List<Filter>) : DialogFragment() {
+class EnterStoreDialogFragment(private var id: Long?, private var name: String?, private val storeList: List<Filter>) : DialogFragment() {
 
-    private var _binding: DialogStoresBinding? = null
+    private lateinit var listener: OnSelectedStoreListener
+
+    private var _binding: DialogEnterStoreBinding? = null
     private val binding get() = _binding!!
 
     // 結果を渡すリスナー
     interface OnSelectedStoreListener {
         fun selectedStore(id: Long?, name: String?)
     }
-
-    private lateinit var listener: OnSelectedStoreListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -32,7 +32,7 @@ class StoreListDialogFragment(private var id: Long?, private var name: String?, 
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
 
-        _binding = DialogStoresBinding.inflate(LayoutInflater.from(context))
+        _binding = DialogEnterStoreBinding.inflate(LayoutInflater.from(context))
 
         val mBuilder = AlertDialog.Builder(context)
             .setView(binding.root)
@@ -51,7 +51,7 @@ class StoreListDialogFragment(private var id: Long?, private var name: String?, 
         }
 
         // 登録済み店舗リスト表示
-        binding.dialogFavoriteStoreList.adapter = DialogStoresAdapter(requireContext(), storeList)
+        binding.dialogFavoriteStoreList.adapter = DialogExpenseStoreAdapter(requireContext(), storeList)
 
         // タップした店舗リストのアイテムを返却してダイアログを閉じる
         binding.dialogFavoriteStoreList.setOnItemClickListener { parent, _, position, _ ->

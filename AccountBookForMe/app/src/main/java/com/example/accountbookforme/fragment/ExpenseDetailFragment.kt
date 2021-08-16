@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpenseItemAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentAdapter
-import com.example.accountbookforme.databinding.ExpenseDetailFragmentBinding
+import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.viewmodel.CategoryViewModel
@@ -25,10 +25,10 @@ import com.example.accountbookforme.viewmodel.StoreViewModel
 
 class ExpenseDetailFragment : Fragment(),
     DatePickerDialogFragment.OnSelectedDateListener,
-    StoreListDialogFragment.OnSelectedStoreListener,
-    DialogAddItem.OnAddedItemListener{
+    EnterStoreDialogFragment.OnSelectedStoreListener,
+    AddItemDialogFragment.OnAddedItemListener{
 
-    private var _binding: ExpenseDetailFragmentBinding? = null
+    private var _binding: FragmentExpenseDetailBinding? = null
     private val binding get() = _binding!!
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
@@ -44,7 +44,7 @@ class ExpenseDetailFragment : Fragment(),
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = ExpenseDetailFragmentBinding.inflate(inflater, container, false)
+        _binding = FragmentExpenseDetailBinding.inflate(inflater, container, false)
         setHasOptionsMenu(true)
         storeViewModel = ViewModelProvider(this).get(StoreViewModel::class.java)
         storeViewModel.getStoreList()
@@ -75,7 +75,7 @@ class ExpenseDetailFragment : Fragment(),
             itemListAdapter.setOnExpenseItemClickListener(
                 object : ExpenseItemAdapter.OnExpenseItemClickListener {
                     override fun onItemClick(item: Item) {
-                        DialogAddItem(item.id, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
+                        AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
                     }
                 }
             )
@@ -105,7 +105,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
         binding.storeList.setOnClickListener {
-            StoreListDialogFragment(
+            EnterStoreDialogFragment(
                 expenseDetail.expenseDetail.value?.storeId,
                 expenseDetail.expenseDetail.value?.storeName,
                 storeViewModel.storeList.value!!
@@ -114,7 +114,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
         binding.addItemBtn.setOnClickListener {
-            DialogAddItem(null, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
+            AddItemDialogFragment(null, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
         }
 
     }

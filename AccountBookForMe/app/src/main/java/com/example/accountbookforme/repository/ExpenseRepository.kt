@@ -13,7 +13,7 @@ import retrofit2.http.Path
 interface ExpenseRepository {
 
     @GET("/expenses")
-    suspend fun getList(): Response<List<Expense>>
+    suspend fun getAll(): Response<List<Expense>>
 
     @GET("/expenses/{id}")
     suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>

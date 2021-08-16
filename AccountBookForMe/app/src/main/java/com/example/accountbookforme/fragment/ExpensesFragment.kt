@@ -62,11 +62,6 @@ class ExpensesFragment : Fragment() {
         return view
     }
 
-    private fun getMonth() {
-        val nowDate: LocalDateTime = LocalDateTime.now()
-        binding.month.text = nowDate.month.toString()
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -75,5 +70,11 @@ class ExpensesFragment : Fragment() {
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseAdapter.setExpenseListItems(expenseList)
         })
+    }
+
+    // 今月を取得してビューにセット
+    private fun getMonth() {
+        val nowDate: LocalDateTime = LocalDateTime.now()
+        binding.month.text = nowDate.month.toString()
     }
 }

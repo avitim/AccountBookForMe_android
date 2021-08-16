@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Filter
 
-class DialogStoresAdapter(context: Context, private var storeList: List<Filter>) :
+class DialogExpenseStoreAdapter(context: Context, private var storeList: List<Filter>) :
     ArrayAdapter<Filter>(context, 0, storeList) {
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -21,7 +21,7 @@ class DialogStoresAdapter(context: Context, private var storeList: List<Filter>)
         var view = convertView
 
         if (view == null) {
-            view = layoutInflater.inflate(R.layout.filter_list_item, parent, false)
+            view = layoutInflater.inflate(R.layout.list_filter_item, parent, false)
         }
 
         val idView = view?.findViewById<TextView>(R.id.dialog_filter_id)

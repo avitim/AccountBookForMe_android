@@ -9,20 +9,21 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.example.accountbookforme.adapter.ItemCategoryAdapter
+import com.example.accountbookforme.adapter.DialogItemCategoryAdapter
 import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
-class DialogAddItem(private val itemId: Long?, private val categoryList: List<Filter>) : DialogFragment() {
+class AddItemDialogFragment(private val itemId: Long?, private val categoryList: List<Filter>) : DialogFragment() {
 
     private lateinit var listener: OnAddedItemListener
-    private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
 
     private var _binding: DialogAddItemBinding? = null
     private val binding get() = _binding!!
+
+    private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
 
     // 新規作成時に保管する場所
     private var item = Item()
@@ -57,7 +58,7 @@ class DialogAddItem(private val itemId: Long?, private val categoryList: List<Fi
         }
 
         // カテゴリリスト作成
-        binding.itemCategory.adapter = ItemCategoryAdapter(requireContext(), categoryList)
+        binding.itemCategory.adapter = DialogItemCategoryAdapter(requireContext(), categoryList)
         binding.itemCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             // 選択されたとき
