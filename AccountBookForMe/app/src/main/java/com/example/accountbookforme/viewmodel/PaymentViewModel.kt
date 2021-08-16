@@ -25,10 +25,10 @@ class PaymentViewModel : ViewModel() {
                 if (request.isSuccessful) {
                     paymentList.value = request.body()
                 } else {
-                    Log.e("paymentList", "Something is wrong: $request")
+                    Log.e("paymentList", "Not successful: $request")
                 }
             } catch (e: Exception) {
-                e.stackTrace
+                Log.e("paymentList", "Something is wrong: $e")
             }
         }
     }

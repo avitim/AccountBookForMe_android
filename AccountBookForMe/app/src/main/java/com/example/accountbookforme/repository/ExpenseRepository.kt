@@ -19,11 +19,11 @@ interface ExpenseRepository {
     suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>
 
     @PUT("/expenses/create")
-    suspend fun create(@Body expenseDetail: ExpenseDetail): Response<ExpenseDetail>
+    suspend fun create(@Body expenseDetail: ExpenseDetail): Response<Void>
 
     @PUT("/expenses/update")
-    suspend fun update(@Body expenseDetail: ExpenseDetail): Response<ExpenseDetail>
+    suspend fun update(@Body expenseDetail: ExpenseDetail): Response<Void>
 
     @DELETE("/expenses/delete/{id}")
-    suspend fun delete(@Path("id") expenseId: Long): Response<Long>
+    suspend fun delete(@Path("id") expenseId: Long): Response<Void>
 }

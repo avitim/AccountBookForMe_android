@@ -1,5 +1,6 @@
 package com.example.accountbookforme.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.Menu
@@ -13,6 +14,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.accountbookforme.R
+import com.example.accountbookforme.activity.MainActivity
 import com.example.accountbookforme.adapter.ExpenseItemListAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentListAdapter
 import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
@@ -177,8 +179,22 @@ class ExpenseDetailFragment : Fragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
-                // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
-                Toast.makeText(context, "Save!", Toast.LENGTH_LONG).show()
+                // TODO: 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
+                if (id == null) {
+                    // 支出詳細をDB上で新規作成するAPIを投げる
+                } else {
+                    // 支出詳細をDB上で更新するAPIを投げる
+                    expenseDetail.update().observe(viewLifecycleOwner, { isSucceccful ->
+                        if (isSucceccful) {
+                            // 成功したら支出一覧画面に遷移する
+                            startActivity(Intent(context, MainActivity::class.java))
+                        } else {
+                            // 失敗したらとりあえずエラートーストを出しておく
+                            // TODO: 正式な対処が今後実装する
+                            Toast.makeText(activity, "Something is wrong!", Toast.LENGTH_LONG).show()
+                        }
+                    })
+                }
             }
             android.R.id.home -> {
                 requireActivity().onBackPressedDispatcher.onBackPressed()

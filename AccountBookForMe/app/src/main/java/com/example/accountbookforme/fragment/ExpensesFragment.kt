@@ -6,7 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +21,8 @@ class ExpensesFragment : Fragment() {
 
     private var _binding: FragmentExpensesBinding? = null
     private val binding get() = _binding!!
+
+    private val expensesViewModel: ExpensesViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var expenseListAdapter: ExpenseListAdapter
@@ -71,7 +73,6 @@ class ExpensesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 支出リストの監視開始
-        val expensesViewModel = ViewModelProvider(this).get(ExpensesViewModel::class.java)
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseListAdapter.setExpenseListItems(expenseList)
         })

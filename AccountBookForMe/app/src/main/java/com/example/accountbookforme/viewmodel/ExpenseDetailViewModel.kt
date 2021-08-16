@@ -1,6 +1,7 @@
 package com.example.accountbookforme.viewmodel
 
 import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -29,12 +30,37 @@ class ExpenseDetailViewModel : ViewModel() {
                 if (request.isSuccessful) {
                     expenseDetail.value = request.body()
                 } else {
-                    Log.e("ExpenseDetailViewModel", "Something is wrong: $request")
+                    Log.e("ExpenseDetailViewModel", "Not successful: $request")
                 }
             } catch (e: Exception) {
                 Log.e("ExpenseDetailViewModel", "Something is wrong: $e")
             }
         }
+    }
+
+    // 支出詳細の更新
+    fun update(): LiveData<Boolean> {
+
+        val isSuccessful = MutableLiveData<Boolean>()
+
+        viewModelScope.launch {
+            try {
+                val response = expenseDetail.value?.let { expenseRepository.update(it) }
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        isSuccessful.postValue(true)
+                    } else {
+                        isSuccessful.postValue(false)
+                        Log.e("ExpenseDetailViewModel", "Not successful: $response")
+                    }
+                }
+            } catch (e: Exception) {
+                isSuccessful.postValue(false)
+                Log.e("ExpenseDetailViewModel", "Something is wrong: $e")
+            }
+        }
+
+        return isSuccessful
     }
 
     fun getItemList(): List<Item>? {

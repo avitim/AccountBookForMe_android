@@ -25,10 +25,10 @@ class StoreViewModel : ViewModel() {
                 if (request.isSuccessful) {
                     storeList.value = request.body()
                 } else {
-                    Log.e("storeList", "Something is wrong: $request")
+                    Log.e("storeList", "Not successful: $request")
                 }
             } catch (e: Exception) {
-                e.stackTrace
+                Log.e("storeList", "Something is wrong: $e")
             }
         }
     }

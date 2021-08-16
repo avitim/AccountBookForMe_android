@@ -21,7 +21,7 @@ class ExpensesViewModel : ViewModel() {
         loadExpenseList()
     }
 
-    private fun loadExpenseList() {
+    fun loadExpenseList() {
 
         viewModelScope.launch {
             try {
@@ -29,10 +29,10 @@ class ExpensesViewModel : ViewModel() {
                 if (request.isSuccessful) {
                     expenseList.value = request.body()
                 } else {
-                    Log.e("ExpenseViewModel", "Something is wrong: $request")
+                    Log.e("ExpenseViewModel", "Not successful: $request")
                 }
             } catch (e: Exception) {
-                e.stackTrace
+                Log.e("ExpenseViewModel", "Something is wrong: $e")
             }
         }
     }

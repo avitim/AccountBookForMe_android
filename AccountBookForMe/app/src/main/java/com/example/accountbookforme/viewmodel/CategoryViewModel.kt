@@ -25,10 +25,10 @@ class CategoryViewModel : ViewModel() {
                 if (request.isSuccessful) {
                     categoryList.value = request.body()
                 } else {
-                    Log.e("categoryList", "Something is wrong: $request")
+                    Log.e("categoryList", "Not successful: $request")
                 }
             } catch (e: Exception) {
-                e.stackTrace
+                Log.e("categoryList", "Something is wrong: $e")
             }
         }
     }
