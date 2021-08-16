@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.activity.DetailActivity
-import com.example.accountbookforme.adapter.ExpenseAdapter
+import com.example.accountbookforme.adapter.ExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentExpensesBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
@@ -23,7 +23,7 @@ class ExpensesFragment : Fragment() {
     private val binding get() = _binding!!
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var expenseAdapter: ExpenseAdapter
+    private lateinit var expenseListAdapter: ExpenseListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -37,11 +37,11 @@ class ExpensesFragment : Fragment() {
         getMonth()
 
         recyclerView = binding.expenseList
-        expenseAdapter = ExpenseAdapter()
+        expenseListAdapter = ExpenseListAdapter()
 
         // セルのクリック処理
-        expenseAdapter.setOnExpenseClickListener(
-            object : ExpenseAdapter.OnExpenseClickListener {
+        expenseListAdapter.setOnExpenseClickListener(
+            object : ExpenseListAdapter.OnExpenseClickListener {
                 override fun onItemClick(expense: Expense) {
                     val intent = Intent(context, DetailActivity::class.java)
                     // 支出IDを渡す
@@ -54,7 +54,7 @@ class ExpensesFragment : Fragment() {
 
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = expenseAdapter
+        recyclerView.adapter = expenseListAdapter
 
         // セルの区切り線表示
         recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
@@ -68,7 +68,7 @@ class ExpensesFragment : Fragment() {
         // 支出リストの監視開始
         val expensesViewModel = ViewModelProvider(this).get(ExpensesViewModel::class.java)
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
-            expenseAdapter.setExpenseListItems(expenseList)
+            expenseListAdapter.setExpenseListItems(expenseList)
         })
     }
 

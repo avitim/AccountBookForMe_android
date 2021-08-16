@@ -7,13 +7,26 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.FragmentExpensePaymentBinding
 import com.example.accountbookforme.model.Payment
+import com.example.accountbookforme.viewmodel.PaymentViewModel
 
-class ExpensePaymentAdapter: ListAdapter<Payment, ExpensePaymentAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
+class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel): ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
 
-    open class ExpensePaymentViewHolder(private val binding: FragmentExpensePaymentBinding): RecyclerView.ViewHolder(binding.root) {
+    private lateinit var listener: OnExpensePaymentClickListener
+
+    // 結果を渡すリスナー
+    interface OnExpensePaymentClickListener {
+        fun onItemClick(payment: Payment)
+    }
+
+    // リスナーをセット
+    fun setOnExpensePaymentClickListener(listener: OnExpensePaymentClickListener) {
+        this.listener = listener
+    }
+
+    open class ExpensePaymentViewHolder(private val binding: FragmentExpensePaymentBinding, private val paymentViewModel: PaymentViewModel): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(payment: Payment) {
-            binding.name.text = payment.paymentId.toString()
+            binding.name.text = paymentViewModel.getNameById(payment.paymentId)
             binding.total.text = payment.total.toString()
         }
     }
@@ -23,11 +36,16 @@ class ExpensePaymentAdapter: ListAdapter<Payment, ExpensePaymentAdapter.ExpenseP
         viewType: Int
     ): ExpensePaymentViewHolder {
         val binding = FragmentExpensePaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ExpensePaymentViewHolder(binding)
+        return ExpensePaymentViewHolder(binding, paymentViewModel)
     }
 
     override fun onBindViewHolder(holder: ExpensePaymentViewHolder, position: Int) {
         holder.bind(getItem(position))
+
+        // セルのクリックイベントをセット
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(getItem(position))
+        }
     }
 }
 

@@ -9,7 +9,7 @@ import android.view.View
 import android.widget.AdapterView
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import com.example.accountbookforme.adapter.DialogItemCategoryAdapter
+import com.example.accountbookforme.adapter.FilterSpinnerAdapter
 import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Item
@@ -47,18 +47,25 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
 
         _binding = DialogAddItemBinding.inflate(LayoutInflater.from(context))
 
+        // カテゴリリストのアダプタ設定
+        binding.itemCategory.adapter = FilterSpinnerAdapter(requireContext(), categoryList)
+
         // 前画面から渡された品物データがあれば代入
         if (itemId != null) {
 
             val item = expenseDetail.getItemById(itemId)
             if (item != null) {
+                // TODO: カテゴリスピナーも値をセットする
+                val position = categoryList.indexOfFirst { category ->
+                    category.id == item.categoryId
+                }
+                binding.itemCategory.setSelection(position, false)
                 binding.itemName.setText(item.name)
                 binding.itemPrice.setText(item.price.toString())
             }
         }
 
-        // カテゴリリスト作成
-        binding.itemCategory.adapter = DialogItemCategoryAdapter(requireContext(), categoryList)
+        // カテゴリリストのリスナー設定
         binding.itemCategory.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
 
             // 選択されたとき
@@ -68,11 +75,7 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
                 position: Int,
                 id: Long
             ) {
-                if (itemId == null) {
-                    item.categoryId = categoryList[position].id
-                } else {
-                    expenseDetail.getItemById(itemId)?.categoryId = categoryList[position].id
-                }
+                item.categoryId = categoryList[position].id
             }
 
             // 選択されなかったとき
@@ -91,6 +94,8 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
 
                     item.name = binding.itemName.text.toString()
                     item.price = BigDecimal(binding.itemPrice.text.toString())
+                    // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
+
                     // 入力した品物データを渡すリスナー呼び出し
                     listener.addedItem(item)
 
@@ -98,7 +103,8 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
 
                     expenseDetail.setItemName(itemId, binding.itemName.text.toString())
                     expenseDetail.setItemPrice(itemId, BigDecimal(binding.itemPrice.text.toString()))
-                    // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
+                    expenseDetail.setItemCategory(itemId, item.categoryId)
+
                     // 更新リスナー呼び出し
                     listener.updatedItem()
                 }

@@ -9,7 +9,7 @@ import android.widget.TextView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.model.Filter
 
-class DialogItemCategoryAdapter(context: Context, private val filterList: List<Filter>) :
+class FilterSpinnerAdapter(context: Context, private val filterList: List<Filter>) :
     ArrayAdapter<Filter>(context, 0, filterList) {
 
     private val inflater = LayoutInflater.from(context)

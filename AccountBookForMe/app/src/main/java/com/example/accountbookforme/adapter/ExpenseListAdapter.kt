@@ -8,7 +8,7 @@ import com.example.accountbookforme.databinding.FragmentExpenseBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
 
-class ExpenseAdapter : RecyclerView.Adapter<ExpenseAdapter.ExpenseViewHolder>() {
+class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHolder>() {
 
     private lateinit var listener: OnExpenseClickListener
     private var expenseList: List<Expense> = listOf()

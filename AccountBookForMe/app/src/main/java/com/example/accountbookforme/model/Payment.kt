@@ -4,14 +4,15 @@ import java.math.BigDecimal
 
 data class Payment(
 
-    var id: Long,
+    var id: Long? = null,
 
     var total: BigDecimal = BigDecimal.ZERO,
 
-    var expenseId: Long,
+    // TODO: デフォルトで仮に1とする
+    var paymentId: Long = 1,
 
-    var paymentId: Long,
+    var expenseId: Long? = null,
 
-    var deleted: Boolean,
+    var deleted: Boolean = false,
 
     )

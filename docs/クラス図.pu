@@ -139,7 +139,7 @@ package ViewModel {
 
 package ListAdapter {
 
-    class ExpenseAdapter {
+    class ExpenseListAdapter {
         - expenseList: List<Expense>
         - listener: OnExpenseClickListener
         class ExpenseViewHolder()
@@ -152,7 +152,7 @@ package ListAdapter {
         setExpenseListItems()
     }
 
-    class ExpenseItemAdapter {
+    class ExpenseItemListAdapter {
         - listener: OnExpenseItemClickListener
         class ExpenseItemViewHolder()
         - object DiffCallback
@@ -163,7 +163,7 @@ package ListAdapter {
         setOnExpenseItemClickListener()
     }
 
-    class ExpensePaymentAdapter {
+    class ExpensePaymentListAdapter {
         - listener: OnExpensePaymentClickListener
         class ExpensePaymentViewHolder()
         - object DiffCallback
@@ -173,23 +173,16 @@ package ListAdapter {
         setOnExpensePaymentClickListener()
     }
 
-    class DialogItemCategoryAdapter {
+    class FilterSpinnerAdapter {
         --
         override getView()
         override getDropDownView()
         override getItem()
     }
 
-    class DialogExpenseStoreAdapter {
+    class FilterListAdapter {
         --
         override getView()        
-    }
-
-    class DialogExpensePaymentAdapter {
-        --
-        override getView()
-        override getDropDownView()
-        override getItem()
     }
 
 }
@@ -227,7 +220,7 @@ package View {
         }
 
         class ExpenseDetailFragment {
-            - binding: ExpenseDetailFragmentBinding
+            - binding: FragmentExpenseDetailBinding
             - id: Long?
             --
             override onCreateView()
@@ -249,7 +242,16 @@ package View {
             override onDateSet()
         }
 
-        class DialogAddItem {
+        class EnterStoreDialogFragment {
+            - listener: OnSelectedStoreListener
+            - binding: DialogEnterStoreBinding
+            --
+            selectedStore()
+            override onAttach()
+            override onCreateDialog()
+        }
+
+        class AddItemDialogFragment {
             - listener: OnAddedItemListener
             - binding: DialogAddItemBinding
             - item: Item
@@ -260,11 +262,13 @@ package View {
             override onCreateDialog()
         }
 
-        class StoreListDialogFragment {
-            - listener: OnSelectedStoreListener
-            - binding: DialogStoresBinding
+        class AddPaymentDialogFragment {
+            - listener: OnAddedPaymentListener
+            - binding: DialogAddPaymentBinding
+            - payment: Filter
             --
-            selectedStore()
+            addedPayment()
+            updatedPayment()
             override onAttach()
             override onCreateDialog()
         }
@@ -315,21 +319,21 @@ RestUtil <-- ExpenseRepository
 Expense <-- ExpenseRepository
 ExpenseRepository <-- ExpensesViewModel
 ExpensesViewModel <-- ExpensesFragment
-ExpensesFragment <-- ExpenseAdapter
+ExpensesFragment <-- ExpenseListAdapter
 ExpensesFragment <-- MainActivity
 
 ' ExpenseDetail
 ExpenseDetail <-- ExpenseRepository
 ExpenseRepository <-- ExpenseDetailViewModel
 ExpenseDetailFragment <-- ExpenseDetailViewModel
-ExpenseDetailFragment <-- ExpenseItemAdapter
-ExpenseDetailFragment <-- ExpensePaymentAdapter
-StoreListDialogFragment <-- DialogExpenseStoreAdapter
-DialogAddItem <-- DialogItemCategoryAdapter
-DialogAddPayment <-- DialogExpensePaymentAdapter
-ExpenseDetailFragment <-- StoreListDialogFragment
-ExpenseDetailFragment <-- DialogAddItem
-ExpenseDetailFragment <-- DialogAddPayment
+ExpenseDetailFragment <-- ExpenseItemListAdapter
+ExpenseDetailFragment <-- ExpensePaymentListAdapter
+EnterStoreDialogFragment <-- FilterListAdapter
+AddItemDialogFragment <-- FilterSpinnerAdapter
+AddPaymentDialogFragment <-- FilterSpinnerAdapter
+ExpenseDetailFragment <-- EnterStoreDialogFragment
+ExpenseDetailFragment <-- AddItemDialogFragment
+ExpenseDetailFragment <-- AddPaymentDialogFragment
 ExpenseDetailFragment <-- DatePickerDialogFragment
 DetailActivity <-- ExpenseDetailFragment
 

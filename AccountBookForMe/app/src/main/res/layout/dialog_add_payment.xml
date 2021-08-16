@@ -7,81 +7,49 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <EditText
-            android:id="@+id/itemName"
+        <Spinner
+            android:id="@+id/payment"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
             android:ems="10"
-            android:hint="Name"
-            android:inputType="text"
+            android:text="Name"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/itemPriceLabel"
+            android:id="@+id/paymentTotalLabel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
-            android:text="Price"
+            android:text="Total"
             android:textColor="@color/black"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrierName" />
 
         <EditText
-            android:id="@+id/itemPrice"
+            android:id="@+id/paymentTotal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
             android:layout_marginEnd="15dp"
             android:ems="10"
-            android:hint="Price"
+            android:hint="Total"
             android:inputType="numberSigned"
-            app:layout_constraintBottom_toBottomOf="@+id/itemPriceLabel"
+            app:layout_constraintBottom_toBottomOf="@+id/paymentTotalLabel"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/barrierLabel"
-            app:layout_constraintTop_toTopOf="@+id/itemPriceLabel" />
-
-        <TextView
-            android:id="@+id/itemCategoryLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:text="Category"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/barrierPrice" />
-
-        <Spinner
-            android:id="@+id/itemCategory"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="15dp"
-            android:ems="10"
-            android:text="Name"
-            app:layout_constraintBottom_toBottomOf="@+id/itemCategoryLabel"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/barrierLabel"
-            app:layout_constraintTop_toTopOf="@+id/itemCategoryLabel" />
+            app:layout_constraintStart_toEndOf="@+id/paymentTotalLabel"
+            app:layout_constraintTop_toTopOf="@+id/paymentTotalLabel" />
 
         <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierLabel"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="end"
-            app:barrierMargin="10dp"
-            app:constraint_referenced_ids="itemPriceLabel,itemCategoryLabel"
-            tools:layout_editor_absoluteX="72dp" />
-
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrierPrice"
+            android:id="@+id/barrierTotal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
             app:barrierMargin="15dp"
-            app:constraint_referenced_ids="itemPrice,itemPriceLabel"
+            app:constraint_referenced_ids="paymentTotal,paymentTotalLabel"
             tools:layout_editor_absoluteY="60dp" />
 
         <androidx.constraintlayout.widget.Barrier
@@ -90,7 +58,7 @@
             android:layout_height="wrap_content"
             app:barrierDirection="bottom"
             app:barrierMargin="15dp"
-            app:constraint_referenced_ids="itemName"
+            app:constraint_referenced_ids="payment"
             tools:layout_editor_absoluteX="221dp"
             tools:layout_editor_absoluteY="441dp" />
 

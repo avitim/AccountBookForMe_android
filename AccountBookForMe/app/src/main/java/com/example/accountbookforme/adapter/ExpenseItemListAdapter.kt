@@ -7,8 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.FragmentExpenseItemBinding
 import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.viewmodel.CategoryViewModel
 
-class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHolder>(DiffCallback) {
+class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel): ListAdapter<Item, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
 
     private lateinit var listener: OnExpenseItemClickListener
 
@@ -22,11 +23,11 @@ class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHo
         this.listener = listener
     }
 
-    open class ExpenseItemViewHolder(private val binding: FragmentExpenseItemBinding): RecyclerView.ViewHolder(binding.root) {
+    open class ExpenseItemViewHolder(private val binding: FragmentExpenseItemBinding, private val categoryViewModel: CategoryViewModel): RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Item) {
             binding.name.text = item.name
-            binding.category.text = item.categoryId.toString()
+            binding.category.text = categoryViewModel.getNameById(item.categoryId)
             binding.price.text = item.price.toString()
         }
     }
@@ -36,7 +37,7 @@ class ExpenseItemAdapter: ListAdapter<Item, ExpenseItemAdapter.ExpenseItemViewHo
         viewType: Int
     ): ExpenseItemViewHolder {
         val binding = FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ExpenseItemViewHolder(binding)
+        return ExpenseItemViewHolder(binding, categoryViewModel)
     }
 
     override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {

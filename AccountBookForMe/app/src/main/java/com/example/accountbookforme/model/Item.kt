@@ -10,7 +10,8 @@ data class Item(
 
     var price: BigDecimal = BigDecimal.ZERO,
 
-    var categoryId: Long? = null,
+    // TODO: デフォルトで仮に1とする
+    var categoryId: Long = 1,
 
     var expenseId: Long? = null,
 

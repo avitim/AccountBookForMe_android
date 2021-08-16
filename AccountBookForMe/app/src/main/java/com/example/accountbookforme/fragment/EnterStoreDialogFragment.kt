@@ -6,7 +6,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
-import com.example.accountbookforme.adapter.DialogExpenseStoreAdapter
+import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
 
@@ -51,7 +51,7 @@ class EnterStoreDialogFragment(private var id: Long?, private var name: String?,
         }
 
         // 登録済み店舗リスト表示
-        binding.dialogFavoriteStoreList.adapter = DialogExpenseStoreAdapter(requireContext(), storeList)
+        binding.dialogFavoriteStoreList.adapter = FilterListAdapter(requireContext(), storeList)
 
         // タップした店舗リストのアイテムを返却してダイアログを閉じる
         binding.dialogFavoriteStoreList.setOnItemClickListener { parent, _, position, _ ->

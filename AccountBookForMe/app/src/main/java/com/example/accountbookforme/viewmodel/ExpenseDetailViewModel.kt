@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
@@ -43,7 +44,6 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-
     // アイテムをIDで指定して名前をセットする
     fun setItemName(itemId: Long, itemName: String) {
         val item = getItemById(itemId)
@@ -60,9 +60,46 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
+    // アイテムをIDで指定してカテゴリIDをセットする
+    fun setItemCategory(itemId: Long, categoryId: Long) {
+        val item = getItemById(itemId)
+        if (item != null) {
+            item.categoryId = categoryId
+        }
+    }
+
     // 品物追加
     fun addItem(item: Item) {
         expenseDetail.value?.itemList?.add(item)
+    }
+
+    // 支出-決済方法IDでItem取得
+    fun getPaymentById(expensePaymentId: Long): Payment? {
+
+        return expenseDetail.value?.paymentList?.find { payment ->
+            payment.id == expensePaymentId
+        }
+    }
+
+    // 支払いをIDで指定して決済方法IDをセットする
+    fun setPaymentMethod(expensePaymentId: Long, paymentMethodId: Long) {
+        val payment = getPaymentById(expensePaymentId)
+        if (payment != null) {
+            payment.paymentId = paymentMethodId
+        }
+    }
+
+    // 支払いをIDで指定して金額をセットする
+    fun setPaymentTotal(expensePaymentId: Long, paymentTotal: BigDecimal) {
+        val payment = getPaymentById(expensePaymentId)
+        if (payment != null) {
+            payment.total = paymentTotal
+        }
+    }
+
+    // 支払い追加
+    fun addPayment(payment: Payment) {
+        expenseDetail.value?.paymentList?.add(payment)
     }
 
 }
