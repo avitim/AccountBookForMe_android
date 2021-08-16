@@ -9,7 +9,8 @@ import com.example.accountbookforme.databinding.FragmentExpensePaymentBinding
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.viewmodel.PaymentViewModel
 
-class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel): ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
+class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) :
+    ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
 
     private lateinit var listener: OnExpensePaymentClickListener
 
@@ -23,7 +24,10 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel):
         this.listener = listener
     }
 
-    open class ExpensePaymentViewHolder(private val binding: FragmentExpensePaymentBinding, private val paymentViewModel: PaymentViewModel): RecyclerView.ViewHolder(binding.root) {
+    open class ExpensePaymentViewHolder(
+        private val binding: FragmentExpensePaymentBinding,
+        private val paymentViewModel: PaymentViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(payment: Payment) {
             binding.name.text = paymentViewModel.getNameById(payment.paymentId)
@@ -35,7 +39,11 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel):
         parent: ViewGroup,
         viewType: Int
     ): ExpensePaymentViewHolder {
-        val binding = FragmentExpensePaymentBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding = FragmentExpensePaymentBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
         return ExpensePaymentViewHolder(binding, paymentViewModel)
     }
 
@@ -49,7 +57,7 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel):
     }
 }
 
-private object DiffCallbackPayment: DiffUtil.ItemCallback<Payment>() {
+private object DiffCallbackPayment : DiffUtil.ItemCallback<Payment>() {
 
     override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
         return oldItem.id == newItem.id

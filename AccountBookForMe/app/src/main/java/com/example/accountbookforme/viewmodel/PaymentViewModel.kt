@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 
 class PaymentViewModel : ViewModel() {
 
-    private val paymentRepository: PaymentRepository = RestUtil.retrofit.create(PaymentRepository::class.java)
+    private val paymentRepository: PaymentRepository =
+        RestUtil.retrofit.create(PaymentRepository::class.java)
 
     // 店舗一覧
     var paymentList: MutableLiveData<List<Filter>> = MutableLiveData()

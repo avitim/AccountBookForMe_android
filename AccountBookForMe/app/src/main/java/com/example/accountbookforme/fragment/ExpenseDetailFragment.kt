@@ -10,7 +10,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.accountbookforme.R
@@ -85,28 +84,44 @@ class ExpenseDetailFragment : Fragment(),
             itemListAdapter.setOnExpenseItemClickListener(
                 object : ExpenseItemListAdapter.OnExpenseItemClickListener {
                     override fun onItemClick(item: Item) {
-                        AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
+                        AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(
+                            childFragmentManager,
+                            null
+                        )
                     }
                 }
             )
             binding.itemList.adapter = itemListAdapter
             val itemLinearLayoutManager = LinearLayoutManager(view.context)
             binding.itemList.layoutManager = itemLinearLayoutManager
-            binding.itemList.addItemDecoration(DividerItemDecoration(view.context, itemLinearLayoutManager.orientation))
+            binding.itemList.addItemDecoration(
+                DividerItemDecoration(
+                    view.context,
+                    itemLinearLayoutManager.orientation
+                )
+            )
 
             // 支払いリストをセットする
             // クリックイベントを設定
             paymentListAdapter.setOnExpensePaymentClickListener(
                 object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
                     override fun onItemClick(payment: Payment) {
-                        AddPaymentDialogFragment(payment.id, paymentViewModel.paymentList.value!!).show(childFragmentManager, null)
+                        AddPaymentDialogFragment(
+                            payment.id,
+                            paymentViewModel.paymentList.value!!
+                        ).show(childFragmentManager, null)
                     }
                 }
             )
             binding.paymentList.adapter = paymentListAdapter
             val paymentLinearLayoutManager = LinearLayoutManager(view.context)
             binding.paymentList.layoutManager = paymentLinearLayoutManager
-            binding.paymentList.addItemDecoration(DividerItemDecoration(view.context, paymentLinearLayoutManager.orientation))
+            binding.paymentList.addItemDecoration(
+                DividerItemDecoration(
+                    view.context,
+                    paymentLinearLayoutManager.orientation
+                )
+            )
         }
 
         // 支出詳細の監視開始
@@ -137,12 +152,18 @@ class ExpenseDetailFragment : Fragment(),
 
         // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
         binding.addItemBtn.setOnClickListener {
-            AddItemDialogFragment(null, categoryViewModel.categoryList.value!!).show(childFragmentManager, null)
+            AddItemDialogFragment(null, categoryViewModel.categoryList.value!!).show(
+                childFragmentManager,
+                null
+            )
         }
 
         // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
         binding.addPaymentBtn.setOnClickListener {
-            AddPaymentDialogFragment(null, paymentViewModel.paymentList.value!!).show(childFragmentManager, null)
+            AddPaymentDialogFragment(null, paymentViewModel.paymentList.value!!).show(
+                childFragmentManager,
+                null
+            )
         }
 
     }

@@ -21,7 +21,8 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
         super.onAttach(context)
         when {
             context is OnSelectedDateListener -> listener = context
-            parentFragment is OnSelectedDateListener -> listener = parentFragment as OnSelectedDateListener
+            parentFragment is OnSelectedDateListener -> listener =
+                parentFragment as OnSelectedDateListener
         }
     }
 
@@ -41,7 +42,8 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
                     calendar.get(Calendar.MONTH),
                     calendar.get(Calendar.DAY_OF_MONTH)
                 )
-            } else -> super.onCreateDialog(savedInstanceState)
+            }
+            else -> super.onCreateDialog(savedInstanceState)
         }
     }
 

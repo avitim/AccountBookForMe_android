@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 
 class ExpensesViewModel : ViewModel() {
 
-    private val expenseRepository: ExpenseRepository = RestUtil.retrofit.create(ExpenseRepository::class.java)
+    private val expenseRepository: ExpenseRepository =
+        RestUtil.retrofit.create(ExpenseRepository::class.java)
 
     // 支出リスト
     var expenseList: MutableLiveData<List<Expense>> = MutableLiveData()

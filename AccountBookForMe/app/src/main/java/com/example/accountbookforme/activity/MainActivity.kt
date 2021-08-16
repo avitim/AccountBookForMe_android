@@ -63,7 +63,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment)
 
         var intent: Intent? = null
-        when(navController.currentDestination!!.id) {
+        when (navController.currentDestination!!.id) {
             R.id.navigation_expenses -> {
                 // 現在のページがExpenseのとき
                 intent = Intent(applicationContext, DetailActivity::class.java)

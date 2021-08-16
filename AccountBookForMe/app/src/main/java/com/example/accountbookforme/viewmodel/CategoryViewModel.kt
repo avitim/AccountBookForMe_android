@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 
 class CategoryViewModel : ViewModel() {
 
-    private val categoryRepository: CategoryRepository = RestUtil.retrofit.create(CategoryRepository::class.java)
+    private val categoryRepository: CategoryRepository =
+        RestUtil.retrofit.create(CategoryRepository::class.java)
 
     // 店舗一覧
     var categoryList: MutableLiveData<List<Filter>> = MutableLiveData()

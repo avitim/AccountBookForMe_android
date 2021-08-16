@@ -57,7 +57,12 @@ class ExpensesFragment : Fragment() {
         recyclerView.adapter = expenseListAdapter
 
         // セルの区切り線表示
-        recyclerView.addItemDecoration(DividerItemDecoration(view.context, linearLayoutManager.orientation))
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                linearLayoutManager.orientation
+            )
+        )
 
         return view
     }

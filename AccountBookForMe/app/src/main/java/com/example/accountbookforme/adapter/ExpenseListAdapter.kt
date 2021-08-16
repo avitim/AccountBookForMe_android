@@ -23,7 +23,8 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
         this.listener = listener
     }
 
-    open class ExpenseViewHolder(binding: FragmentExpenseBinding) : RecyclerView.ViewHolder(binding.root) {
+    open class ExpenseViewHolder(binding: FragmentExpenseBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val purchasedAt: TextView = binding.purchasedAt
         val storeName: TextView = binding.storeName
         val total: TextView = binding.total
@@ -40,7 +41,8 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
 
         val expenseItem = expenseList[position]
 
-        holder.purchasedAt.text = DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
+        holder.purchasedAt.text =
+            DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
         holder.total.text = "¥" + expenseItem.total
         holder.storeName.text = expenseItem.storeName
 

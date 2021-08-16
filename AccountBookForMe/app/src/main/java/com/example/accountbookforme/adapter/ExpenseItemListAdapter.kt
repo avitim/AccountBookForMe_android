@@ -9,7 +9,8 @@ import com.example.accountbookforme.databinding.FragmentExpenseItemBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.CategoryViewModel
 
-class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel): ListAdapter<Item, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
+class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
+    ListAdapter<Item, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
 
     private lateinit var listener: OnExpenseItemClickListener
 
@@ -23,7 +24,10 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel): 
         this.listener = listener
     }
 
-    open class ExpenseItemViewHolder(private val binding: FragmentExpenseItemBinding, private val categoryViewModel: CategoryViewModel): RecyclerView.ViewHolder(binding.root) {
+    open class ExpenseItemViewHolder(
+        private val binding: FragmentExpenseItemBinding,
+        private val categoryViewModel: CategoryViewModel
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Item) {
             binding.name.text = item.name
@@ -36,7 +40,8 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel): 
         parent: ViewGroup,
         viewType: Int
     ): ExpenseItemViewHolder {
-        val binding = FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        val binding =
+            FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ExpenseItemViewHolder(binding, categoryViewModel)
     }
 
@@ -50,7 +55,7 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel): 
     }
 }
 
-private object DiffCallback: DiffUtil.ItemCallback<Item>() {
+private object DiffCallback : DiffUtil.ItemCallback<Item>() {
 
     override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
         return oldItem.id == newItem.id

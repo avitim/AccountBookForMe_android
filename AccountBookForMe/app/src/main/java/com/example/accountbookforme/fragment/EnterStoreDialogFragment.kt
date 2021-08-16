@@ -10,7 +10,11 @@ import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
 
-class EnterStoreDialogFragment(private var id: Long?, private var name: String?, private val storeList: List<Filter>) : DialogFragment() {
+class EnterStoreDialogFragment(
+    private var id: Long?,
+    private var name: String?,
+    private val storeList: List<Filter>
+) : DialogFragment() {
 
     private lateinit var listener: OnSelectedStoreListener
 
@@ -26,7 +30,8 @@ class EnterStoreDialogFragment(private var id: Long?, private var name: String?,
         super.onAttach(context)
         when {
             context is OnSelectedStoreListener -> listener = context
-            parentFragment is OnSelectedStoreListener -> listener = parentFragment as OnSelectedStoreListener
+            parentFragment is OnSelectedStoreListener -> listener =
+                parentFragment as OnSelectedStoreListener
         }
     }
 

@@ -11,7 +11,8 @@ import kotlinx.coroutines.launch
 
 class StoreViewModel : ViewModel() {
 
-    private val storeRepository: StoreRepository = RestUtil.retrofit.create(StoreRepository::class.java)
+    private val storeRepository: StoreRepository =
+        RestUtil.retrofit.create(StoreRepository::class.java)
 
     // 店舗一覧
     var storeList: MutableLiveData<List<Filter>> = MutableLiveData()

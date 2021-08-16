@@ -16,7 +16,10 @@ import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
-class AddPaymentDialogFragment(private val expensePaymentId: Long?, private val paymentMethodList: List<Filter>) : DialogFragment() {
+class AddPaymentDialogFragment(
+    private val expensePaymentId: Long?,
+    private val paymentMethodList: List<Filter>
+) : DialogFragment() {
 
     private lateinit var listener: OnAddedPaymentListener
 
@@ -39,7 +42,8 @@ class AddPaymentDialogFragment(private val expensePaymentId: Long?, private val 
         super.onAttach(context)
         when {
             context is OnAddedPaymentListener -> listener = context
-            parentFragment is OnAddedPaymentListener -> listener = parentFragment as OnAddedPaymentListener
+            parentFragment is OnAddedPaymentListener -> listener =
+                parentFragment as OnAddedPaymentListener
         }
     }
 
@@ -99,7 +103,10 @@ class AddPaymentDialogFragment(private val expensePaymentId: Long?, private val 
                 } else {
 
                     expenseDetail.setPaymentMethod(expensePaymentId, payment.paymentId)
-                    expenseDetail.setPaymentTotal(expensePaymentId, BigDecimal(binding.paymentTotal.text.toString()))
+                    expenseDetail.setPaymentTotal(
+                        expensePaymentId,
+                        BigDecimal(binding.paymentTotal.text.toString())
+                    )
 
                     // 更新リスナー呼び出し
                     listener.updatedPayment()

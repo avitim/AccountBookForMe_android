@@ -16,7 +16,8 @@ import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
-class AddItemDialogFragment(private val itemId: Long?, private val categoryList: List<Filter>) : DialogFragment() {
+class AddItemDialogFragment(private val itemId: Long?, private val categoryList: List<Filter>) :
+    DialogFragment() {
 
     private lateinit var listener: OnAddedItemListener
 
@@ -39,7 +40,8 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
         super.onAttach(context)
         when {
             context is OnAddedItemListener -> listener = context
-            parentFragment is OnAddedItemListener -> listener = parentFragment as OnAddedItemListener
+            parentFragment is OnAddedItemListener -> listener =
+                parentFragment as OnAddedItemListener
         }
     }
 
@@ -102,7 +104,10 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
                 } else {
 
                     expenseDetail.setItemName(itemId, binding.itemName.text.toString())
-                    expenseDetail.setItemPrice(itemId, BigDecimal(binding.itemPrice.text.toString()))
+                    expenseDetail.setItemPrice(
+                        itemId,
+                        BigDecimal(binding.itemPrice.text.toString())
+                    )
                     expenseDetail.setItemCategory(itemId, item.categoryId)
 
                     // 更新リスナー呼び出し
