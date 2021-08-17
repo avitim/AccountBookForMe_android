@@ -1,5 +1,6 @@
 package com.example.accountbookforme.fragment
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -183,6 +184,30 @@ class ExpenseDetailFragment : Fragment(),
             )
         }
 
+        // 削除ボタンをタップしたら確認ダイアログを表示する
+        binding.deleteExpense.setOnClickListener {
+            AlertDialog.Builder(context)
+                .setMessage("Delete item?")
+                .setPositiveButton("OK") { _, _ ->
+                    // 支出詳細をDB上から削除するAPIを投げる
+                    expenseDetail.delete().observe(viewLifecycleOwner, { isSuccessful ->
+                        if (isSuccessful) {
+                            // 成功したら支出一覧画面に遷移する
+                            startActivity(Intent(context, MainActivity::class.java))
+                        } else {
+                            // 失敗したらとりあえずエラートーストを出しておく
+                            // TODO: 正式な対処は今後実装する
+                            Toast.makeText(activity, "Something is wrong!", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    })
+                }
+                .setNegativeButton("Cancel") { _, _ ->
+                    // なにもしない
+                }
+                .show()
+        }
+
     }
 
     // メニュー表示
@@ -210,8 +235,8 @@ class ExpenseDetailFragment : Fragment(),
                     })
                 } else {
                     // 支出詳細をDB上で更新するAPIを投げる
-                    expenseDetail.update().observe(viewLifecycleOwner, { isSucceccful ->
-                        if (isSucceccful) {
+                    expenseDetail.update().observe(viewLifecycleOwner, { isSuccessful ->
+                        if (isSuccessful) {
                             // 成功したら支出一覧画面に遷移する
                             startActivity(Intent(context, MainActivity::class.java))
                         } else {

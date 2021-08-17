@@ -102,6 +102,33 @@ class ExpenseDetailViewModel : ViewModel() {
     }
 
     /**
+     * 支出詳細の削除
+     */
+    fun delete(): LiveData<Boolean> {
+
+        val isSuccessful = MutableLiveData<Boolean>()
+
+        viewModelScope.launch {
+            try {
+                val response = expenseDetail.value?.id?.let { expenseRepository.delete(it) }
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        isSuccessful.postValue(true)
+                    } else {
+                        isSuccessful.postValue(false)
+                        Log.e("ExpenseDetailViewModel", "Not successful: $response")
+                    }
+                }
+            } catch (e: Exception) {
+                isSuccessful.postValue(false)
+                Log.e("ExpenseDetailViewModel", "Something is wrong: $e")
+            }
+        }
+
+        return isSuccessful
+    }
+
+    /**
      * 購入日を返す
      */
     fun getPurchasedAt(): String? {
