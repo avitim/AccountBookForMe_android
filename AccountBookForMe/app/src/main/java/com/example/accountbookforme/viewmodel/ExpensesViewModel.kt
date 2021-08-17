@@ -21,7 +21,7 @@ class ExpensesViewModel : ViewModel() {
         loadExpenseList()
     }
 
-    fun loadExpenseList() {
+    private fun loadExpenseList() {
 
         viewModelScope.launch {
             try {

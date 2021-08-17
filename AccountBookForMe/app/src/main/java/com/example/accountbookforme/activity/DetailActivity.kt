@@ -49,7 +49,9 @@ class DetailActivity : AppCompatActivity() {
 
         // 支出IDをFragmentに渡す
         val bundle = Bundle()
-        bundle.putLong("id", expenseId!!)
+        if (expenseId != null) {
+            bundle.putLong("id", expenseId!!)
+        }
 
         val fragment = ExpenseDetailFragment()
         fragment.arguments = bundle

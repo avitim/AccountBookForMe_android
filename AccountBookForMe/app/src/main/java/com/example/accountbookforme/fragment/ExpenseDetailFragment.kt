@@ -74,57 +74,69 @@ class ExpenseDetailFragment : Fragment(),
         // 前画面から渡された支出IDを取得
         val bundle = arguments
         if (bundle != null) {
-            id = bundle.getLong("id")
+            id = bundle.get("id") as Long?
         }
 
-        if (id != null) {
+        if (id == null) {
+            // 新規作成時
+
+            // 空の支出詳細生成
+            expenseDetail.createExpenseDetail()
+
+            // 削除ボタンを非表示にする
+            binding.deleteExpense.visibility = View.GONE
+
+        } else {
+            // 既存の支出詳細表示時
+
             // 支出詳細取得
             expenseDetail.getExpenseDetail(id!!)
 
-            // アイテムリストをセットする
-            // クリックイベントを設定
-            itemListAdapter.setOnExpenseItemClickListener(
-                object : ExpenseItemListAdapter.OnExpenseItemClickListener {
-                    override fun onItemClick(item: Item) {
-                        AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(
-                            childFragmentManager,
-                            null
-                        )
-                    }
-                }
-            )
-            binding.itemList.adapter = itemListAdapter
-            val itemLinearLayoutManager = LinearLayoutManager(view.context)
-            binding.itemList.layoutManager = itemLinearLayoutManager
-            binding.itemList.addItemDecoration(
-                DividerItemDecoration(
-                    view.context,
-                    itemLinearLayoutManager.orientation
-                )
-            )
-
-            // 支払いリストをセットする
-            // クリックイベントを設定
-            paymentListAdapter.setOnExpensePaymentClickListener(
-                object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
-                    override fun onItemClick(payment: Payment) {
-                        AddPaymentDialogFragment(
-                            payment.id,
-                            paymentViewModel.paymentList.value!!
-                        ).show(childFragmentManager, null)
-                    }
-                }
-            )
-            binding.paymentList.adapter = paymentListAdapter
-            val paymentLinearLayoutManager = LinearLayoutManager(view.context)
-            binding.paymentList.layoutManager = paymentLinearLayoutManager
-            binding.paymentList.addItemDecoration(
-                DividerItemDecoration(
-                    view.context,
-                    paymentLinearLayoutManager.orientation
-                )
-            )
         }
+
+        // アイテムリストをセットする
+        // クリックイベントを設定
+        itemListAdapter.setOnExpenseItemClickListener(
+            object : ExpenseItemListAdapter.OnExpenseItemClickListener {
+                override fun onItemClick(item: Item) {
+                    AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(
+                        childFragmentManager,
+                        null
+                    )
+                }
+            }
+        )
+        binding.itemList.adapter = itemListAdapter
+        val itemLinearLayoutManager = LinearLayoutManager(view.context)
+        binding.itemList.layoutManager = itemLinearLayoutManager
+        binding.itemList.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                itemLinearLayoutManager.orientation
+            )
+        )
+
+        // 支払いリストをセットする
+        // クリックイベントを設定
+        paymentListAdapter.setOnExpensePaymentClickListener(
+            object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
+                override fun onItemClick(payment: Payment) {
+                    AddPaymentDialogFragment(
+                        payment.id,
+                        paymentViewModel.paymentList.value!!
+                    ).show(childFragmentManager, null)
+                }
+            }
+        )
+        binding.paymentList.adapter = paymentListAdapter
+        val paymentLinearLayoutManager = LinearLayoutManager(view.context)
+        binding.paymentList.layoutManager = paymentLinearLayoutManager
+        binding.paymentList.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                paymentLinearLayoutManager.orientation
+            )
+        )
 
         // 支出詳細の監視開始
         expenseDetail.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
@@ -140,7 +152,10 @@ class ExpenseDetailFragment : Fragment(),
 
         // 日付入力欄をタップしたらカレンダーダイアログを表示する
         binding.purchasedAt.setOnClickListener {
-            DatePickerDialogFragment().show(childFragmentManager, null)
+            DatePickerDialogFragment(expenseDetail.getPurchasedAt()).show(
+                childFragmentManager,
+                null
+            )
         }
 
         // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
@@ -179,9 +194,20 @@ class ExpenseDetailFragment : Fragment(),
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
-                // TODO: 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
+                // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
                 if (id == null) {
                     // 支出詳細をDB上で新規作成するAPIを投げる
+                    expenseDetail.create().observe(viewLifecycleOwner, { isSuccessful ->
+                        if (isSuccessful) {
+                            // 成功したら支出一覧画面に遷移する
+                            startActivity(Intent(context, MainActivity::class.java))
+                        } else {
+                            // 失敗したらとりあえずエラートーストを出しておく
+                            // TODO: 正式な対処は今後実装する
+                            Toast.makeText(activity, "Something is wrong!", Toast.LENGTH_LONG)
+                                .show()
+                        }
+                    })
                 } else {
                     // 支出詳細をDB上で更新するAPIを投げる
                     expenseDetail.update().observe(viewLifecycleOwner, { isSucceccful ->
@@ -190,8 +216,9 @@ class ExpenseDetailFragment : Fragment(),
                             startActivity(Intent(context, MainActivity::class.java))
                         } else {
                             // 失敗したらとりあえずエラートーストを出しておく
-                            // TODO: 正式な対処が今後実装する
-                            Toast.makeText(activity, "Something is wrong!", Toast.LENGTH_LONG).show()
+                            // TODO: 正式な対処は今後実装する
+                            Toast.makeText(activity, "Something is wrong!", Toast.LENGTH_LONG)
+                                .show()
                         }
                     })
                 }

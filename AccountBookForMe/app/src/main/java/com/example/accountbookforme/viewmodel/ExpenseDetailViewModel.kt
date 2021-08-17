@@ -21,7 +21,16 @@ class ExpenseDetailViewModel : ViewModel() {
     // 支出詳細
     var expenseDetail: MutableLiveData<ExpenseDetail> = MutableLiveData()
 
-    // 支出詳細の取得
+    /**
+     * 空のExpenseDetail生成
+     */
+    fun createExpenseDetail() {
+        expenseDetail.value = ExpenseDetail()
+    }
+
+    /**
+     * 支出詳細の取得
+     */
     fun getExpenseDetail(id: Long) {
 
         viewModelScope.launch {
@@ -38,7 +47,36 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // 支出詳細の更新
+    /**
+     * 支出詳細の新規作成
+     */
+    fun create(): LiveData<Boolean> {
+
+        val isSuccessful = MutableLiveData<Boolean>()
+
+        viewModelScope.launch {
+            try {
+                val response = expenseDetail.value?.let { expenseRepository.create(it) }
+                if (response != null) {
+                    if (response.isSuccessful) {
+                        isSuccessful.postValue(true)
+                    } else {
+                        isSuccessful.postValue(false)
+                        Log.e("ExpenseDetailViewModel", "Not successful: $response")
+                    }
+                }
+            } catch (e: Exception) {
+                isSuccessful.postValue(false)
+                Log.e("ExpenseDetailViewModel", "Something is wrong: $e")
+            }
+        }
+
+        return isSuccessful
+    }
+
+    /**
+     * 支出詳細の更新
+     */
     fun update(): LiveData<Boolean> {
 
         val isSuccessful = MutableLiveData<Boolean>()
@@ -63,15 +101,30 @@ class ExpenseDetailViewModel : ViewModel() {
         return isSuccessful
     }
 
+    /**
+     * 購入日を返す
+     */
+    fun getPurchasedAt(): String? {
+        return expenseDetail.value?.purchasedAt
+    }
+
+    /**
+     * 品物リストを返す
+     */
     fun getItemList(): List<Item>? {
         return expenseDetail.value?.itemList?.toList()
     }
 
+    /**
+     * 支払いリストを返す
+     */
     fun getPaymentList(): List<Payment>? {
         return expenseDetail.value?.paymentList?.toList()
     }
 
-    // アイテムIDでItem取得
+    /**
+     * アイテムIDでItem取得
+     */
     fun getItemById(id: Long): Item? {
 
         return expenseDetail.value?.itemList?.find { item ->
@@ -79,7 +132,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // アイテムをIDで指定して名前をセットする
+    /**
+     * アイテムをIDで指定して名前をセットする
+     */
     fun setItemName(itemId: Long, itemName: String) {
         val item = getItemById(itemId)
         if (item != null) {
@@ -87,7 +142,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // アイテムをIDで指定して値段をセットする
+    /**
+     * アイテムをIDで指定して値段をセットする
+     */
     fun setItemPrice(itemId: Long, itemPrice: BigDecimal) {
         val item = getItemById(itemId)
         if (item != null) {
@@ -95,7 +152,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // アイテムをIDで指定してカテゴリIDをセットする
+    /**
+     * アイテムをIDで指定してカテゴリIDをセットする
+     */
     fun setItemCategory(itemId: Long, categoryId: Long) {
         val item = getItemById(itemId)
         if (item != null) {
@@ -103,12 +162,16 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // 品物追加
+    /**
+     * 品物追加
+     */
     fun addItem(item: Item) {
         expenseDetail.value?.itemList?.add(item)
     }
 
-    // 支出-決済方法IDでItem取得
+    /**
+     * 支出-決済方法IDでItem取得
+     */
     fun getPaymentById(expensePaymentId: Long): Payment? {
 
         return expenseDetail.value?.paymentList?.find { payment ->
@@ -116,7 +179,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // 支払いをIDで指定して決済方法IDをセットする
+    /**
+     * 支払いをIDで指定して決済方法IDをセットする
+     */
     fun setPaymentMethod(expensePaymentId: Long, paymentMethodId: Long) {
         val payment = getPaymentById(expensePaymentId)
         if (payment != null) {
@@ -124,7 +189,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // 支払いをIDで指定して金額をセットする
+    /**
+     * 支払いをIDで指定して金額をセットする
+     */
     fun setPaymentTotal(expensePaymentId: Long, paymentTotal: BigDecimal) {
         val payment = getPaymentById(expensePaymentId)
         if (payment != null) {
@@ -132,7 +199,9 @@ class ExpenseDetailViewModel : ViewModel() {
         }
     }
 
-    // 支払い追加
+    /**
+     * 支払い追加
+     */
     fun addPayment(payment: Payment) {
         expenseDetail.value?.paymentList?.add(payment)
     }

@@ -6,9 +6,11 @@ import android.content.Context
 import android.os.Bundle
 import android.widget.DatePicker
 import androidx.fragment.app.DialogFragment
+import com.example.accountbookforme.util.DateUtil
 import java.util.Calendar
 
-class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetListener {
+class DatePickerDialogFragment(private val dateTime: String?) : DialogFragment(),
+    DatePickerDialog.OnDateSetListener {
 
     private lateinit var listener: OnSelectedDateListener
 
@@ -30,6 +32,11 @@ class DatePickerDialogFragment : DialogFragment(), DatePickerDialog.OnDateSetLis
 
         // 今日の日付取得
         val calendar = Calendar.getInstance()
+
+        if (dateTime != null) {
+            // 日付指定があればそれを初期値に設定する
+            calendar.time = DateUtil.convertStringToCalender(dateTime)
+        }
 
         val context = context
 

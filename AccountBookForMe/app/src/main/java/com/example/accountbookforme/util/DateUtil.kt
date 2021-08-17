@@ -1,13 +1,20 @@
 package com.example.accountbookforme.util
 
+import android.util.Log
+import java.lang.Exception
+import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 object DateUtil {
 
     const val DATE_EDMMMYYYY = "E, d MMM. yyyy"
     const val DATE_YYYYMMDD = "yyyy-MM-dd"
+    const val DATE_YYYYMMDDHHMMSS = "yyyy-MM-dd'T'HH:mm:ss"
 
     /**
      * 年、月、日のInt型からLocalDateTimeフォーマットの文字列へ変換
@@ -31,6 +38,21 @@ object DateUtil {
         // 日付フォーマッタ
         val dtfToShow = DateTimeFormatter.ofPattern(pattern)
         return dtfToShow.format(parseLocalDateTime(dateTime))
+    }
+
+    /**
+     * 文字列からDate型に変換
+     * 失敗したら今日の日付を返す
+     */
+    fun convertStringToCalender(dateTime: String): Date {
+
+        return try {
+            val date = SimpleDateFormat(DATE_YYYYMMDDHHMMSS, Locale.JAPAN).parse(dateTime)
+            date ?: Date()
+        } catch (e: Exception) {
+            Log.e("DateUtil", "convertStringToCalender parse error: " + dateTime)
+            Date()
+        }
     }
 
     /**
