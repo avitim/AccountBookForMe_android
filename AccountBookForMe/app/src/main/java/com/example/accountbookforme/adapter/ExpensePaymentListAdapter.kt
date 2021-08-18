@@ -16,7 +16,7 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) 
 
     // 結果を渡すリスナー
     interface OnExpensePaymentClickListener {
-        fun onItemClick(payment: Payment)
+        fun onItemClick(position: Int, payment: Payment)
     }
 
     // リスナーをセット
@@ -52,7 +52,7 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) 
 
         // セルのクリックイベントをセット
         holder.itemView.setOnClickListener {
-            listener.onItemClick(getItem(position))
+            listener.onItemClick(position, getItem(position))
         }
     }
 }

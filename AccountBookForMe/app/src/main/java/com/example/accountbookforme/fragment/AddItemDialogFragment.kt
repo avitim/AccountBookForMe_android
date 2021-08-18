@@ -16,7 +16,11 @@ import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
-class AddItemDialogFragment(private val itemId: Long?, private val categoryList: List<Filter>) :
+class AddItemDialogFragment(
+    private val position: Int?,
+    private val item: Item?,
+    private val categoryList: List<Filter>
+) :
     DialogFragment() {
 
     private lateinit var listener: OnAddedItemListener
@@ -26,8 +30,8 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
 
-    // 新規作成時に保管する場所
-    private var item = Item()
+    // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
+    private var newItem = item ?: Item()
 
     // 結果を渡すリスナー
     interface OnAddedItemListener {
@@ -53,18 +57,15 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
         binding.itemCategory.adapter = FilterSpinnerAdapter(requireContext(), categoryList)
 
         // 前画面から渡された品物データがあれば代入
-        if (itemId != null) {
+        if (item != null) {
 
-            val item = expenseDetail.getItemById(itemId)
-            if (item != null) {
-                // TODO: カテゴリスピナーも値をセットする
-                val position = categoryList.indexOfFirst { category ->
-                    category.id == item.categoryId
-                }
-                binding.itemCategory.setSelection(position, false)
-                binding.itemName.setText(item.name)
-                binding.itemPrice.setText(item.price.toString())
+            // TODO: カテゴリスピナーも値をセットする
+            val position = categoryList.indexOfFirst { category ->
+                category.id == item.categoryId
             }
+            binding.itemCategory.setSelection(position, false)
+            binding.itemName.setText(item.name)
+            binding.itemPrice.setText(item.price.toString())
         }
 
         // カテゴリリストのリスナー設定
@@ -77,7 +78,7 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
                 position: Int,
                 id: Long
             ) {
-                item.categoryId = categoryList[position].id
+                newItem.categoryId = categoryList[position].id
             }
 
             // 選択されなかったとき
@@ -86,36 +87,55 @@ class AddItemDialogFragment(private val itemId: Long?, private val categoryList:
             }
         }
 
-        return AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle("Enter an item")
             .setPositiveButton("Add") { _, _ ->
                 // 入力内容を反映
                 // TODO: いずれは双方向データバインディングで
-                if (itemId == null) {
+                if (position == null || item == null) {
+                    // 新規追加
 
-                    item.name = binding.itemName.text.toString()
-                    item.price = BigDecimal(binding.itemPrice.text.toString())
+                    newItem.name = binding.itemName.text.toString()
+                    newItem.price = BigDecimal(binding.itemPrice.text.toString())
                     // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
 
                     // 入力した品物データを渡すリスナー呼び出し
-                    listener.addedItem(item)
+                    listener.addedItem(newItem)
 
                 } else {
+                    // 更新
 
-                    expenseDetail.setItemName(itemId, binding.itemName.text.toString())
+                    expenseDetail.setItemName(position, binding.itemName.text.toString())
                     expenseDetail.setItemPrice(
-                        itemId,
+                        position,
                         BigDecimal(binding.itemPrice.text.toString())
                     )
-                    expenseDetail.setItemCategory(itemId, item.categoryId)
+                    expenseDetail.setItemCategory(position, item.categoryId)
 
                     // 更新リスナー呼び出し
                     listener.updatedItem()
                 }
 
             }
-            .setNegativeButton("Cancel", null)
-            .create()
+            .setNeutralButton("Cancel", null)
+
+        if (position != null && item != null) {
+            // 更新時は削除ボタンも表示する
+            builder.setNegativeButton("Delete") { _, _ ->
+                if (item.id == null) {
+                    // まだDBには登録されていないのでリストから削除するだけ
+                    expenseDetail.removeItem(position)
+                } else {
+                    // リストから削除して、削除済みリストに登録する
+                    expenseDetail.deleteItem(position)
+                }
+
+                // 更新リスナー呼び出し
+                listener.updatedItem()
+            }
+        }
+
+        return builder.create()
     }
 }

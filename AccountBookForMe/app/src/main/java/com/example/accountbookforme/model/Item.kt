@@ -14,6 +14,4 @@ data class Item(
     var categoryId: Long = 1,
 
     var expenseId: Long? = null,
-
-    var deleted: Boolean = false,
 )

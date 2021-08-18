@@ -17,7 +17,8 @@ import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
 class AddPaymentDialogFragment(
-    private val expensePaymentId: Long?,
+    private val position: Int?,
+    private val payment: Payment?,
     private val paymentMethodList: List<Filter>
 ) : DialogFragment() {
 
@@ -28,8 +29,8 @@ class AddPaymentDialogFragment(
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
 
-    // 新規作成時に保管する場所
-    private var payment = Payment()
+    // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
+    private var newPayment = payment ?: Payment()
 
     // 結果を渡すリスナー
     interface OnAddedPaymentListener {
@@ -55,16 +56,13 @@ class AddPaymentDialogFragment(
         binding.payment.adapter = FilterSpinnerAdapter(requireContext(), paymentMethodList)
 
         // 前画面から渡された品物データがあれば代入
-        if (expensePaymentId != null) {
+        if (payment != null) {
 
-            val payment = expenseDetail.getPaymentById(expensePaymentId)
-            if (payment != null) {
-                val position = paymentMethodList.indexOfFirst { pm ->
-                    pm.id == payment.paymentId
-                }
-                binding.payment.setSelection(position, false)
-                binding.paymentTotal.setText(payment.total.toString())
+            val position = paymentMethodList.indexOfFirst { pm ->
+                pm.id == payment.paymentId
             }
+            binding.payment.setSelection(position, false)
+            binding.paymentTotal.setText(payment.total.toString())
         }
 
         // 決済方法リストのリスナー設定
@@ -77,7 +75,7 @@ class AddPaymentDialogFragment(
                 position: Int,
                 id: Long
             ) {
-                payment.paymentId = paymentMethodList[position].id
+                newPayment.paymentId = paymentMethodList[position].id
             }
 
             // 選択されなかったとき
@@ -86,25 +84,27 @@ class AddPaymentDialogFragment(
             }
         }
 
-        return AlertDialog.Builder(context)
+        val builder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle("Enter a payment")
             .setPositiveButton("Add") { _, _ ->
                 // 入力内容を反映
                 // TODO: いずれは双方向データバインディングで
-                if (expensePaymentId == null) {
+                if (position == null || payment == null) {
+                    // 新規追加
 
-                    payment.total = BigDecimal(binding.paymentTotal.text.toString())
+                    newPayment.total = BigDecimal(binding.paymentTotal.text.toString())
                     // paymentIdはスピナーで選択時に値更新済みなのでここでは不要
 
                     // 入力した品物データを渡すリスナー呼び出し
-                    listener.addedPayment(payment)
+                    listener.addedPayment(newPayment)
 
                 } else {
+                    // 更新
 
-                    expenseDetail.setPaymentMethod(expensePaymentId, payment.paymentId)
+                    expenseDetail.setPaymentMethod(position, payment.paymentId)
                     expenseDetail.setPaymentTotal(
-                        expensePaymentId,
+                        position,
                         BigDecimal(binding.paymentTotal.text.toString())
                     )
 
@@ -113,7 +113,25 @@ class AddPaymentDialogFragment(
                 }
 
             }
-            .setNegativeButton("Cancel", null)
-            .create()
+            .setNeutralButton("Cancel", null)
+
+
+        if (position != null && payment != null) {
+            // 更新時は削除ボタンも表示する
+            builder.setNegativeButton("Delete") { _, _ ->
+                if (payment.id == null) {
+                    // まだDBには登録されていないのでリストから削除するだけ
+                    expenseDetail.removePayment(position)
+                } else {
+                    // リストから削除して、削除済みリストに登録する
+                    expenseDetail.deletePayment(position)
+                }
+
+                // 更新リスナー呼び出し
+                listener.updatedPayment()
+            }
+        }
+
+        return builder.create()
     }
 }

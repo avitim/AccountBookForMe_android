@@ -16,7 +16,7 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
 
     // 結果を渡すリスナー
     interface OnExpenseItemClickListener {
-        fun onItemClick(item: Item)
+        fun onItemClick(position: Int, item: Item)
     }
 
     // リスナーをセット
@@ -46,11 +46,12 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
     }
 
     override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {
+
         holder.bind(getItem(position))
 
         // セルのクリックイベントをセット
         holder.itemView.setOnClickListener {
-            listener.onItemClick(getItem(position))
+            listener.onItemClick(position, getItem(position))
         }
     }
 }

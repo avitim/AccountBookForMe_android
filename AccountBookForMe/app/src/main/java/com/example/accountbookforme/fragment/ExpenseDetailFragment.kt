@@ -99,8 +99,12 @@ class ExpenseDetailFragment : Fragment(),
         // クリックイベントを設定
         itemListAdapter.setOnExpenseItemClickListener(
             object : ExpenseItemListAdapter.OnExpenseItemClickListener {
-                override fun onItemClick(item: Item) {
-                    AddItemDialogFragment(item.id, categoryViewModel.categoryList.value!!).show(
+                override fun onItemClick(position: Int, item: Item) {
+                    AddItemDialogFragment(
+                        position,
+                        item,
+                        categoryViewModel.categoryList.value!!
+                    ).show(
                         childFragmentManager,
                         null
                     )
@@ -121,9 +125,10 @@ class ExpenseDetailFragment : Fragment(),
         // クリックイベントを設定
         paymentListAdapter.setOnExpensePaymentClickListener(
             object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
-                override fun onItemClick(payment: Payment) {
+                override fun onItemClick(position: Int, payment: Payment) {
                     AddPaymentDialogFragment(
-                        payment.id,
+                        position,
+                        payment,
                         paymentViewModel.paymentList.value!!
                     ).show(childFragmentManager, null)
                 }
@@ -170,7 +175,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
         binding.addItemBtn.setOnClickListener {
-            AddItemDialogFragment(null, categoryViewModel.categoryList.value!!).show(
+            AddItemDialogFragment(null, null, categoryViewModel.categoryList.value!!).show(
                 childFragmentManager,
                 null
             )
@@ -178,7 +183,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
         binding.addPaymentBtn.setOnClickListener {
-            AddPaymentDialogFragment(null, paymentViewModel.paymentList.value!!).show(
+            AddPaymentDialogFragment(null, null, paymentViewModel.paymentList.value!!).show(
                 childFragmentManager,
                 null
             )
@@ -187,7 +192,7 @@ class ExpenseDetailFragment : Fragment(),
         // 削除ボタンをタップしたら確認ダイアログを表示する
         binding.deleteExpense.setOnClickListener {
             AlertDialog.Builder(context)
-                .setMessage("Delete item?")
+                .setMessage("Delete this expense?")
                 .setPositiveButton("OK") { _, _ ->
                     // 支出詳細をDB上から削除するAPIを投げる
                     expenseDetail.delete().observe(viewLifecycleOwner, { isSuccessful ->

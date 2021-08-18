@@ -11,6 +11,7 @@ import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
+import java.lang.IndexOutOfBoundsException
 import java.math.BigDecimal
 
 class ExpenseDetailViewModel : ViewModel() {
@@ -150,42 +151,44 @@ class ExpenseDetailViewModel : ViewModel() {
     }
 
     /**
-     * アイテムIDでItem取得
+     * アイテムを位置で指定して名前をセットする
      */
-    fun getItemById(id: Long): Item? {
-
-        return expenseDetail.value?.itemList?.find { item ->
-            item.id == id
-        }
-    }
-
-    /**
-     * アイテムをIDで指定して名前をセットする
-     */
-    fun setItemName(itemId: Long, itemName: String) {
-        val item = getItemById(itemId)
-        if (item != null) {
-            item.name = itemName
+    fun setItemName(position: Int, itemName: String) {
+        try {
+            val item = expenseDetail.value?.itemList?.get(position)
+            if (item != null) {
+                item.name = itemName
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
     /**
      * アイテムをIDで指定して値段をセットする
      */
-    fun setItemPrice(itemId: Long, itemPrice: BigDecimal) {
-        val item = getItemById(itemId)
-        if (item != null) {
-            item.price = itemPrice
+    fun setItemPrice(position: Int, itemPrice: BigDecimal) {
+        try {
+            val item = expenseDetail.value?.itemList?.get(position)
+            if (item != null) {
+                item.price = itemPrice
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
     /**
      * アイテムをIDで指定してカテゴリIDをセットする
      */
-    fun setItemCategory(itemId: Long, categoryId: Long) {
-        val item = getItemById(itemId)
-        if (item != null) {
-            item.categoryId = categoryId
+    fun setItemCategory(position: Int, categoryId: Long) {
+        try {
+            val item = expenseDetail.value?.itemList?.get(position)
+            if (item != null) {
+                item.categoryId = categoryId
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
@@ -197,32 +200,58 @@ class ExpenseDetailViewModel : ViewModel() {
     }
 
     /**
-     * 支出-決済方法IDでItem取得
+     * 品物削除
      */
-    fun getPaymentById(expensePaymentId: Long): Payment? {
-
-        return expenseDetail.value?.paymentList?.find { payment ->
-            payment.id == expensePaymentId
+    fun removeItem(position: Int) {
+        try {
+            expenseDetail.value?.itemList?.removeAt(position)
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
     /**
-     * 支払いをIDで指定して決済方法IDをセットする
+     * 品物削除して、削除済みリストに追加
      */
-    fun setPaymentMethod(expensePaymentId: Long, paymentMethodId: Long) {
-        val payment = getPaymentById(expensePaymentId)
-        if (payment != null) {
-            payment.paymentId = paymentMethodId
+    fun deleteItem(position: Int) {
+        try {
+            val item = expenseDetail.value?.itemList?.get(position)
+            expenseDetail.value?.itemList?.removeAt(position)
+            if (item != null) {
+                expenseDetail.value?.deletedItemList?.add(item.id!!)
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
     /**
-     * 支払いをIDで指定して金額をセットする
+     * 支払いを位置で指定して決済方法IDをセットする
      */
-    fun setPaymentTotal(expensePaymentId: Long, paymentTotal: BigDecimal) {
-        val payment = getPaymentById(expensePaymentId)
-        if (payment != null) {
-            payment.total = paymentTotal
+    fun setPaymentMethod(position: Int, paymentMethodId: Long) {
+        try {
+            val payment = expenseDetail.value?.paymentList?.get(position)
+            expenseDetail.value?.itemList?.removeAt(position)
+            if (payment != null) {
+                payment.paymentId = paymentMethodId
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
+        }
+    }
+
+    /**
+     * 支払いを位置で指定して金額をセットする
+     */
+    fun setPaymentTotal(position: Int, paymentTotal: BigDecimal) {
+        try {
+            val payment = expenseDetail.value?.paymentList?.get(position)
+            expenseDetail.value?.itemList?.removeAt(position)
+            if (payment != null) {
+                payment.total = paymentTotal
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
         }
     }
 
@@ -231,6 +260,32 @@ class ExpenseDetailViewModel : ViewModel() {
      */
     fun addPayment(payment: Payment) {
         expenseDetail.value?.paymentList?.add(payment)
+    }
+
+    /**
+     * 支払い削除
+     */
+    fun removePayment(position: Int) {
+        try {
+            expenseDetail.value?.paymentList?.removeAt(position)
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
+        }
+    }
+
+    /**
+     * 支払い削除して、削除済みリストに追加
+     */
+    fun deletePayment(position: Int) {
+        try {
+            val payment = expenseDetail.value?.paymentList?.get(position)
+            expenseDetail.value?.paymentList?.removeAt(position)
+            if (payment != null) {
+                expenseDetail.value?.deletedPaymentList?.add(payment.id!!)
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
+        }
     }
 
 }

@@ -29,4 +29,7 @@ data class ExpenseDetail(
 
     var itemList: MutableList<Item> = mutableListOf(),
 
-    )
+    var deletedItemList: MutableList<Long> = mutableListOf(),
+
+    var deletedPaymentList: MutableList<Long> = mutableListOf(),
+)
