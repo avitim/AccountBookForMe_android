@@ -217,7 +217,7 @@ class ExpenseDetailFragment : Fragment(),
 
     // メニュー表示
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        inflater.inflate(R.menu.toolbar_save, menu)
+        inflater.inflate(R.menu.menu_save, menu)
     }
 
     // メニュータップ時の処理設定

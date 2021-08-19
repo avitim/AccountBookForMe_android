@@ -3,6 +3,9 @@ package com.example.accountbookforme.fragment
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
@@ -10,6 +13,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.R
 import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentExpensesBinding
@@ -32,6 +36,8 @@ class ExpensesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
+
         _binding = FragmentExpensesBinding.inflate(inflater, container, false)
         val view = binding.root
 
@@ -76,6 +82,24 @@ class ExpensesFragment : Fragment() {
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseListAdapter.setExpenseListItems(expenseList)
         })
+    }
+
+    // メニュー表示
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_add, menu)
+    }
+
+
+    // メニュータップ時の処理設定
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_add -> {
+                val intent = Intent(activity, DetailActivity::class.java)
+                startActivity(intent)
+            }
+        }
+
+        return true
     }
 
     // 今月を取得してビューにセット

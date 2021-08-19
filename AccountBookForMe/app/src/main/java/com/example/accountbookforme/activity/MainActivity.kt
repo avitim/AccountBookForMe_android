@@ -1,9 +1,6 @@
 package com.example.accountbookforme.activity
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.navigation.findNavController
@@ -47,32 +44,5 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-        // 右上のアイコンの設定
-        menuInflater.inflate(R.menu.toolbar_add, menu)
-        return true
-    }
-
-    // 右上のアイコンクリックイベント
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
-        // 画面下部のナビゲーション情報を取得
-        val navController = findNavController(R.id.nav_host_fragment)
-
-        var intent: Intent? = null
-        when (navController.currentDestination!!.id) {
-            R.id.navigation_expenses -> {
-                // 現在のページがExpenseのとき
-                intent = Intent(applicationContext, DetailActivity::class.java)
-            }
-        }
-        if (intent != null) {
-            startActivity(intent)
-        }
-
-        return super.onOptionsItemSelected(item)
     }
 }
