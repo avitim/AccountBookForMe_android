@@ -241,6 +241,21 @@
                     app:layout_constraintTop_toTopOf="parent" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <TextView
+                android:id="@+id/noteLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:background="@color/subheading"
+                android:backgroundTint="@color/subheading"
+                android:paddingVertical="10dp"
+                android:paddingStart="5dp"
+                android:text="Note"
+                android:textColor="@color/black"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/totalPayment" />
+
             <EditText
                 android:id="@+id/note"
                 android:layout_width="0dp"
@@ -252,7 +267,7 @@
                 android:text="@={vm.expenseDetail.note}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/totalPayment" />
+                app:layout_constraintTop_toBottomOf="@+id/noteLabel" />
 
             <!--    既存の支出を表示するときのみ表示する -->
             <TextView

@@ -55,6 +55,12 @@ object DateUtil {
         }
     }
 
+
+    /**
+     * 今月を取得
+     */
+    fun getMonth(): String = LocalDateTime.now().month.toString()
+
     /**
      * 数字を0埋めした2桁に変換して文字列として返す
      */

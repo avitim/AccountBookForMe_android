@@ -8,6 +8,7 @@ import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
 class ExpensesViewModel : ViewModel() {
 
@@ -21,6 +22,9 @@ class ExpensesViewModel : ViewModel() {
         loadExpenseList()
     }
 
+    /**
+     * 支出リスト取得
+     */
     private fun loadExpenseList() {
 
         viewModelScope.launch {
@@ -35,5 +39,12 @@ class ExpensesViewModel : ViewModel() {
                 Log.e("ExpenseViewModel", "Something is wrong: $e")
             }
         }
+    }
+
+    /**
+     * 総額を計算
+     */
+    fun calcTotal(): BigDecimal? = expenseList.value?.fold(BigDecimal.ZERO) { acc, expense ->
+        acc + expense.total
     }
 }

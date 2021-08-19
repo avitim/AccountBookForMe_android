@@ -9,7 +9,7 @@
         android:id="@+id/navigation_expenses"
         android:name="com.example.accountbookforme.fragment.ExpensesFragment"
         android:label="@string/title_expenses"
-        tools:layout="@layout/fragment_expenses" />
+        tools:layout="@layout/fragment_list_with_month" />
 
     <fragment
         android:id="@+id/navigation_categories"

@@ -16,14 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ExpenseListAdapter
-import com.example.accountbookforme.databinding.FragmentExpensesBinding
+import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
-import java.time.LocalDateTime
 
 class ExpensesFragment : Fragment() {
 
-    private var _binding: FragmentExpensesBinding? = null
+    private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
     private val expensesViewModel: ExpensesViewModel by activityViewModels()
@@ -38,11 +38,11 @@ class ExpensesFragment : Fragment() {
     ): View {
         setHasOptionsMenu(true)
 
-        _binding = FragmentExpensesBinding.inflate(inflater, container, false)
+        _binding = FragmentListWithMonthBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        // 今月を表示する処理
-        getMonth()
+        // 今月を表示
+        binding.month.text = DateUtil.getMonth()
 
         recyclerView = binding.expenseList
         expenseListAdapter = ExpenseListAdapter()
@@ -81,6 +81,8 @@ class ExpensesFragment : Fragment() {
         // 支出リストの監視開始
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseListAdapter.setExpenseListItems(expenseList)
+            // 総額を表示
+            binding.allTotal.text = expensesViewModel.calcTotal().toString()
         })
     }
 
@@ -100,11 +102,5 @@ class ExpensesFragment : Fragment() {
         }
 
         return true
-    }
-
-    // 今月を取得してビューにセット
-    private fun getMonth() {
-        val nowDate: LocalDateTime = LocalDateTime.now()
-        binding.month.text = nowDate.month.toString()
     }
 }
