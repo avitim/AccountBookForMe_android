@@ -1,5 +1,6 @@
 package com.example.accountbookforme.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.activity.ItemListActivity
 import com.example.accountbookforme.adapter.CategoryListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.TotalEachFilter
@@ -44,11 +46,11 @@ class CategoriesFragment : Fragment() {
         categoryListAdapter.setOnCategoryClickListener(
             object : CategoryListAdapter.OnCategoryClickListener {
                 override fun onItemClick(category: TotalEachFilter) {
-//                    val intent = Intent(context, DetailActivity::class.java)
-//                    // 支出IDを渡す
-//                    intent.putExtra("categoryId", category.id)
-//                    // 支出詳細画面に遷移する
-//                    startActivity(intent)
+                    val intent = Intent(context, ItemListActivity::class.java)
+                    // 支出IDを渡す
+                    intent.putExtra("categoryId", category.id)
+                    // 支出詳細画面に遷移する
+                    startActivity(intent)
                 }
             }
         )
