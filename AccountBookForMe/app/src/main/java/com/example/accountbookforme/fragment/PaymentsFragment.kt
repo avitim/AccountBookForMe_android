@@ -61,7 +61,7 @@ class PaymentsFragment : Fragment() {
         expensesViewModel.totalPaymentList.observe(viewLifecycleOwner, { totalPaymentList ->
             totalListAdapter.setTotalListItems(totalPaymentList)
             // 総額を表示
-            binding.allTotal.text = "¥" + expensesViewModel.calcTotal().toString()
+            binding.allTotal.text = "¥" + expensesViewModel.calcTotalByPayment().toString()
         })
     }
 }

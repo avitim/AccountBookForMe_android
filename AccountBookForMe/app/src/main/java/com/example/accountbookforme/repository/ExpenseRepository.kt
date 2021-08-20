@@ -19,8 +19,14 @@ interface ExpenseRepository {
     @GET("/expenses/{id}")
     suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>
 
+    @GET("/expenses/store/{id}")
+    suspend fun getByStoreId(@Path("id") storeId: Long): Response<List<Expense>>
+
     @GET("/expenses/payment/totals")
     suspend fun getTotalPaymentList(): Response<List<TotalEachFilter>>
+
+    @GET("/expenses/store/totals")
+    suspend fun getTotalStoreList(): Response<List<TotalEachFilter>>
 
     @PUT("/expenses/create")
     suspend fun create(@Body expenseDetail: ExpenseDetail): Response<Void>
