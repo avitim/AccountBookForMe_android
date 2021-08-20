@@ -58,10 +58,9 @@ class ExpenseDetailFragment : Fragment(),
         itemListAdapter = ExpenseItemListAdapter(categoryViewModel)
         paymentListAdapter = ExpensePaymentListAdapter(paymentViewModel)
 
-        // 各ViewModelに値をセットする
+        // ViewModelに値をセットする
+        // TODO: なぜかstoreViewModelだけinit()が間に合わないので明示的に呼んでいる。いずれは呼ばなくしたい。
         storeViewModel.getStoreList()
-        categoryViewModel.getCategoryList()
-        paymentViewModel.getPaymentList()
 
         return binding.root
     }

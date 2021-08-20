@@ -15,7 +15,11 @@
         android:id="@+id/navigation_categories"
         android:name="com.example.accountbookforme.fragment.CategoriesFragment"
         android:label="@string/title_categories"
-        tools:layout="@layout/fragment_filter_list" />
+        tools:layout="@layout/fragment_filter_list" >
+        <action
+            android:id="@+id/action_navigation_categories_to_categoryItemFragment"
+            app:destination="@id/expenseCategoryFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_payments"
@@ -27,12 +31,38 @@
         android:id="@+id/navigation_stores"
         android:name="com.example.accountbookforme.fragment.StoresFragment"
         android:label="@string/title_stores"
-        tools:layout="@layout/fragment_filter_list" />
+        tools:layout="@layout/fragment_filter_list" >
+        <action
+            android:id="@+id/action_navigation_stores_to_storeExpenseFragment"
+            app:destination="@id/expenseStoreFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_settings"
         android:name="com.example.accountbookforme.fragment.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" />
+    <fragment
+        android:id="@+id/expenseCategoryFragment"
+        android:name="com.example.accountbookforme.fragment.CategoryItemFragment"
+        android:label="ExpenseCategoryFragment" >
+        <argument
+            android:name="categoryId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_expenseCategoryFragment_to_navigation_categories"
+            app:popUpTo="@id/navigation_categories" />
+    </fragment>
+    <fragment
+        android:id="@+id/expenseStoreFragment"
+        android:name="com.example.accountbookforme.fragment.StoreExpenseFragment"
+        android:label="ExpenseStoreFragment" >
+        <argument
+            android:name="storeId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_expenseStoreFragment_to_navigation_stores"
+            app:popUpTo="@id/navigation_stores" />
+    </fragment>
 
 </navigation>

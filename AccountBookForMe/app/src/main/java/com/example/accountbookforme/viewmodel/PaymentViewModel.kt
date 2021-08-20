@@ -17,7 +17,11 @@ class PaymentViewModel : ViewModel() {
     // 店舗一覧
     var paymentList: MutableLiveData<List<Filter>> = MutableLiveData()
 
-    fun getPaymentList() {
+    init {
+        getPaymentList()
+    }
+
+    private fun getPaymentList() {
 
         viewModelScope.launch {
             try {

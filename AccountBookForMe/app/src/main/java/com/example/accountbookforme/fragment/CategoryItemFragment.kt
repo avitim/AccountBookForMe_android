@@ -6,8 +6,10 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,7 +19,7 @@ import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
 
-class CategoryFragment : Fragment() {
+class CategoryItemFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!
@@ -27,18 +29,20 @@ class CategoryFragment : Fragment() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var itemListAdapter: ItemListAdapter
 
-    private var categoryId: Long? = null
+    private var categoryId: Long = 0
+    private lateinit var categoryName: String
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
 
         _binding = FragmentListWithTitleBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        // タイトルを表示
+        // リストのタイトルを表示
         binding.listTitle.text = "Items"
 
         recyclerView = binding.listWithTitle
@@ -82,29 +86,29 @@ class CategoryFragment : Fragment() {
         // 前画面から渡された支出IDを取得
         val bundle = arguments
         if (bundle != null) {
-            categoryId = bundle.get("categoryId") as Long?
+            categoryId = bundle.getLong("categoryId")
+            categoryName = bundle.getString("categoryName").toString()
         }
 
-        if (categoryId != null) {
+        // アクションバーのタイトルを設定
+        (activity as AppCompatActivity).supportActionBar?.title = categoryName
 
-            // 品物リスト取得
-            categoriesViewModel.getItemListByCategoryId(categoryId!!)
+        // 品物リスト取得
+        categoriesViewModel.getItemListByCategoryId(categoryId)
 
-            // 支出リストの監視開始
-            categoriesViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
-                itemListAdapter.setItemListItems(itemList)
-                // 総額を表示
-                binding.allTotal.text = categoriesViewModel.calcItemTotal().toString()
-            })
-        }
+        // 支出リストの監視開始
+        categoriesViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
+            itemListAdapter.setItemListItems(itemList)
+            // 総額を表示
+            binding.allTotal.text = categoriesViewModel.calcItemTotal().toString()
+        })
     }
-
 
     // メニュータップ時の処理設定
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                requireActivity().onBackPressedDispatcher.onBackPressed()
+                findNavController().popBackStack()
             }
         }
         return true

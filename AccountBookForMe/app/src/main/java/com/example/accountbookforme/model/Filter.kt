@@ -2,8 +2,8 @@ package com.example.accountbookforme.model
 
 data class Filter(
 
-    val id: Long,
+    var id: Long,
 
-    val name: String = ""
+    var name: String = ""
 
 )

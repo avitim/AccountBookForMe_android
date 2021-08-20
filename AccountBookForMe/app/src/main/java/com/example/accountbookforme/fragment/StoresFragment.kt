@@ -5,12 +5,16 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
+import com.example.accountbookforme.model.TotalEachFilter
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 
@@ -39,6 +43,21 @@ class StoresFragment : Fragment() {
         recyclerView = binding.list
         totalListAdapter = TotalListAdapter()
 
+        // セルのクリック処理
+        totalListAdapter.setOnTotalClickListener(
+            object : TotalListAdapter.OnTotalClickListener {
+                override fun onItemClick(total: TotalEachFilter) {
+                    // 店舗IDと店舗名を渡す
+                    val bundle = bundleOf("storeId" to total.id, "storeName" to total.name)
+                    // 店舗ごとの支出リスト画面に遷移
+                    findNavController().navigate(
+                        R.id.action_navigation_stores_to_storeExpenseFragment,
+                        bundle
+                    )
+                }
+            }
+        )
+
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager
         recyclerView.adapter = totalListAdapter
@@ -61,7 +80,7 @@ class StoresFragment : Fragment() {
         expensesViewModel.totalStoreList.observe(viewLifecycleOwner, { totalStoreList ->
             totalListAdapter.setTotalListItems(totalStoreList)
             // 総額を表示
-            binding.allTotal.text = "¥" + expensesViewModel.calcTotalByStore().toString()
+            binding.allTotal.text = "¥" + expensesViewModel.calcTotalStore().toString()
         })
     }
 }

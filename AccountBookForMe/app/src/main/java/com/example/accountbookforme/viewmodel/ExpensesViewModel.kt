@@ -25,6 +25,9 @@ class ExpensesViewModel : ViewModel() {
     // 店舗ごとの支出額リスト
     var totalStoreList: MutableLiveData<List<TotalEachFilter>> = MutableLiveData()
 
+    // 店舗ごとの支出リスト
+    var expenseStoreList: MutableLiveData<List<Expense>> = MutableLiveData()
+
     init {
         loadExpenseList()
         getTotalPaymentList()
@@ -89,6 +92,25 @@ class ExpensesViewModel : ViewModel() {
     }
 
     /**
+     * 店舗IDから品物リスト取得
+     */
+    fun getExpenseListByStoreId(storeId: Long) {
+
+        viewModelScope.launch {
+            try {
+                val request = expenseRepository.getByStoreId(storeId)
+                if (request.isSuccessful) {
+                    expenseStoreList.value = request.body()
+                } else {
+                    Log.e("CategoriesViewModel", "Not successful: $request")
+                }
+            } catch (e: Exception) {
+                Log.e("CategoriesViewModel", "Something is wrong: $e")
+            }
+        }
+    }
+
+    /**
      * すべての総額を計算
      */
     fun calcAllTotal(): BigDecimal? = expenseList.value?.fold(BigDecimal.ZERO) { acc, expense ->
@@ -98,7 +120,7 @@ class ExpensesViewModel : ViewModel() {
     /**
      * 支払い額をもとに支出の総額を計算
      */
-    fun calcTotalByPayment(): BigDecimal? =
+    fun calcTotalPayment(): BigDecimal? =
         totalPaymentList.value?.fold(BigDecimal.ZERO) { acc, expense ->
             acc + expense.total
         }
@@ -106,8 +128,16 @@ class ExpensesViewModel : ViewModel() {
     /**
      * 店舗ごとの金額をもとに支出の総額を計算
      */
-    fun calcTotalByStore(): BigDecimal? =
+    fun calcTotalStore(): BigDecimal? =
         totalStoreList.value?.fold(BigDecimal.ZERO) { acc, expense ->
+            acc + expense.total
+        }
+
+    /**
+     * 店舗ごとの金額をもとに支出の総額を計算
+     */
+    fun calcTotalByStore(): BigDecimal? =
+        expenseStoreList.value?.fold(BigDecimal.ZERO) { acc, expense ->
             acc + expense.total
         }
 }

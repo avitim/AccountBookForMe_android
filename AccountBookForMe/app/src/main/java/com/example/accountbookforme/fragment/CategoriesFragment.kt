@@ -1,16 +1,17 @@
 package com.example.accountbookforme.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.accountbookforme.activity.ItemListActivity
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.TotalEachFilter
@@ -46,11 +47,13 @@ class CategoriesFragment : Fragment() {
         totalListAdapter.setOnTotalClickListener(
             object : TotalListAdapter.OnTotalClickListener {
                 override fun onItemClick(total: TotalEachFilter) {
-                    val intent = Intent(context, ItemListActivity::class.java)
-                    // 支出IDを渡す
-                    intent.putExtra("categoryId", total.id)
-                    // 支出詳細画面に遷移する
-                    startActivity(intent)
+                    // カテゴリIDとカテゴリ名を渡す
+                    val bundle = bundleOf("categoryId" to total.id, "categoryName" to total.name)
+                    // カテゴリごとの品物リスト画面に遷移
+                    findNavController().navigate(
+                        R.id.action_navigation_categories_to_categoryItemFragment,
+                        bundle
+                    )
                 }
             }
         )

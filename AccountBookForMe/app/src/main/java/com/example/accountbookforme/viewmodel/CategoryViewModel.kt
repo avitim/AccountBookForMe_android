@@ -17,7 +17,11 @@ class CategoryViewModel : ViewModel() {
     // 店舗一覧
     var categoryList: MutableLiveData<List<Filter>> = MutableLiveData()
 
-    fun getCategoryList() {
+    init {
+        getCategoryList()
+    }
+
+    private fun getCategoryList() {
 
         viewModelScope.launch {
             try {
@@ -34,7 +38,7 @@ class CategoryViewModel : ViewModel() {
     }
 
     // IDから名称を取得
-    fun getNameById(id: Long): String? {
+    fun getNameById(id: Long): String {
 
         val category = categoryList.value?.find { category ->
             category.id == id
