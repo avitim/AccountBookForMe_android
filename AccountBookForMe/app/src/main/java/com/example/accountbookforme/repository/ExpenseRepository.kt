@@ -2,6 +2,7 @@ package com.example.accountbookforme.repository
 
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.model.TotalEachFilter
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -17,6 +18,9 @@ interface ExpenseRepository {
 
     @GET("/expenses/{id}")
     suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>
+
+    @GET("/expenses/payment/totals")
+    suspend fun getTotalPaymentList(): Response<List<TotalEachFilter>>
 
     @PUT("/expenses/create")
     suspend fun create(@Body expenseDetail: ExpenseDetail): Response<Void>

@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.activity.ItemListActivity
-import com.example.accountbookforme.adapter.CategoryListAdapter
+import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.TotalEachFilter
 import com.example.accountbookforme.util.DateUtil
@@ -25,7 +25,7 @@ class CategoriesFragment : Fragment() {
     private val categoriesViewModel: CategoriesViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var categoryListAdapter: CategoryListAdapter
+    private lateinit var totalListAdapter: TotalListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,16 +39,16 @@ class CategoriesFragment : Fragment() {
         // 今月を表示
         binding.month.text = DateUtil.getMonth()
 
-        recyclerView = binding.expenseList
-        categoryListAdapter = CategoryListAdapter()
+        recyclerView = binding.list
+        totalListAdapter = TotalListAdapter()
 
         // セルのクリック処理
-        categoryListAdapter.setOnCategoryClickListener(
-            object : CategoryListAdapter.OnCategoryClickListener {
-                override fun onItemClick(category: TotalEachFilter) {
+        totalListAdapter.setOnTotalClickListener(
+            object : TotalListAdapter.OnTotalClickListener {
+                override fun onItemClick(total: TotalEachFilter) {
                     val intent = Intent(context, ItemListActivity::class.java)
                     // 支出IDを渡す
-                    intent.putExtra("categoryId", category.id)
+                    intent.putExtra("categoryId", total.id)
                     // 支出詳細画面に遷移する
                     startActivity(intent)
                 }
@@ -57,7 +57,7 @@ class CategoriesFragment : Fragment() {
 
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = categoryListAdapter
+        recyclerView.adapter = totalListAdapter
 
         // セルの区切り線表示
         recyclerView.addItemDecoration(
@@ -75,9 +75,9 @@ class CategoriesFragment : Fragment() {
 
         // 支出リストの監視開始
         categoriesViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
-            categoryListAdapter.setCategoryListItems(totalList)
+            totalListAdapter.setTotalListItems(totalList)
             // 総額を表示
-            binding.allTotal.text = categoriesViewModel.calcTotal().toString()
+            binding.allTotal.text = "¥" + categoriesViewModel.calcTotal().toString()
         })
     }
 }

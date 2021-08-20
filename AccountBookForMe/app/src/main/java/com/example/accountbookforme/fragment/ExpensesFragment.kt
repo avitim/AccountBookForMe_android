@@ -44,7 +44,7 @@ class ExpensesFragment : Fragment() {
         // 今月を表示
         binding.month.text = DateUtil.getMonth()
 
-        recyclerView = binding.expenseList
+        recyclerView = binding.list
         expenseListAdapter = ExpenseListAdapter()
 
         // セルのクリック処理
@@ -82,7 +82,7 @@ class ExpensesFragment : Fragment() {
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseListAdapter.setExpenseListItems(expenseList)
             // 総額を表示
-            binding.allTotal.text = expensesViewModel.calcTotal().toString()
+            binding.allTotal.text = "¥" + expensesViewModel.calcTotal().toString()
         })
     }
 

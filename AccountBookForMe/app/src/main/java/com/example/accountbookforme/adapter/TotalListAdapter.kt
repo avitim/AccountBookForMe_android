@@ -7,37 +7,37 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.FragmentTotalEachFilterBinding
 import com.example.accountbookforme.model.TotalEachFilter
 
-class CategoryListAdapter : RecyclerView.Adapter<CategoryListAdapter.CategoryViewHolder>() {
+class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>() {
 
-    private lateinit var listener: OnCategoryClickListener
-    private var categoryList: List<TotalEachFilter> = listOf()
+    private lateinit var listener: OnTotalClickListener
+    private var totalList: List<TotalEachFilter> = listOf()
 
     // 結果を渡すリスナー
-    interface OnCategoryClickListener {
-        fun onItemClick(category: TotalEachFilter)
+    interface OnTotalClickListener {
+        fun onItemClick(total: TotalEachFilter)
     }
 
     // リスナーをセット
-    fun setOnCategoryClickListener(listener: OnCategoryClickListener) {
+    fun setOnTotalClickListener(listener: OnTotalClickListener) {
         this.listener = listener
     }
 
-    open class CategoryViewHolder(binding: FragmentTotalEachFilterBinding) :
+    open class TotalViewHolder(binding: FragmentTotalEachFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
         val name: TextView = binding.name
         val total: TextView = binding.total
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TotalViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
         val binding = FragmentTotalEachFilterBinding.inflate(layoutInflater, parent, false)
-        return CategoryViewHolder(binding)
+        return TotalViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: TotalViewHolder, position: Int) {
 
-        val category = categoryList[position]
+        val category = totalList[position]
 
         holder.name.text = category.name
         holder.total.text = "¥" + category.total
@@ -49,11 +49,11 @@ class CategoryListAdapter : RecyclerView.Adapter<CategoryListAdapter.CategoryVie
     }
 
     // リストのサイズ取得
-    override fun getItemCount() = categoryList.size
+    override fun getItemCount() = totalList.size
 
     // カテゴリごとの支出額リストをセットして変更を通知
-    fun setCategoryListItems(categoryList: List<TotalEachFilter>) {
-        this.categoryList = categoryList
+    fun setTotalListItems(totalList: List<TotalEachFilter>) {
+        this.totalList = totalList
         notifyDataSetChanged()
     }
 }
