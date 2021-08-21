@@ -12,12 +12,11 @@
             android:id="@+id/list_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="@color/subheading"
-            android:backgroundTint="@color/subheading"
+            android:background="@color/primaryLightColor"
             android:padding="5dp"
             android:text="Title"
-            android:textAlignment="viewStart"
-            android:textColor="@color/black"
+            android:textAlignment="center"
+            android:textColor="@color/secondaryTextColor"
             android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@+id/list_with_title"
             app:layout_constraintEnd_toEndOf="parent"
@@ -37,10 +36,19 @@
 
         </androidx.recyclerview.widget.RecyclerView>
 
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintBottom_toTopOf="@+id/constraintLayout3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/accent_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
@@ -52,7 +60,7 @@
                 android:layout_marginVertical="15dp"
                 android:layout_marginStart="15dp"
                 android:text="Total"
-                android:textColor="@color/black"
+                android:textColor="@color/secondaryTextColor"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -65,7 +73,7 @@
                 android:layout_marginVertical="15dp"
                 android:layout_marginEnd="15dp"
                 android:text="total"
-                android:textColor="@color/black"
+                android:textColor="@color/secondaryTextColor"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

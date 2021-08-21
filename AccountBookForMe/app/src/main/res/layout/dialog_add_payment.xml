@@ -24,7 +24,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="15dp"
             android:text="Total"
-            android:textColor="@color/black"
+            android:textColor="@color/secondaryTextColor"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/barrierName" />
