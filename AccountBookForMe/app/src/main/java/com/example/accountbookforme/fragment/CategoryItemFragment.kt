@@ -94,7 +94,7 @@ class CategoryItemFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = categoryName
 
         // 品物リスト取得
-        itemsViewModel.getItemListByCategoryId(categoryId)
+        itemsViewModel.findByCategoryId(categoryId)
 
         // 支出リストの監視開始
         itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->

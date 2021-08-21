@@ -33,7 +33,7 @@ class ItemsViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val request = itemRepository.getTotalEachCategory()
+                val request = itemRepository.getTotalCategoryList()
                 if (request.isSuccessful) {
                     totalList.value = request.body()
                 } else {
@@ -48,11 +48,11 @@ class ItemsViewModel : ViewModel() {
     /**
      * カテゴリIDから品物リスト取得
      */
-    fun getItemListByCategoryId(categoryId: Long) {
+    fun findByCategoryId(categoryId: Long) {
 
         viewModelScope.launch {
             try {
-                val request = itemRepository.getItemsByCategoryId(categoryId)
+                val request = itemRepository.findByCategoryId(categoryId)
                 if (request.isSuccessful) {
                     itemList.value = request.body()
                 } else {

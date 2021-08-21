@@ -25,7 +25,7 @@ class CategoriesViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val request = categoryRepository.getAll()
+                val request = categoryRepository.findAll()
                 if (request.isSuccessful) {
                     categoryList.value = request.body()
                 } else {

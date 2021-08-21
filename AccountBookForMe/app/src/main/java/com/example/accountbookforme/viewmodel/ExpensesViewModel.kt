@@ -26,7 +26,7 @@ class ExpensesViewModel : ViewModel() {
     var totalStoreList: MutableLiveData<List<Total>> = MutableLiveData()
 
     // 店舗ごとの支出リスト
-    var expenseStoreList: MutableLiveData<List<Expense>> = MutableLiveData()
+    var storeExpenseList: MutableLiveData<List<Expense>> = MutableLiveData()
 
     init {
         loadExpenseList()
@@ -41,7 +41,7 @@ class ExpensesViewModel : ViewModel() {
 
         viewModelScope.launch {
             try {
-                val request = expenseRepository.getAll()
+                val request = expenseRepository.findAll()
                 if (request.isSuccessful) {
                     expenseList.value = request.body()
                 } else {
@@ -94,13 +94,13 @@ class ExpensesViewModel : ViewModel() {
     /**
      * 店舗IDから品物リスト取得
      */
-    fun getExpenseListByStoreId(storeId: Long) {
+    fun findByStoreId(storeId: Long) {
 
         viewModelScope.launch {
             try {
-                val request = expenseRepository.getByStoreId(storeId)
+                val request = expenseRepository.findByStoreId(storeId)
                 if (request.isSuccessful) {
-                    expenseStoreList.value = request.body()
+                    storeExpenseList.value = request.body()
                 } else {
                     Log.e("CategoriesViewModel", "Not successful: $request")
                 }
@@ -137,7 +137,7 @@ class ExpensesViewModel : ViewModel() {
      * 店舗ごとの金額をもとに支出の総額を計算
      */
     fun calcTotalByStore(): BigDecimal? =
-        expenseStoreList.value?.fold(BigDecimal.ZERO) { acc, expense ->
+        storeExpenseList.value?.fold(BigDecimal.ZERO) { acc, expense ->
             acc + expense.total
         }
 }

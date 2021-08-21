@@ -7,5 +7,5 @@ import retrofit2.http.GET
 interface PaymentRepository {
 
     @GET("/payments")
-    suspend fun getAll(): Response<List<Filter>>
+    suspend fun findAll(): Response<List<Filter>>
 }

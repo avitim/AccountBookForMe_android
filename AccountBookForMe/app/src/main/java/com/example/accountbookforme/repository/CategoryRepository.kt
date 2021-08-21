@@ -7,6 +7,6 @@ import retrofit2.http.GET
 interface CategoryRepository {
 
     @GET("/categories")
-    suspend fun getAll(): Response<List<Filter>>
+    suspend fun findAll(): Response<List<Filter>>
 
 }

@@ -10,7 +10,7 @@ import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
 
 class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel) :
-    ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
+    ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(PaymentDiffCallback) {
 
     private lateinit var listener: OnExpensePaymentClickListener
 
@@ -57,7 +57,7 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
     }
 }
 
-private object DiffCallbackPayment : DiffUtil.ItemCallback<Payment>() {
+private object PaymentDiffCallback : DiffUtil.ItemCallback<Payment>() {
 
     override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
         return oldItem.id == newItem.id

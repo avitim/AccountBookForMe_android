@@ -9,8 +9,8 @@ import retrofit2.http.Path
 interface ItemRepository {
 
     @GET("/items/category/{id}")
-    suspend fun getItemsByCategoryId(@Path("id") categoryId: Long): Response<List<Item>>
+    suspend fun findByCategoryId(@Path("id") categoryId: Long): Response<List<Item>>
 
     @GET("/items/category/totals")
-    suspend fun getTotalEachCategory(): Response<List<Total>>
+    suspend fun getTotalCategoryList(): Response<List<Total>>
 }

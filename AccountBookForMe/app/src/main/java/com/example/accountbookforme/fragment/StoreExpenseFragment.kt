@@ -91,10 +91,10 @@ class StoreExpenseFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = storeName
 
         // 品物リスト取得
-        expensesViewModel.getExpenseListByStoreId(storeId)
+        expensesViewModel.findByStoreId(storeId)
 
         // 支出リストの監視開始
-        expensesViewModel.expenseStoreList.observe(viewLifecycleOwner, { expenseStoreList ->
+        expensesViewModel.storeExpenseList.observe(viewLifecycleOwner, { expenseStoreList ->
             storeExpenseListAdapter.setExpenseStoreListItems(expenseStoreList)
             // 総額を表示
             binding.allTotal.text = expensesViewModel.calcTotalByStore().toString()

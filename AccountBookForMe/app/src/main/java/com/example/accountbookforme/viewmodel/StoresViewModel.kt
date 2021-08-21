@@ -18,14 +18,14 @@ class StoresViewModel : ViewModel() {
     var storeList: MutableLiveData<List<Filter>> = MutableLiveData()
 
     init {
-        getStoreList()
+        loadStoreList()
     }
 
-    private fun getStoreList() {
+    private fun loadStoreList() {
 
         viewModelScope.launch {
             try {
-                val request = storeRepository.getAll()
+                val request = storeRepository.findAll()
                 if (request.isSuccessful) {
                     storeList.value = request.body()
                 } else {

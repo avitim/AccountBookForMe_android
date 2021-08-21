@@ -16,7 +16,7 @@ class DatePickerDialogFragment(private val dateTime: String?) : DialogFragment()
 
     // 結果を渡すリスナー
     interface OnSelectedDateListener {
-        fun selectedDate(year: Int, month: Int, day: Int)
+        fun selecteDate(year: Int, month: Int, day: Int)
     }
 
     override fun onAttach(context: Context) {
@@ -55,6 +55,6 @@ class DatePickerDialogFragment(private val dateTime: String?) : DialogFragment()
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        listener.selectedDate(year, month, dayOfMonth)
+        listener.selecteDate(year, month, dayOfMonth)
     }
 }

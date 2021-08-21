@@ -15,23 +15,16 @@ package Model {
 
     Entity ExpenseDetail {
 
-        id: Long
+        id: Long?
         totalAmount: BigDecimal
         purchasedAt: String
-        storeId: Long
-        storeName: String
-        note: String
-        payments: List<Payment>
-        items: List<Item>
-    }
-
-    Entity Item {
-
-        id: Long
-        name: String
-        price: BigDecimal
-        categoryId: Long
-        expenseId: Long
+        storeId: Long?
+        storeName: String?
+        note: String?
+        paymentList: MutableList<Payment>
+        itemList: MutableList<Item>
+        deletedItemList: MutableList<Long>
+        deletedPaymentList: MutableList<Long>
     }
 
     Entity Filter {
@@ -40,27 +33,51 @@ package Model {
         name: String
     }
 
+    Entity Item {
+
+        id: Long?
+        name: String
+        price: BigDecimal
+        categoryId: Long
+        expenseId: Long?
+    }
+
     Entity Payment {
 
-        id: Long
+        id: Long?
         total: BigDecimal
-        expenseId: Long
+        paymentId: Long
+        expenseId: Long?
+    }
+
+    Entity Total {
+
+        id: Long
+        name: String
+        total: BigDecimal
     }
 
 }
-Payment }-- ExpenseDetail
 Item }-- ExpenseDetail
+Payment }-- ExpenseDetail
 
 package Repository {
 
+    interface CategoryRepository {
+        --
+        findAll()
+        create(Filter)
+        update(Filter)
+        delete(Long)
+    }
+
     interface ExpenseRepository {
         --
-        getAll()
+        findAll()
         getDetailById(Long)
-        findByPaymentId(Long)
         findByStoreId(Long)
-        getTotalEachPayment()
-        getTotalEachStore()
+        getTotalPaymentList()
+        getTotalStoreList()
         create(ExpenseDetail)
         update(ExpenseDetail)
         delete(Long)
@@ -69,22 +86,12 @@ package Repository {
     interface ItemRepository {
         --
         findByCategoryId(Long)
-        getTotalEachCategory()
-    }
-
-    interface CategoryRepository {
-        --
-        getAll()
-        findById(Long)
-        create(Filter)
-        update(Filter)
-        delete(Long)
+        getTotalCategoryList()
     }
 
     interface PaymentRepository {
         --
-        getAll()
-        findById(Long)
+        findAll()
         create(Filter)
         update(Filter)
         delete(Long)
@@ -92,85 +99,148 @@ package Repository {
 
     interface StoreRepository {
         --
-        getAll()
-        findById(Long)
+        findAll()
         create(Filter)
         update(Filter)
         delete(Long)
     }
 }
+CategoryRepository --> Filter
+ExpenseRepository --> Expense
+ExpenseRepository --> ExpenseDetail
+ExpenseRepository --> Total
+ItemRepository --> Item
+ItemRepository --> Total
+PaymentRepository --> Filter
+StoreRepository --> Filter
 
 package ViewModel {
 
-    class ExpensesViewModel {
-        expenseList: MutableLiveData<List<Expense>>
+    class CategoriesViewModel {
+        categoryList: MutableLiveData<List<Filter>>
         --
-        init
-        - loadExpenseList()
+        - init
+        - loadCategoryList()
+        getNameById(Long)
     }
 
     class ExpenseDetailViewModel {
         expenseDetail: MutableLiveData<ExpenseDetail>
         --
-        getExpenseDetail()
-        getItemById()
-        setItemName()
-        setItemPrice()
-        addItem()
+        createExpenseDetail()
+        getExpenseDetail(Long)
+        create()
+        update()
+        delete()
+        getPurchasedAd()
+        getItemList()
+        getPaymentList()
+        setItemName(Int, String)
+        setItemPrice(Int, BigDecimal)
+        setItemCategory(Int, Long)
+        addItem(Item)
+        removeItem(Int)
+        deleteItem(Int)
+        setPaymentMethod(Int, Long)
+        setPaymentTotal(Int, BigDecimal)
+        addPayment(Payment)
+        removePayment(Int)
+        deletePayment(Int)
     }
 
-    class CategoryViewModel {
-        categoryList: MutableLiveData<List<Filter>>
+    class ExpensesViewModel {
+        expenseList: MutableLiveData<List<Expense>>
+        totalPaymentList: MutableLiveData<List<Total>>
+        totalStoreList: MutableLiveData<List<Total>>
+        storeExpenseList: MutableLiveData<List<Expense>>
         --
-        getCategoryList()
+        - init
+        - loadExpenseList()
+        - getTotalPaymentList()
+        - getTotalStoreList()
+        findByStoreId(Long)
+        calcAllTotal()
+        calcTotalPayment()
+        calcTotalStore()
+        calcTotalByStore()
     }
 
-    class PaymentViewModel {
-        LiveData
+    class ItemsViewModel {
+        totalList: MutableLiveData<List<Total>>
+        itemList: MutableLiveData<List<Item>>
+        --
+        - init
+        - loadTotalList()
+        findByCategoryId(Long)
+        calcTotal()
+        calcItemTotal()
     }
 
-    class StoreViewModel {
+    class PaymentsViewModel {
+        paymentList: MutableLiveData<List<Filter>>
+        --
+        - init
+        - loadPaymentList()
+        getNameById(Long)
+    }
+
+    class StoresViewModel {
         storeList: MutableLiveData<List<Filter>>
         --
-        getStoreList()
+        - init
+        - loadStoreList()
     }
-
 }
+CategoriesViewModel --> CategoryRepository
+ExpenseDetailViewModel --> ExpenseRepository
+ExpensesViewModel --> ExpenseRepository
+ItemsViewModel --> ItemRepository
+PaymentsViewModel --> PaymentRepository
+StoresViewModel --> StoreRepository
 
-package ListAdapter {
 
-    class ExpenseListAdapter {
-        - expenseList: List<Expense>
-        - listener: OnExpenseClickListener
-        class ExpenseViewHolder()
-        --
-        onItemClick()
-        override onCreateViewHolder()
-        override onBindViewHolder()
-        override getItemCount()
-        setOnExpenseClickListener()
-        setExpenseListItems()
-    }
+package Adapter {
 
     class ExpenseItemListAdapter {
         - listener: OnExpenseItemClickListener
         class ExpenseItemViewHolder()
         - object DiffCallback
         --
-        onItemClick()
+        setOnExpenseItemClickListener()
         override onCreateViewHolder()
         override onBindViewHolder()
-        setOnExpenseItemClickListener()
+    }
+
+    class ExpenseListAdapter {
+        - listener: OnExpenseClickListener
+        - expenseList: List<Expense>
+        class ExpenseViewHolder()
+        --
+        setOnExpenseClickListener()
+        override onCreateViewHolder()
+        override onBindViewHolder()
+        override getItemCount()
+        setExpenseListItems()
     }
 
     class ExpensePaymentListAdapter {
         - listener: OnExpensePaymentClickListener
         class ExpensePaymentViewHolder()
-        - object DiffCallback
+        - object PaymentDiffCallback
         --
+        setOnExpensePaymentClickListener()
         override onCreateViewHolder()
         override onBindViewHolder()
-        setOnExpensePaymentClickListener()
+    }
+
+    class FilterListAdapter {
+        - listener: OnFilterClickListener
+        class FilterViewHolder()
+        - object FilterDiffCallback
+        --
+        setOnOnFilterClickListener
+        override onCreateViewHolder()
+        override onBindViewHolder()
     }
 
     class FilterSpinnerAdapter {
@@ -180,43 +250,96 @@ package ListAdapter {
         override getItem()
     }
 
-    class FilterListAdapter {
+    class ItemListAdapter {
+        - listener: OnItemClickListener
+        - itemList: List<Item>
+        class ItemViewHolder()
         --
-        override getView()        
+        setOnItemClickListener
+        override onCreateViewHolder()
+        override onBindViewHolder()
+        override getItemCount()
+        setItemListItems()
     }
 
+    class StoreExpenseListAdapter {
+        - listener: OnExpenseClickListener
+        - expenseList: List<Expense>
+        class ExpenseViewHolder()
+        --
+        setOnExpenseClickListener()
+        override onCreateViewHolder()
+        override onBindViewHolder()
+        override getItemCount()
+        setExpenseStoreListItems()
+    }
+
+    class TotalListAdapter {
+        - listener: OnTotalClickListener
+        - totalList: List<Total>
+        class TotalViewHolder()
+        --
+        setOnTotalClickListener()
+        override onCreateViewHolder()
+        override onBindViewHolder()
+        override getItemCount()
+        setTotalListItems()
+    }
 }
 
 package View {
 
     package Fragment {
 
-        class ExpensesFragment {
-            - binding: FragmentExpensesBinding
+        class AddItemDialogFragment {
+            - listener: OnAddedItemListener
+            - binding: DialogAddItemBinding
+            - newItem: Item
             --
-            override onCreateView()
-            override onViewCreated()
-            - getMonth()
+            override onAttach()
+            override onCreateDialog()
+        }
+
+        class AddPaymentDialogFragment {
+            - listener: OnAddedPaymentListener
+            - binding: DialogAddPaymentBinding
+            - newPayment: Payment
+            --
+            override onAttach()
+            override onCreateDialog()
         }
 
         class CategoriesFragment {
+            - binding: FragmentListWithMonthBinding
             --
             override onCreateView()
+            override onViewCreated()
         }
 
-        class PaymentsFragment {
+        class CategoryItemFragment {
+            - binding: FragmentListWithTitleBinding
+            - categoryId: Long
+            - categoryName: String
             --
             override onCreateView()
+            override onViewCreated()
+            override onOptionsItemSelected()
         }
 
-        class StoresFragment {
+        class DatePickerDialogFragment {
+            - listener: OnSelectedDateListener
             --
-            override onCreateView()
+            override onAttach()
+            override onCreateDialog()
+            override onDateSet()
         }
 
-        class SettingsFragment {
+        class EnterStoreDialogFragment {
+            - listener: OnSelectedStoreListener
+            - binding: DialogEnterStoreBinding
             --
-            override onCreateView()
+            override onAttach()
+            override onCreateDialog()
         }
 
         class ExpenseDetailFragment {
@@ -227,50 +350,53 @@ package View {
             override onViewCreated()
             override onCreateOptionsMenu()
             override onOptionsItemSelected()
-            override selectedDate()
-            override selectedStore()
-            override addedItem()
-            override updatedItem()
+            override selecteDate()
+            override selecteStore()
+            override addItem()
+            override updateItem()
+            override updatePayment()
+            - updateItemTotal()
+            - updatePaymentTotal()
+
         }
 
-        class DatePickerDialogFragment {
-            - listener: OnSelectedDateListener
+        class ExpensesFragment {
+            - binding: FragmentListWithMonthBinding
             --
-            selectedDate()
-            override onAttach()
-            override onCreateDialog()
-            override onDateSet()
+            override onCreateView()
+            override onViewCreated()
+            override onCreateOptionsMenu()
+            override onOptionsItemSelected()
         }
 
-        class EnterStoreDialogFragment {
-            - listener: OnSelectedStoreListener
-            - binding: DialogEnterStoreBinding
+        class PaymentsFragment {
+            - binding: FragmentListWithMonthBinding
             --
-            selectedStore()
-            override onAttach()
-            override onCreateDialog()
+            override onCreateView()
+            override onViewCreated()
         }
 
-        class AddItemDialogFragment {
-            - listener: OnAddedItemListener
-            - binding: DialogAddItemBinding
-            - item: Item
+        class SettingsFragment {
             --
-            addedItem()
-            updatedItem()
-            override onAttach()
-            override onCreateDialog()
+            override onCreateView()
+            override onViewCreated()
         }
 
-        class AddPaymentDialogFragment {
-            - listener: OnAddedPaymentListener
-            - binding: DialogAddPaymentBinding
-            - payment: Filter
+        class StoreExpenseFragment {
+            - binding: FragmentListWithTitleBinding
+            - storeId: Long
+            - storeName: String
             --
-            addedPayment()
-            updatedPayment()
-            override onAttach()
-            override onCreateDialog()
+            override onCreateView()
+            override onViewCreated()
+            override onOptionsItemSelected()
+        }
+
+        class StoresFragment {
+            - binding: FragmentListWithMonthBinding
+            --
+            override onCreateView()
+            override onViewCreated()
         }
     }
 
@@ -294,59 +420,60 @@ package View {
 
     }
 }
+AddItemDialogFragment --> ExpenseDetailViewModel
+AddItemDialogFragment --> FilterSpinnerAdapter
+AddPaymentDialogFragment --> ExpenseDetailViewModel
+AddPaymentDialogFragment --> FilterSpinnerAdapter
+CategoriesFragment --> ItemsViewModel
+CategoriesFragment --> TotalListAdapter
+CategoryItemFragment --> ItemsViewModel
+CategoryItemFragment --> ItemListAdapter
+EnterStoreDialogFragment --> StoresViewModel
+EnterStoreDialogFragment --> FilterListAdapter
+ExpenseDetailFragment --> ExpenseDetailViewModel
+ExpenseDetailFragment --> CategoriesViewModel
+ExpenseDetailFragment --> PaymentsViewModel
+ExpenseDetailFragment --> ExpenseItemListAdapter
+ExpenseDetailFragment --> ExpensePaymentListAdapter
+ExpenseDetailFragment --> DatePickerDialogFragment
+ExpenseDetailFragment --> EnterStoreDialogFragment
+ExpenseDetailFragment --> AddItemDialogFragment
+ExpenseDetailFragment --> AddPaymentDialogFragment
+ExpensesFragment --> ExpensesViewModel
+ExpensesFragment --> ExpenseListAdapter
+PaymentsFragment --> ExpensesViewModel
+PaymentsFragment --> TotalListAdapter
+StoreExpenseFragment --> ExpensesViewModel
+StoreExpenseFragment --> StoreExpenseListAdapter
+StoresFragment --> ExpensesViewModel
+StoresFragment --> TotalListAdapter
+
+MainActivity --> CategoriesFragment
+MainActivity --> CategoryItemFragment
+MainActivity --> ExpensesFragment
+MainActivity --> PaymentsFragment
+MainActivity --> StoreExpenseFragment
+MainActivity --> StoresFragment
+MainActivity --> SettingsFragment
+DetailActivity --> ExpenseDetailFragment
 
 package Util {
-
-    class RestUtil {
-        retrofit: Retrofit
-    }
 
     class DateUtil {
         --
         parseLocalDateTimeFromInt()
-        formatDate()
         - parseLocalDateTime()
+        formatDate()
+        convertStringToCalender()
+        getMonth()
         - zeroPaddingStr()
-
     }
 
+    class RestUtil {
+        - client: OkHttpClient
+        retrofit: Retrofit
+        --
+        - builderHttpClient()
+    }
 }
-
-' RestUtil
-RestUtil <-- ExpenseRepository
-
-' Expenses
-Expense <-- ExpenseRepository
-ExpenseRepository <-- ExpensesViewModel
-ExpensesViewModel <-- ExpensesFragment
-ExpensesFragment <-- ExpenseListAdapter
-ExpensesFragment <-- MainActivity
-
-' ExpenseDetail
-ExpenseDetail <-- ExpenseRepository
-ExpenseRepository <-- ExpenseDetailViewModel
-ExpenseDetailFragment <-- ExpenseDetailViewModel
-ExpenseDetailFragment <-- ExpenseItemListAdapter
-ExpenseDetailFragment <-- ExpensePaymentListAdapter
-EnterStoreDialogFragment <-- FilterListAdapter
-AddItemDialogFragment <-- FilterSpinnerAdapter
-AddPaymentDialogFragment <-- FilterSpinnerAdapter
-ExpenseDetailFragment <-- EnterStoreDialogFragment
-ExpenseDetailFragment <-- AddItemDialogFragment
-ExpenseDetailFragment <-- AddPaymentDialogFragment
-ExpenseDetailFragment <-- DatePickerDialogFragment
-DetailActivity <-- ExpenseDetailFragment
-
-' Categories
-Filter <-- CategoryRepository
-CategoryRepository <-- CategoryViewModel
-
-' Stores
-Filter <-- StoreRepository
-StoreRepository <-- StoreViewModel
-
-' Payments
-
-' Settings
-SettingsFragment <-- MainActivity
 @enduml

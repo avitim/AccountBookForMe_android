@@ -88,8 +88,23 @@ class ExpenseDetailFragment : Fragment(),
 
         }
 
-        // アイテムリストをセットする
-        // クリックイベントを設定
+        // 日付入力欄をタップしたらカレンダーダイアログを表示する
+        binding.purchasedAt.setOnClickListener {
+            DatePickerDialogFragment(expenseDetail.getPurchasedAt()).show(
+                childFragmentManager,
+                null
+            )
+        }
+
+        // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
+        binding.storeList.setOnClickListener {
+            EnterStoreDialogFragment(
+                expenseDetail.expenseDetail.value?.storeId,
+                expenseDetail.expenseDetail.value?.storeName
+            ).show(childFragmentManager, null)
+        }
+
+        // 品物リストのクリックイベントを設定
         itemListAdapter.setOnExpenseItemClickListener(
             object : ExpenseItemListAdapter.OnExpenseItemClickListener {
                 override fun onItemClick(position: Int, item: Item) {
@@ -114,8 +129,7 @@ class ExpenseDetailFragment : Fragment(),
             )
         )
 
-        // 支払いリストをセットする
-        // クリックイベントを設定
+        // 支払いリストのクリックイベントを設定
         paymentListAdapter.setOnExpensePaymentClickListener(
             object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
                 override fun onItemClick(position: Int, payment: Payment) {
@@ -139,7 +153,10 @@ class ExpenseDetailFragment : Fragment(),
 
         // 支出詳細の監視開始
         expenseDetail.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
+
+            // 品物リストをセットする
             itemListAdapter.submitList(expenseDetail.itemList)
+            // 支払いリストをセットする
             paymentListAdapter.submitList(expenseDetail.paymentList)
 
             // 品物の合計額表示
@@ -148,22 +165,6 @@ class ExpenseDetailFragment : Fragment(),
             // 支払いの合計額表示
             updatePaymentTotal()
         })
-
-        // 日付入力欄をタップしたらカレンダーダイアログを表示する
-        binding.purchasedAt.setOnClickListener {
-            DatePickerDialogFragment(expenseDetail.getPurchasedAt()).show(
-                childFragmentManager,
-                null
-            )
-        }
-
-        // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
-        binding.storeList.setOnClickListener {
-            EnterStoreDialogFragment(
-                expenseDetail.expenseDetail.value?.storeId,
-                expenseDetail.expenseDetail.value?.storeName
-            ).show(childFragmentManager, null)
-        }
 
         // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
         binding.addItemBtn.setOnClickListener {
@@ -253,42 +254,42 @@ class ExpenseDetailFragment : Fragment(),
     }
 
     // 日付ダイアログで選択したときに呼ばれる from DatePickerDialogFragment
-    override fun selectedDate(year: Int, month: Int, day: Int) {
+    override fun selecteDate(year: Int, month: Int, day: Int) {
         val dateTime = DateUtil.parseLocalDateTimeFromInt(year, month, day)
         binding.purchasedAt.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
         expenseDetail.expenseDetail.value?.purchasedAt = dateTime
     }
 
     // 店舗を入力したときに呼ばれる from EnterStoreDialogFragment
-    override fun selectedStore(id: Long?, name: String?) {
+    override fun selecteStore(id: Long?, name: String?) {
         binding.storeName.text = name
         expenseDetail.expenseDetail.value?.storeId = id
         expenseDetail.expenseDetail.value?.storeName = name
     }
 
     // 品物を入力したときに呼ばれる from AddItemDialogFragment
-    override fun addedItem(item: Item) {
+    override fun addItem(item: Item) {
         expenseDetail.addItem(item)
         // 品物の合計額更新
         updateItemTotal()
     }
 
     // 品物を更新したときに呼ばれる from AddItemDialogFragment
-    override fun updatedItem() {
+    override fun updateItem() {
         binding.itemList.adapter?.notifyDataSetChanged()
         // 品物の合計額更新
         updateItemTotal()
     }
 
     // 支払いを入力したときに呼ばれる from AddPaymentDialogFragment
-    override fun addedPayment(payment: Payment) {
+    override fun addPayment(payment: Payment) {
         expenseDetail.addPayment(payment)
         // 支払いの合計額更新
         updatePaymentTotal()
     }
 
     // 支払いを更新したときに呼ばれる from AddPaymentDialogFragment
-    override fun updatedPayment() {
+    override fun updatePayment() {
         binding.paymentList.adapter?.notifyDataSetChanged()
         // 支払いの合計額更新
         updatePaymentTotal()

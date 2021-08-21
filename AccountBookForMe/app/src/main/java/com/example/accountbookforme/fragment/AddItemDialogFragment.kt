@@ -28,16 +28,16 @@ class AddItemDialogFragment(
     private var _binding: DialogAddItemBinding? = null
     private val binding get() = _binding!!
 
-    private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
+    private val expenseDetailViewModel: ExpenseDetailViewModel by activityViewModels()
 
     // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
     private var newItem = item ?: Item()
 
     // 結果を渡すリスナー
     interface OnAddedItemListener {
-        fun addedItem(item: Item)
+        fun addItem(item: Item)
 
-        fun updatedItem()
+        fun updateItem()
     }
 
     override fun onAttach(context: Context) {
@@ -59,7 +59,6 @@ class AddItemDialogFragment(
         // 前画面から渡された品物データがあれば代入
         if (item != null) {
 
-            // TODO: カテゴリスピナーも値をセットする
             val position = categoryList.indexOfFirst { category ->
                 category.id == item.categoryId
             }
@@ -101,20 +100,20 @@ class AddItemDialogFragment(
                     // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
 
                     // 入力した品物データを渡すリスナー呼び出し
-                    listener.addedItem(newItem)
+                    listener.addItem(newItem)
 
                 } else {
                     // 更新
 
-                    expenseDetail.setItemName(position, binding.itemName.text.toString())
-                    expenseDetail.setItemPrice(
+                    expenseDetailViewModel.setItemName(position, binding.itemName.text.toString())
+                    expenseDetailViewModel.setItemPrice(
                         position,
                         BigDecimal(binding.itemPrice.text.toString())
                     )
-                    expenseDetail.setItemCategory(position, item.categoryId)
+                    expenseDetailViewModel.setItemCategory(position, item.categoryId)
 
                     // 更新リスナー呼び出し
-                    listener.updatedItem()
+                    listener.updateItem()
                 }
 
             }
@@ -125,14 +124,14 @@ class AddItemDialogFragment(
             builder.setNegativeButton("Delete") { _, _ ->
                 if (item.id == null) {
                     // まだDBには登録されていないのでリストから削除するだけ
-                    expenseDetail.removeItem(position)
+                    expenseDetailViewModel.removeItem(position)
                 } else {
                     // リストから削除して、削除済みリストに登録する
-                    expenseDetail.deleteItem(position)
+                    expenseDetailViewModel.deleteItem(position)
                 }
 
                 // 更新リスナー呼び出し
-                listener.updatedItem()
+                listener.updateItem()
             }
         }
 

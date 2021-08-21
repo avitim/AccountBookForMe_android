@@ -18,14 +18,14 @@ class PaymentsViewModel : ViewModel() {
     var paymentList: MutableLiveData<List<Filter>> = MutableLiveData()
 
     init {
-        getPaymentList()
+        loadPaymentList()
     }
 
-    private fun getPaymentList() {
+    private fun loadPaymentList() {
 
         viewModelScope.launch {
             try {
-                val request = paymentRepository.getAll()
+                val request = paymentRepository.findAll()
                 if (request.isSuccessful) {
                     paymentList.value = request.body()
                 } else {

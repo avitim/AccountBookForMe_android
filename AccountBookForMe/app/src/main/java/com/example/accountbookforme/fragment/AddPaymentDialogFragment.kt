@@ -34,9 +34,9 @@ class AddPaymentDialogFragment(
 
     // 結果を渡すリスナー
     interface OnAddedPaymentListener {
-        fun addedPayment(payment: Payment)
+        fun addPayment(payment: Payment)
 
-        fun updatedPayment()
+        fun updatePayment()
     }
 
     override fun onAttach(context: Context) {
@@ -97,7 +97,7 @@ class AddPaymentDialogFragment(
                     // paymentIdはスピナーで選択時に値更新済みなのでここでは不要
 
                     // 入力した品物データを渡すリスナー呼び出し
-                    listener.addedPayment(newPayment)
+                    listener.addPayment(newPayment)
 
                 } else {
                     // 更新
@@ -109,7 +109,7 @@ class AddPaymentDialogFragment(
                     )
 
                     // 更新リスナー呼び出し
-                    listener.updatedPayment()
+                    listener.updatePayment()
                 }
 
             }
@@ -128,7 +128,7 @@ class AddPaymentDialogFragment(
                 }
 
                 // 更新リスナー呼び出し
-                listener.updatedPayment()
+                listener.updatePayment()
             }
         }
 

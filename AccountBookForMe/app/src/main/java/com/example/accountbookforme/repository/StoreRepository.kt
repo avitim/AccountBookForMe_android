@@ -8,6 +8,6 @@ import retrofit2.http.GET
 interface StoreRepository {
 
     @GET("/stores")
-    suspend fun getAll(): Response<List<Filter>>
+    suspend fun findAll(): Response<List<Filter>>
 
 }
