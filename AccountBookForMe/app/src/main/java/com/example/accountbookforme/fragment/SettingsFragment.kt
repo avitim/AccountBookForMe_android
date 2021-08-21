@@ -20,7 +20,6 @@ class SettingsFragment : Fragment() {
     ): View? {
         settingsViewModel =
             ViewModelProvider(this).get(SettingsViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_settings, container, false)
-        return root
+        return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 }

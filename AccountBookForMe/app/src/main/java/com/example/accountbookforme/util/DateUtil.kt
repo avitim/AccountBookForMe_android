@@ -48,7 +48,7 @@ object DateUtil {
             val date = SimpleDateFormat(DATE_YYYYMMDDHHMMSS, Locale.JAPAN).parse(dateTime)
             date ?: Date()
         } catch (e: Exception) {
-            Log.e("DateUtil", "convertStringToCalender parse error: " + dateTime)
+            Log.e("DateUtil", "convertStringToCalender parse error: $dateTime")
             Date()
         }
     }

@@ -38,7 +38,7 @@ class PaymentsViewModel : ViewModel() {
     }
 
     // IDから名称を取得
-    fun getNameById(id: Long): String? {
+    fun getNameById(id: Long): String {
 
         val payment = paymentList.value?.find { payment ->
             payment.id == id

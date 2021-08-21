@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SingleListItemBinding
 import com.example.accountbookforme.model.Filter
 
-class FilterListAdapter() :
+class FilterListAdapter :
     ListAdapter<Filter, FilterListAdapter.FilterViewHolder>(FilterDiffCallback) {
 
     private lateinit var listener: OnFilterClickListener

@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Total
+import com.example.accountbookforme.util.TextUtil
 
 class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>() {
 
@@ -40,7 +41,7 @@ class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>(
         val category = totalList[position]
 
         holder.name.text = category.name
-        holder.total.text = "¥" + category.total
+        holder.total.text = TextUtil.convertToStrWithCurrency(category.total)
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Payment
+import com.example.accountbookforme.util.TextUtil
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
 
 class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel) :
@@ -31,7 +32,7 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
 
         fun bind(payment: Payment) {
             binding.label.text = paymentsViewModel.getNameById(payment.paymentId)
-            binding.value.text = "¥" + payment.total.toString()
+            binding.value.text = TextUtil.convertToStrWithCurrency(payment.total)
         }
     }
 

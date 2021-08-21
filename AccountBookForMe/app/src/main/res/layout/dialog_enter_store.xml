@@ -13,18 +13,19 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:ems="10"
-            android:hint="Store"
+            android:hint="@string/store"
             android:inputType="textPersonName"
             app:layout_constraintEnd_toStartOf="@+id/confirm_btn"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="" />
 
         <Button
             android:id="@+id/confirm_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="OK"
+            android:text="@string/OK"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +37,7 @@
             android:drawablePadding="5dp"
             android:paddingHorizontal="10dp"
             android:paddingVertical="5dp"
-            android:text="Favorites"
+            android:text="@string/favorites"
             android:textColor="@color/secondaryTextColor"
             app:drawableLeftCompat="@drawable/ic_baseline_star_24"
             app:layout_constraintEnd_toEndOf="parent"

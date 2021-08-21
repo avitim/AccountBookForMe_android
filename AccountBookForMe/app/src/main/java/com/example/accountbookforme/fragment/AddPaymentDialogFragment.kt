@@ -13,6 +13,7 @@ import com.example.accountbookforme.adapter.FilterSpinnerAdapter
 import com.example.accountbookforme.databinding.DialogAddPaymentBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Payment
+import com.example.accountbookforme.util.TextUtil
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
@@ -62,7 +63,7 @@ class AddPaymentDialogFragment(
                 pm.id == payment.paymentId
             }
             binding.payment.setSelection(position, false)
-            binding.paymentTotal.setText(payment.total.toString())
+            binding.paymentTotal.setText(TextUtil.convertToStrWithCurrency(payment.total))
         }
 
         // 決済方法リストのリスナー設定

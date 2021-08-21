@@ -13,6 +13,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.R
 import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ItemListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
@@ -43,7 +44,7 @@ class CategoryItemFragment : Fragment() {
         val view = binding.root
 
         // リストのタイトルを表示
-        binding.listTitle.text = "Items"
+        binding.listTitle.setText(R.string.title_items)
 
         recyclerView = binding.listWithTitle
         itemListAdapter = ItemListAdapter()

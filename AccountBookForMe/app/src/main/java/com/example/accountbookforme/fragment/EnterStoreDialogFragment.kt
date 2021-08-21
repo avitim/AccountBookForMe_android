@@ -32,7 +32,7 @@ class EnterStoreDialogFragment(
 
     // 結果を渡すリスナー
     interface OnSelectedStoreListener {
-        fun selecteStore(id: Long?, name: String?)
+        fun selectStore(id: Long?, name: String?)
     }
 
     override fun onAttach(context: Context) {
@@ -59,7 +59,7 @@ class EnterStoreDialogFragment(
         // ダイアログのOKボタンのタップイベント
         binding.confirmBtn.setOnClickListener {
             // リストから選択していないので店舗IDはnull
-            listener.selecteStore(null, binding.enterStoreArea.text.toString())
+            listener.selectStore(null, binding.enterStoreArea.text.toString())
             // ダイアログを閉じる
             this.dismiss()
         }
@@ -78,7 +78,7 @@ class EnterStoreDialogFragment(
                 override fun onItemClick(filter: Filter) {
 
                     // 画面の店舗名欄の値を渡すリスナー呼び出し
-                    listener.selecteStore(filter.id, filter.name)
+                    listener.selectStore(filter.id, filter.name)
 
                     // ダイアログの入力欄の値を空にする
                     binding.enterStoreArea.setText("")

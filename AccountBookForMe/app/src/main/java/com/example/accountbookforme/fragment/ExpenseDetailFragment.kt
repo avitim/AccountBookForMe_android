@@ -22,6 +22,7 @@ import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.DateUtil
+import com.example.accountbookforme.util.TextUtil
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
@@ -254,14 +255,14 @@ class ExpenseDetailFragment : Fragment(),
     }
 
     // 日付ダイアログで選択したときに呼ばれる from DatePickerDialogFragment
-    override fun selecteDate(year: Int, month: Int, day: Int) {
+    override fun selectDate(year: Int, month: Int, day: Int) {
         val dateTime = DateUtil.parseLocalDateTimeFromInt(year, month, day)
         binding.purchasedAt.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
         expenseDetail.expenseDetail.value?.purchasedAt = dateTime
     }
 
     // 店舗を入力したときに呼ばれる from EnterStoreDialogFragment
-    override fun selecteStore(id: Long?, name: String?) {
+    override fun selectStore(id: Long?, name: String?) {
         binding.storeName.text = name
         expenseDetail.expenseDetail.value?.storeId = id
         expenseDetail.expenseDetail.value?.storeName = name
@@ -301,7 +302,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
             acc + item.price
         }
-        binding.numTotalItem.text = "¥" + total.toString()
+        binding.numTotalItem.text = TextUtil.convertToStrWithCurrency(total)
     }
 
     // 支払いの合計額を計算して表示
@@ -310,7 +311,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
             acc + payment.total
         }
-        binding.numTotalPayment.text = "¥" + total.toString()
+        binding.numTotalPayment.text = TextUtil.convertToStrWithCurrency(total)
     }
 
 }

@@ -13,6 +13,7 @@ import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
+import com.example.accountbookforme.util.TextUtil
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 
 class PaymentsFragment : Fragment() {
@@ -71,7 +72,7 @@ class PaymentsFragment : Fragment() {
         expensesViewModel.totalPaymentList.observe(viewLifecycleOwner, { totalPaymentList ->
             totalListAdapter.setTotalListItems(totalPaymentList)
             // 総額を表示
-            binding.allTotal.text = "¥" + expensesViewModel.calcTotalPayment().toString()
+            binding.allTotal.text = TextUtil.convertToStrWithCurrency(expensesViewModel.calcTotalPayment())
         })
     }
 }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
+import com.example.accountbookforme.util.TextUtil
 
 class StoreExpenseListAdapter : RecyclerView.Adapter<StoreExpenseListAdapter.ExpenseViewHolder>() {
 
@@ -41,7 +42,7 @@ class StoreExpenseListAdapter : RecyclerView.Adapter<StoreExpenseListAdapter.Exp
         val expense = expenseList[position]
 
         holder.purchasedAt.text = DateUtil.formatDate(expense.purchasedAt, DateUtil.DATE_YYYYMMDD)
-        holder.total.text = "¥" + expense.total
+        holder.total.text = TextUtil.convertToStrWithCurrency(expense.total)
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {
