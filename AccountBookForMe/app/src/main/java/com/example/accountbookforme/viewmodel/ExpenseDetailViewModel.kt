@@ -231,7 +231,6 @@ class ExpenseDetailViewModel : ViewModel() {
     fun setPaymentMethod(position: Int, paymentMethodId: Long) {
         try {
             val payment = expenseDetail.value?.paymentList?.get(position)
-            expenseDetail.value?.itemList?.removeAt(position)
             if (payment != null) {
                 payment.paymentId = paymentMethodId
             }
@@ -246,7 +245,6 @@ class ExpenseDetailViewModel : ViewModel() {
     fun setPaymentTotal(position: Int, paymentTotal: BigDecimal) {
         try {
             val payment = expenseDetail.value?.paymentList?.get(position)
-            expenseDetail.value?.itemList?.removeAt(position)
             if (payment != null) {
                 payment.total = paymentTotal
             }
