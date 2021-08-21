@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.Expense
-import com.example.accountbookforme.model.TotalEachFilter
+import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
@@ -20,10 +20,10 @@ class ExpensesViewModel : ViewModel() {
     var expenseList: MutableLiveData<List<Expense>> = MutableLiveData()
 
     // 決済方法ごとの支出額リスト
-    var totalPaymentList: MutableLiveData<List<TotalEachFilter>> = MutableLiveData()
+    var totalPaymentList: MutableLiveData<List<Total>> = MutableLiveData()
 
     // 店舗ごとの支出額リスト
-    var totalStoreList: MutableLiveData<List<TotalEachFilter>> = MutableLiveData()
+    var totalStoreList: MutableLiveData<List<Total>> = MutableLiveData()
 
     // 店舗ごとの支出リスト
     var expenseStoreList: MutableLiveData<List<Expense>> = MutableLiveData()

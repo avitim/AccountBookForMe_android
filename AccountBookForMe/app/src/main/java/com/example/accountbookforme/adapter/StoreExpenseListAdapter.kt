@@ -8,7 +8,7 @@ import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
 
-class ExpenseStoreListAdapter : RecyclerView.Adapter<ExpenseStoreListAdapter.ExpenseViewHolder>() {
+class StoreExpenseListAdapter : RecyclerView.Adapter<StoreExpenseListAdapter.ExpenseViewHolder>() {
 
     private lateinit var listener: OnExpenseClickListener
     private var expenseList: List<Expense> = listOf()
@@ -25,7 +25,7 @@ class ExpenseStoreListAdapter : RecyclerView.Adapter<ExpenseStoreListAdapter.Exp
 
     open class ExpenseViewHolder(binding: SimpleListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val name: TextView = binding.label
+        val purchasedAt: TextView = binding.label
         val total: TextView = binding.value
     }
 
@@ -40,7 +40,7 @@ class ExpenseStoreListAdapter : RecyclerView.Adapter<ExpenseStoreListAdapter.Exp
 
         val expense = expenseList[position]
 
-        holder.name.text = DateUtil.formatDate(expense.purchasedAt, DateUtil.DATE_YYYYMMDD)
+        holder.purchasedAt.text = DateUtil.formatDate(expense.purchasedAt, DateUtil.DATE_YYYYMMDD)
         holder.total.text = "¥" + expense.total
 
         // セルのクリックイベントにリスナーをセット

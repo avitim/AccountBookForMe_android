@@ -2,7 +2,7 @@ package com.example.accountbookforme.model
 
 import java.math.BigDecimal
 
-data class TotalEachFilter(
+data class Total(
 
     val id: Long,
 

@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Payment
-import com.example.accountbookforme.viewmodel.PaymentViewModel
+import com.example.accountbookforme.viewmodel.PaymentsViewModel
 
-class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) :
+class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel) :
     ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(DiffCallbackPayment) {
 
     private lateinit var listener: OnExpensePaymentClickListener
@@ -26,12 +26,12 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) 
 
     open class ExpensePaymentViewHolder(
         private val binding: SimpleListItemBinding,
-        private val paymentViewModel: PaymentViewModel
+        private val paymentsViewModel: PaymentsViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(payment: Payment) {
-            binding.label.text = paymentViewModel.getNameById(payment.paymentId)
-            binding.value.text = payment.total.toString()
+            binding.label.text = paymentsViewModel.getNameById(payment.paymentId)
+            binding.value.text = "¥" + payment.total.toString()
         }
     }
 
@@ -44,7 +44,7 @@ class ExpensePaymentListAdapter(private val paymentViewModel: PaymentViewModel) 
             parent,
             false
         )
-        return ExpensePaymentViewHolder(binding, paymentViewModel)
+        return ExpensePaymentViewHolder(binding, paymentsViewModel)
     }
 
     override fun onBindViewHolder(holder: ExpensePaymentViewHolder, position: Int) {

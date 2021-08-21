@@ -22,9 +22,9 @@ import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.viewmodel.CategoryViewModel
+import com.example.accountbookforme.viewmodel.CategoriesViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
-import com.example.accountbookforme.viewmodel.PaymentViewModel
+import com.example.accountbookforme.viewmodel.PaymentsViewModel
 import java.math.BigDecimal
 
 class ExpenseDetailFragment : Fragment(),
@@ -37,8 +37,8 @@ class ExpenseDetailFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
-    private val categoryViewModel: CategoryViewModel by activityViewModels()
-    private val paymentViewModel: PaymentViewModel by activityViewModels()
+    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val paymentsViewModel: PaymentsViewModel by activityViewModels()
 
     private lateinit var itemListAdapter: ExpenseItemListAdapter
     private lateinit var paymentListAdapter: ExpensePaymentListAdapter
@@ -53,8 +53,8 @@ class ExpenseDetailFragment : Fragment(),
 
         _binding = FragmentExpenseDetailBinding.inflate(inflater, container, false)
 
-        itemListAdapter = ExpenseItemListAdapter(categoryViewModel)
-        paymentListAdapter = ExpensePaymentListAdapter(paymentViewModel)
+        itemListAdapter = ExpenseItemListAdapter(categoriesViewModel)
+        paymentListAdapter = ExpensePaymentListAdapter(paymentsViewModel)
 
         return binding.root
     }
@@ -96,7 +96,7 @@ class ExpenseDetailFragment : Fragment(),
                     AddItemDialogFragment(
                         position,
                         item,
-                        categoryViewModel.categoryList.value!!
+                        categoriesViewModel.categoryList.value!!
                     ).show(
                         childFragmentManager,
                         null
@@ -122,7 +122,7 @@ class ExpenseDetailFragment : Fragment(),
                     AddPaymentDialogFragment(
                         position,
                         payment,
-                        paymentViewModel.paymentList.value!!
+                        paymentsViewModel.paymentList.value!!
                     ).show(childFragmentManager, null)
                 }
             }
@@ -167,7 +167,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
         binding.addItemBtn.setOnClickListener {
-            AddItemDialogFragment(null, null, categoryViewModel.categoryList.value!!).show(
+            AddItemDialogFragment(null, null, categoriesViewModel.categoryList.value!!).show(
                 childFragmentManager,
                 null
             )
@@ -175,7 +175,7 @@ class ExpenseDetailFragment : Fragment(),
 
         // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
         binding.addPaymentBtn.setOnClickListener {
-            AddPaymentDialogFragment(null, null, paymentViewModel.paymentList.value!!).show(
+            AddPaymentDialogFragment(null, null, paymentsViewModel.paymentList.value!!).show(
                 childFragmentManager,
                 null
             )
@@ -300,7 +300,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
             acc + item.price
         }
-        binding.numTotalItem.text = total.toString()
+        binding.numTotalItem.text = "¥" + total.toString()
     }
 
     // 支払いの合計額を計算して表示
@@ -309,7 +309,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
             acc + payment.total
         }
-        binding.numTotalPayment.text = total.toString()
+        binding.numTotalPayment.text = "¥" + total.toString()
     }
 
 }

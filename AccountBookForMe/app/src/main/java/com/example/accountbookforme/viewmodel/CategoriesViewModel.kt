@@ -4,77 +4,45 @@ import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.model.TotalEachFilter
-import com.example.accountbookforme.repository.ItemRepository
+import com.example.accountbookforme.model.Filter
+import com.example.accountbookforme.repository.CategoryRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class CategoriesViewModel : ViewModel() {
 
-    private val itemRepository: ItemRepository =
-        RestUtil.retrofit.create(ItemRepository::class.java)
+    private val categoryRepository: CategoryRepository =
+        RestUtil.retrofit.create(CategoryRepository::class.java)
 
-    // 支出額リスト
-    var totalList: MutableLiveData<List<TotalEachFilter>> = MutableLiveData()
-
-    // 品物リスト
-    var itemList: MutableLiveData<List<Item>> = MutableLiveData()
+    // カテゴリ一覧
+    var categoryList: MutableLiveData<List<Filter>> = MutableLiveData()
 
     init {
-        loadTotalList()
+        loadCategoryList()
     }
 
-    /**
-     * 支出額リスト取得
-     */
-    private fun loadTotalList() {
+    private fun loadCategoryList() {
 
         viewModelScope.launch {
             try {
-                val request = itemRepository.getTotalEachCategory()
+                val request = categoryRepository.getAll()
                 if (request.isSuccessful) {
-                    totalList.value = request.body()
+                    categoryList.value = request.body()
                 } else {
-                    Log.e("CategoriesViewModel", "Not successful: $request")
+                    Log.e("categoryList", "Not successful: $request")
                 }
             } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
+                Log.e("categoryList", "Something is wrong: $e")
             }
         }
     }
 
-    /**
-     * カテゴリIDから品物リスト取得
-     */
-    fun getItemListByCategoryId(categoryId: Long) {
+    // IDから名称を取得
+    fun getNameById(id: Long): String {
 
-        viewModelScope.launch {
-            try {
-                val request = itemRepository.getItemsByCategoryId(categoryId)
-                if (request.isSuccessful) {
-                    itemList.value = request.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
+        val category = categoryList.value?.find { category ->
+            category.id == id
         }
-    }
-
-    /**
-     * 総額を計算
-     */
-    fun calcTotal(): BigDecimal? = totalList.value?.fold(BigDecimal.ZERO) { acc, total ->
-        acc + total.total
-    }
-
-    /**
-     * 品物の総額を計算
-     */
-    fun calcItemTotal(): BigDecimal? = itemList.value?.fold(BigDecimal.ZERO) { acc, item ->
-        acc + item.price
+        return category?.name ?: "Invalid category"
     }
 }

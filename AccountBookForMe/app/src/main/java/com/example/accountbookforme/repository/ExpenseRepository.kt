@@ -2,8 +2,7 @@ package com.example.accountbookforme.repository
 
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.Expense
-import com.example.accountbookforme.model.TotalEachFilter
-import retrofit2.Call
+import com.example.accountbookforme.model.Total
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -23,10 +22,10 @@ interface ExpenseRepository {
     suspend fun getByStoreId(@Path("id") storeId: Long): Response<List<Expense>>
 
     @GET("/expenses/payment/totals")
-    suspend fun getTotalPaymentList(): Response<List<TotalEachFilter>>
+    suspend fun getTotalPaymentList(): Response<List<Total>>
 
     @GET("/expenses/store/totals")
-    suspend fun getTotalStoreList(): Response<List<TotalEachFilter>>
+    suspend fun getTotalStoreList(): Response<List<Total>>
 
     @PUT("/expenses/create")
     suspend fun create(@Body expenseDetail: ExpenseDetail): Response<Void>

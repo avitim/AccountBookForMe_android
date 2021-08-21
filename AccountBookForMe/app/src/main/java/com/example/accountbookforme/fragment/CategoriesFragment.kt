@@ -14,16 +14,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
-import com.example.accountbookforme.model.TotalEachFilter
+import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.viewmodel.CategoriesViewModel
+import com.example.accountbookforme.viewmodel.ItemsViewModel
 
 class CategoriesFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val itemsViewModel: ItemsViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var totalListAdapter: TotalListAdapter
@@ -46,7 +46,7 @@ class CategoriesFragment : Fragment() {
         // セルのクリック処理
         totalListAdapter.setOnTotalClickListener(
             object : TotalListAdapter.OnTotalClickListener {
-                override fun onItemClick(total: TotalEachFilter) {
+                override fun onItemClick(total: Total) {
                     // カテゴリIDとカテゴリ名を渡す
                     val bundle = bundleOf("categoryId" to total.id, "categoryName" to total.name)
                     // カテゴリごとの品物リスト画面に遷移
@@ -77,10 +77,10 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 支出リストの監視開始
-        categoriesViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
+        itemsViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
             totalListAdapter.setTotalListItems(totalList)
             // 総額を表示
-            binding.allTotal.text = "¥" + categoriesViewModel.calcTotal().toString()
+            binding.allTotal.text = "¥" + itemsViewModel.calcTotal().toString()
         })
     }
 }

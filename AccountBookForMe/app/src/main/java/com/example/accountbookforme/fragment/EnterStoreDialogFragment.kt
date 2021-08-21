@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.viewmodel.StoreViewModel
+import com.example.accountbookforme.viewmodel.StoresViewModel
 
 class EnterStoreDialogFragment(
     private var id: Long?,
@@ -25,7 +25,7 @@ class EnterStoreDialogFragment(
     private var _binding: DialogEnterStoreBinding? = null
     private val binding get() = _binding!!
 
-    private val storeViewModel: StoreViewModel by activityViewModels()
+    private val storesViewModel: StoresViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var filterListAdapter: FilterListAdapter
@@ -68,7 +68,7 @@ class EnterStoreDialogFragment(
         recyclerView = binding.storeList
         filterListAdapter = FilterListAdapter()
 
-        storeViewModel.storeList.observe(this, { storeList ->
+        storesViewModel.storeList.observe(this, { storeList ->
             filterListAdapter.submitList(storeList)
         })
 

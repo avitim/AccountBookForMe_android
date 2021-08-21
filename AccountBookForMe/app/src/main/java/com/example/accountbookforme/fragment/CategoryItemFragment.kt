@@ -17,14 +17,14 @@ import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ItemListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.viewmodel.CategoriesViewModel
+import com.example.accountbookforme.viewmodel.ItemsViewModel
 
 class CategoryItemFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!
 
-    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val itemsViewModel: ItemsViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var itemListAdapter: ItemListAdapter
@@ -94,13 +94,13 @@ class CategoryItemFragment : Fragment() {
         (activity as AppCompatActivity).supportActionBar?.title = categoryName
 
         // 品物リスト取得
-        categoriesViewModel.getItemListByCategoryId(categoryId)
+        itemsViewModel.getItemListByCategoryId(categoryId)
 
         // 支出リストの監視開始
-        categoriesViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
+        itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
             itemListAdapter.setItemListItems(itemList)
             // 総額を表示
-            binding.allTotal.text = categoriesViewModel.calcItemTotal().toString()
+            binding.allTotal.text = itemsViewModel.calcItemTotal().toString()
         })
     }
 

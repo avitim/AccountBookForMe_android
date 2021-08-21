@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.NormalListItemBinding
 import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.viewmodel.CategoryViewModel
+import com.example.accountbookforme.viewmodel.CategoriesViewModel
 
-class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
+class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewModel) :
     ListAdapter<Item, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
 
     private lateinit var listener: OnExpenseItemClickListener
@@ -26,13 +26,13 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
 
     open class ExpenseItemViewHolder(
         private val binding: NormalListItemBinding,
-        private val categoryViewModel: CategoryViewModel
+        private val categoriesViewModel: CategoriesViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Item) {
             binding.label.text = item.name
-            binding.subLabel.text = categoryViewModel.getNameById(item.categoryId)
-            binding.value.text = item.price.toString()
+            binding.subLabel.text = categoriesViewModel.getNameById(item.categoryId)
+            binding.value.text = "¥" + item.price.toString()
         }
     }
 
@@ -42,7 +42,7 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
     ): ExpenseItemViewHolder {
         val binding =
             NormalListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ExpenseItemViewHolder(binding, categoryViewModel)
+        return ExpenseItemViewHolder(binding, categoriesViewModel)
     }
 
     override fun onBindViewHolder(holder: ExpenseItemViewHolder, position: Int) {

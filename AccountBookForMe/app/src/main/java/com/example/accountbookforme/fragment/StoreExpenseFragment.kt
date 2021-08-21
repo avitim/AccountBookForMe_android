@@ -14,7 +14,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.activity.DetailActivity
-import com.example.accountbookforme.adapter.ExpenseStoreListAdapter
+import com.example.accountbookforme.adapter.StoreExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
@@ -27,7 +27,7 @@ class StoreExpenseFragment : Fragment() {
     private val expensesViewModel: ExpensesViewModel by activityViewModels()
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var expenseStoreListAdapter: ExpenseStoreListAdapter
+    private lateinit var storeExpenseListAdapter: StoreExpenseListAdapter
 
     private var storeId: Long = 0
     private lateinit var storeName: String
@@ -46,11 +46,11 @@ class StoreExpenseFragment : Fragment() {
         binding.listTitle.text = "Expenses"
 
         recyclerView = binding.listWithTitle
-        expenseStoreListAdapter = ExpenseStoreListAdapter()
+        storeExpenseListAdapter = StoreExpenseListAdapter()
 
-        // クリックした品物が登録されている支出詳細を表示する
-        expenseStoreListAdapter.setOnExpenseClickListener(
-            object : ExpenseStoreListAdapter.OnExpenseClickListener {
+        // クリックした支出詳細を表示する
+        storeExpenseListAdapter.setOnExpenseClickListener(
+            object : StoreExpenseListAdapter.OnExpenseClickListener {
                 override fun onItemClick(expense: Expense) {
 
                     val intent = Intent(context, DetailActivity::class.java)
@@ -64,7 +64,7 @@ class StoreExpenseFragment : Fragment() {
 
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager
-        recyclerView.adapter = expenseStoreListAdapter
+        recyclerView.adapter = storeExpenseListAdapter
 
         // セルの区切り線表示
         recyclerView.addItemDecoration(
@@ -95,7 +95,7 @@ class StoreExpenseFragment : Fragment() {
 
         // 支出リストの監視開始
         expensesViewModel.expenseStoreList.observe(viewLifecycleOwner, { expenseStoreList ->
-            expenseStoreListAdapter.setExpenseStoreListItems(expenseStoreList)
+            storeExpenseListAdapter.setExpenseStoreListItems(expenseStoreList)
             // 総額を表示
             binding.allTotal.text = expensesViewModel.calcTotalByStore().toString()
         })

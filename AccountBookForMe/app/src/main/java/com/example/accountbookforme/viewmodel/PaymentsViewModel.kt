@@ -9,12 +9,12 @@ import com.example.accountbookforme.repository.PaymentRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
 
-class PaymentViewModel : ViewModel() {
+class PaymentsViewModel : ViewModel() {
 
     private val paymentRepository: PaymentRepository =
         RestUtil.retrofit.create(PaymentRepository::class.java)
 
-    // 店舗一覧
+    // 決済方法一覧
     var paymentList: MutableLiveData<List<Filter>> = MutableLiveData()
 
     init {

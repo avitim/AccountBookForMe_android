@@ -9,7 +9,7 @@ import com.example.accountbookforme.repository.StoreRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
 
-class StoreViewModel : ViewModel() {
+class StoresViewModel : ViewModel() {
 
     private val storeRepository: StoreRepository =
         RestUtil.retrofit.create(StoreRepository::class.java)

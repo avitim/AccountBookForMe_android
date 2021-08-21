@@ -5,16 +5,16 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
-import com.example.accountbookforme.model.TotalEachFilter
+import com.example.accountbookforme.model.Total
 
 class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>() {
 
     private lateinit var listener: OnTotalClickListener
-    private var totalList: List<TotalEachFilter> = listOf()
+    private var totalList: List<Total> = listOf()
 
     // 結果を渡すリスナー
     interface OnTotalClickListener {
-        fun onItemClick(total: TotalEachFilter)
+        fun onItemClick(total: Total)
     }
 
     // リスナーをセット
@@ -52,7 +52,7 @@ class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>(
     override fun getItemCount() = totalList.size
 
     // カテゴリごとの支出額リストをセットして変更を通知
-    fun setTotalListItems(totalList: List<TotalEachFilter>) {
+    fun setTotalListItems(totalList: List<Total>) {
         this.totalList = totalList
         notifyDataSetChanged()
     }
