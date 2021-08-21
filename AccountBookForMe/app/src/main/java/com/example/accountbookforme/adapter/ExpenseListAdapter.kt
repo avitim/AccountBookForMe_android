@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.accountbookforme.databinding.FragmentExpenseBinding
+import com.example.accountbookforme.databinding.NormalListItemBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
 
@@ -23,17 +23,17 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
         this.listener = listener
     }
 
-    open class ExpenseViewHolder(binding: FragmentExpenseBinding) :
+    open class ExpenseViewHolder(binding: NormalListItemBinding) :
         RecyclerView.ViewHolder(binding.root) {
-        val purchasedAt: TextView = binding.purchasedAt
-        val storeName: TextView = binding.storeName
-        val total: TextView = binding.total
+        val purchasedAt: TextView = binding.label
+        val storeName: TextView = binding.subLabel
+        val total: TextView = binding.value
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ExpenseViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = FragmentExpenseBinding.inflate(layoutInflater, parent, false)
+        val binding = NormalListItemBinding.inflate(layoutInflater, parent, false)
         return ExpenseViewHolder(binding)
     }
 

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
+import com.example.accountbookforme.model.TotalEachFilter
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 
@@ -38,6 +39,15 @@ class PaymentsFragment : Fragment() {
 
         recyclerView = binding.list
         totalListAdapter = TotalListAdapter()
+
+        // セルのクリック処理
+        totalListAdapter.setOnTotalClickListener(
+            object : TotalListAdapter.OnTotalClickListener {
+                override fun onItemClick(total: TotalEachFilter) {
+                    // 今の所何もしない
+                }
+            }
+        )
 
         val linearLayoutManager = LinearLayoutManager(view.context)
         recyclerView.layoutManager = linearLayoutManager

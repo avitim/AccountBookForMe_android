@@ -14,8 +14,7 @@
     <fragment
         android:id="@+id/navigation_categories"
         android:name="com.example.accountbookforme.fragment.CategoriesFragment"
-        android:label="@string/title_categories"
-        tools:layout="@layout/fragment_filter_list" >
+        android:label="@string/title_categories" >
         <action
             android:id="@+id/action_navigation_categories_to_categoryItemFragment"
             app:destination="@id/expenseCategoryFragment" />
@@ -24,14 +23,12 @@
     <fragment
         android:id="@+id/navigation_payments"
         android:name="com.example.accountbookforme.fragment.PaymentsFragment"
-        android:label="@string/title_payments"
-        tools:layout="@layout/fragment_filter_list" />
+        android:label="@string/title_payments" />
 
     <fragment
         android:id="@+id/navigation_stores"
         android:name="com.example.accountbookforme.fragment.StoresFragment"
-        android:label="@string/title_stores"
-        tools:layout="@layout/fragment_filter_list" >
+        android:label="@string/title_stores" >
         <action
             android:id="@+id/action_navigation_stores_to_storeExpenseFragment"
             app:destination="@id/expenseStoreFragment" />

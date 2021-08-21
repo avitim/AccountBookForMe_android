@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.accountbookforme.databinding.FragmentExpenseItemBinding
+import com.example.accountbookforme.databinding.NormalListItemBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.viewmodel.CategoryViewModel
 
@@ -25,14 +25,14 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
     }
 
     open class ExpenseItemViewHolder(
-        private val binding: FragmentExpenseItemBinding,
+        private val binding: NormalListItemBinding,
         private val categoryViewModel: CategoryViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Item) {
-            binding.name.text = item.name
-            binding.category.text = categoryViewModel.getNameById(item.categoryId)
-            binding.price.text = item.price.toString()
+            binding.label.text = item.name
+            binding.subLabel.text = categoryViewModel.getNameById(item.categoryId)
+            binding.value.text = item.price.toString()
         }
     }
 
@@ -41,7 +41,7 @@ class ExpenseItemListAdapter(private val categoryViewModel: CategoryViewModel) :
         viewType: Int
     ): ExpenseItemViewHolder {
         val binding =
-            FragmentExpenseItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+            NormalListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ExpenseItemViewHolder(binding, categoryViewModel)
     }
 
