@@ -25,7 +25,6 @@ import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.viewmodel.CategoryViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentViewModel
-import com.example.accountbookforme.viewmodel.StoreViewModel
 import java.math.BigDecimal
 
 class ExpenseDetailFragment : Fragment(),
@@ -38,7 +37,6 @@ class ExpenseDetailFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
-    private val storeViewModel: StoreViewModel by activityViewModels()
     private val categoryViewModel: CategoryViewModel by activityViewModels()
     private val paymentViewModel: PaymentViewModel by activityViewModels()
 
@@ -57,10 +55,6 @@ class ExpenseDetailFragment : Fragment(),
 
         itemListAdapter = ExpenseItemListAdapter(categoryViewModel)
         paymentListAdapter = ExpensePaymentListAdapter(paymentViewModel)
-
-        // ViewModelに値をセットする
-        // TODO: なぜかstoreViewModelだけinit()が間に合わないので明示的に呼んでいる。いずれは呼ばなくしたい。
-        storeViewModel.getStoreList()
 
         return binding.root
     }
@@ -167,8 +161,7 @@ class ExpenseDetailFragment : Fragment(),
         binding.storeList.setOnClickListener {
             EnterStoreDialogFragment(
                 expenseDetail.expenseDetail.value?.storeId,
-                expenseDetail.expenseDetail.value?.storeName,
-                storeViewModel.storeList.value!!
+                expenseDetail.expenseDetail.value?.storeName
             ).show(childFragmentManager, null)
         }
 

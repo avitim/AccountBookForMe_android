@@ -16,16 +16,16 @@ class FilterSpinnerAdapter(context: Context, private val filterList: List<Filter
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val view = convertView ?: inflater.inflate(R.layout.list_filter_item, parent, false)
-        view.findViewById<TextView>(R.id.dialog_filter_name).text = getItem(position).name
+        val view = convertView ?: inflater.inflate(R.layout.single_list_item, parent, false)
+        view.findViewById<TextView>(R.id.label).text = getItem(position).name
 
         return view
     }
 
     override fun getDropDownView(position: Int, convertView: View?, parent: ViewGroup): View {
 
-        val view = convertView ?: inflater.inflate(R.layout.list_filter_item, parent, false)
-        view.findViewById<TextView>(R.id.dialog_filter_name).text = getItem(position).name
+        val view = convertView ?: inflater.inflate(R.layout.single_list_item, parent, false)
+        view.findViewById<TextView>(R.id.label).text = getItem(position).name
 
         return view
 

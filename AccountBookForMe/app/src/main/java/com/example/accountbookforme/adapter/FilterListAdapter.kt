@@ -1,35 +1,64 @@
 package com.example.accountbookforme.adapter
 
-import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.TextView
-import com.example.accountbookforme.R
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.databinding.SingleListItemBinding
 import com.example.accountbookforme.model.Filter
 
-class FilterListAdapter(context: Context, private var storeList: List<Filter>) :
-    ArrayAdapter<Filter>(context, 0, storeList) {
+class FilterListAdapter() :
+    ListAdapter<Filter, FilterListAdapter.FilterViewHolder>(FilterDiffCallback) {
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
+    private lateinit var listener: OnFilterClickListener
 
-        val layoutInflater = LayoutInflater.from(parent.context)
+    // 結果を渡すリスナー
+    interface OnFilterClickListener {
+        fun onItemClick(filter: Filter)
+    }
 
-        val store = storeList[position]
+    // リスナーをセット
+    fun setOnFilterClickListener(listener: OnFilterClickListener) {
+        this.listener = listener
+    }
 
-        var view = convertView
+    open class FilterViewHolder(
+        private val binding: SingleListItemBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        if (view == null) {
-            view = layoutInflater.inflate(R.layout.list_filter_item, parent, false)
+        fun bind(filter: Filter) {
+            binding.label.text = filter.name
         }
+    }
 
-        val idView = view?.findViewById<TextView>(R.id.dialog_filter_id)
-        idView?.text = store.id.toString()
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int
+    ): FilterViewHolder {
+        val binding =
+            SingleListItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return FilterViewHolder(binding)
+    }
 
-        val nameView = view?.findViewById<TextView>(R.id.dialog_filter_name)
-        nameView?.text = store.name
+    override fun onBindViewHolder(holder: FilterViewHolder, position: Int) {
 
-        return view!!
+        holder.bind(getItem(position))
+
+        // セルのクリックイベントをセット
+        holder.itemView.setOnClickListener {
+            listener.onItemClick(getItem(position))
+        }
+    }
+}
+
+private object FilterDiffCallback : DiffUtil.ItemCallback<Filter>() {
+
+    override fun areItemsTheSame(oldItem: Filter, newItem: Filter): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Filter, newItem: Filter): Boolean {
+        return oldItem == newItem
     }
 }

@@ -6,20 +6,29 @@ import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
+import com.example.accountbookforme.viewmodel.StoreViewModel
 
 class EnterStoreDialogFragment(
     private var id: Long?,
-    private var name: String?,
-    private val storeList: List<Filter>
+    private var name: String?
 ) : DialogFragment() {
 
     private lateinit var listener: OnSelectedStoreListener
 
     private var _binding: DialogEnterStoreBinding? = null
     private val binding get() = _binding!!
+
+    private val storeViewModel: StoreViewModel by activityViewModels()
+
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var filterListAdapter: FilterListAdapter
 
     // 結果を渡すリスナー
     interface OnSelectedStoreListener {
@@ -44,36 +53,54 @@ class EnterStoreDialogFragment(
             .setTitle("Enter a store").create()
 
         if (id == null) {
-            binding.dialogInputStore.setText(name)
+            binding.enterStoreArea.setText(name)
         }
 
         // ダイアログのOKボタンのタップイベント
-        binding.dialogInputConfirm.setOnClickListener {
+        binding.confirmBtn.setOnClickListener {
             // リストから選択していないので店舗IDはnull
-            listener.selectedStore(null, binding.dialogInputStore.text.toString())
+            listener.selectedStore(null, binding.enterStoreArea.text.toString())
             // ダイアログを閉じる
             this.dismiss()
         }
 
         // 登録済み店舗リスト表示
-        binding.dialogFavoriteStoreList.adapter = FilterListAdapter(requireContext(), storeList)
+        recyclerView = binding.storeList
+        filterListAdapter = FilterListAdapter()
 
-        // タップした店舗リストのアイテムを返却してダイアログを閉じる
-        binding.dialogFavoriteStoreList.setOnItemClickListener { parent, _, position, _ ->
+        storeViewModel.storeList.observe(this, { storeList ->
+            filterListAdapter.submitList(storeList)
+        })
 
-            val store = parent.getItemAtPosition(position) as Filter
+        // セルのクリック処理
+        filterListAdapter.setOnFilterClickListener(
+            object : FilterListAdapter.OnFilterClickListener {
+                override fun onItemClick(filter: Filter) {
 
-            // 画面の店舗名欄の値を渡すリスナー呼び出し
-            listener.selectedStore(store.id, store.name)
+                    // 画面の店舗名欄の値を渡すリスナー呼び出し
+                    listener.selectedStore(filter.id, filter.name)
 
-            // ダイアログの入力欄の値を空にする
-            binding.dialogInputStore.setText("")
+                    // ダイアログの入力欄の値を空にする
+                    binding.enterStoreArea.setText("")
 
-            // ダイアログを閉じる
-            mBuilder.dismiss()
-        }
+                    // ダイアログを閉じる
+                    mBuilder.dismiss()
+                }
+            }
+        )
 
-        return mBuilder
+        val linearLayoutManager = LinearLayoutManager(this.context)
+        recyclerView.layoutManager = linearLayoutManager
+        recyclerView.adapter = filterListAdapter
+
+        // セルの区切り線表示
+        recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this.context,
+                linearLayoutManager.orientation
+            )
+        )
+
+    return mBuilder
     }
-
 }

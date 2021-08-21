@@ -17,7 +17,11 @@ class StoreViewModel : ViewModel() {
     // 店舗一覧
     var storeList: MutableLiveData<List<Filter>> = MutableLiveData()
 
-    fun getStoreList() {
+    init {
+        getStoreList()
+    }
+
+    private fun getStoreList() {
 
         viewModelScope.launch {
             try {
@@ -32,5 +36,4 @@ class StoreViewModel : ViewModel() {
             }
         }
     }
-
 }
