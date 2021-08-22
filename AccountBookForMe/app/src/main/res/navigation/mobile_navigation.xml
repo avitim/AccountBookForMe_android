@@ -38,7 +38,17 @@
         android:id="@+id/navigation_settings"
         android:name="com.example.accountbookforme.fragment.SettingsFragment"
         android:label="@string/title_settings"
-        tools:layout="@layout/fragment_settings" />
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_navigation_settings_to_settingCategoryFragment"
+            app:destination="@id/settingCategoryFragment" />
+        <action
+            android:id="@+id/action_navigation_settings_to_settingPaymentFragment"
+            app:destination="@id/settingPaymentFragment" />
+        <action
+            android:id="@+id/action_navigation_settings_to_settingStoreFragment"
+            app:destination="@id/settingStoreFragment" />
+    </fragment>
     <fragment
         android:id="@+id/expenseCategoryFragment"
         android:name="com.example.accountbookforme.fragment.CategoryItemFragment"
@@ -61,5 +71,17 @@
             android:id="@+id/action_expenseStoreFragment_to_navigation_stores"
             app:popUpTo="@id/navigation_stores" />
     </fragment>
+    <fragment
+        android:id="@+id/settingCategoryFragment"
+        android:name="com.example.accountbookforme.fragment.SettingCategoryFragment"
+        android:label="SettingCategoryFragment" />
+    <fragment
+        android:id="@+id/settingPaymentFragment"
+        android:name="com.example.accountbookforme.fragment.SettingPaymentFragment"
+        android:label="SettingPaymentFragment" />
+    <fragment
+        android:id="@+id/settingStoreFragment"
+        android:name="com.example.accountbookforme.fragment.SettingStoreFragment"
+        android:label="SettingStoreFragment" />
 
 </navigation>

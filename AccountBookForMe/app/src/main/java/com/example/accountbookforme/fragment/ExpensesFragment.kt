@@ -92,7 +92,6 @@ class ExpensesFragment : Fragment() {
         inflater.inflate(R.menu.menu_add, menu)
     }
 
-
     // メニュータップ時の処理設定
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {

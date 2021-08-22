@@ -64,11 +64,11 @@ class EnterStoreDialogFragment(
             this.dismiss()
         }
 
-        // 登録済み店舗リスト表示
         recyclerView = binding.storeList
         filterListAdapter = FilterListAdapter()
 
         storesViewModel.storeList.observe(this, { storeList ->
+            // 登録済み店舗リスト表示
             filterListAdapter.submitList(storeList)
         })
 

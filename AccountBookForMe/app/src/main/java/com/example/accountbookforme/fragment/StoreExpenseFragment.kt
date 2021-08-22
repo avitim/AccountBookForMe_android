@@ -106,6 +106,7 @@ class StoreExpenseFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
+                // 前画面に戻る
                 findNavController().popBackStack()
             }
         }
