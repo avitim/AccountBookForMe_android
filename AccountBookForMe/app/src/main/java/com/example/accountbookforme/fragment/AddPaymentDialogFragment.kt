@@ -76,7 +76,7 @@ class AddPaymentDialogFragment(
                 position: Int,
                 id: Long
             ) {
-                newPayment.paymentId = paymentMethodList[position].id
+                newPayment.paymentId = paymentMethodList[position].id!!
             }
 
             // 選択されなかったとき

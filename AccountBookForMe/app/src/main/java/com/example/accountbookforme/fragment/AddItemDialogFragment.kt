@@ -78,7 +78,7 @@ class AddItemDialogFragment(
                 position: Int,
                 id: Long
             ) {
-                newItem.categoryId = categoryList[position].id
+                newItem.categoryId = categoryList[position].id!!
             }
 
             // 選択されなかったとき

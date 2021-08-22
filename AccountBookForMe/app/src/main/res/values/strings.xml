@@ -12,12 +12,16 @@
     <string name="price">Price</string>
     <string name="category">Category</string>
     <string name="store">Store</string>
-    <string name="OK">OK</string>
-    <string name="delete"><u>Delete</u></string>
-    <string name="favorites">Favorites</string>
-    <string name="enter_a_store">Enter a store</string>
     <string name="label_list">List</string>
+    <string name="note">Note</string>
+    <string name="favorites">Favorites</string>
+    <string name="OK">OK</string>
     <string name="label_add">Add</string>
     <string name="label_save">Save</string>
-    <string name="note">Note</string>
+    <string name="label_delete">Delete</string>
+    <string name="delete_u"><u>Delete</u></string>
+    <string name="label_cancel">Cancel</string>
+    <string name="enter_a_category">Enter a category</string>
+    <string name="enter_a_payment">Enter a payment</string>
+    <string name="enter_a_store">Enter a store</string>
 </resources>

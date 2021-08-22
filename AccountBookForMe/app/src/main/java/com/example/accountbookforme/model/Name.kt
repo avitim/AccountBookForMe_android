@@ -1,9 +1,5 @@
 package com.example.accountbookforme.model
 
-data class Filter(
-
-    var id: Long? = null,
-
+data class Name(
     var name: String = ""
-
 )
