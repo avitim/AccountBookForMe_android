@@ -24,4 +24,11 @@
     <string name="enter_a_category">Enter a category</string>
     <string name="enter_a_payment">Enter a payment</string>
     <string name="enter_a_store">Enter a store</string>
+    <string name="store_is_empty">店舗が入力されていません。</string>
+    <string name="name_is_empty">名称が入力されていません。</string>
+    <string name="item_is_empty">品物が入力されていません。</string>
+    <string name="payment_is_empty">支払いが入力されていません。</string>
+    <string name="price_is_empty">金額が入力されていません。</string>
+    <string name="total_are_not_corresponding">合計金額が不一致です。</string>
+    <string name="yen">¥</string>
 </resources>

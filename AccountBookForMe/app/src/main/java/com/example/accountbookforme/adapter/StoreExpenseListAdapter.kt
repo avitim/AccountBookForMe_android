@@ -42,7 +42,7 @@ class StoreExpenseListAdapter : RecyclerView.Adapter<StoreExpenseListAdapter.Exp
         val expense = expenseList[position]
 
         holder.purchasedAt.text = DateUtil.formatDate(expense.purchasedAt, DateUtil.DATE_YYYYMMDD)
-        holder.total.text = TextUtil.convertToStrWithCurrency(expense.total)
+        holder.total.text = TextUtil.convertToStr(expense.total)
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {

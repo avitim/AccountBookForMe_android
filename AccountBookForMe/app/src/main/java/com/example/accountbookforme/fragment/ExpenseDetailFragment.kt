@@ -3,6 +3,7 @@ package com.example.accountbookforme.fragment
 import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuInflater
@@ -209,15 +210,25 @@ class ExpenseDetailFragment : Fragment(),
 
     }
 
-    // メニュー表示
+    /**
+     * メニュー表示
+     */
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_save, menu)
     }
 
-    // メニュータップ時の処理設定
+    /**
+     * メニュータップ時の処理設定
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menu_save -> {
+                // バリデーションチェック
+                if (!validationCheck()) {
+                    // 失敗したら何もせず終了
+                    return true
+                }
+
                 // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
                 if (id == null) {
                     // 支出詳細をDB上で新規作成するAPIを投げる
@@ -254,64 +265,117 @@ class ExpenseDetailFragment : Fragment(),
         return true
     }
 
-    // 日付ダイアログで選択したときに呼ばれる from DatePickerDialogFragment
+    /**
+     * 日付ダイアログで選択したときに呼ばれる from DatePickerDialogFragment
+     */
     override fun selectDate(year: Int, month: Int, day: Int) {
         val dateTime = DateUtil.parseLocalDateTimeFromInt(year, month, day)
         binding.purchasedAt.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
         expenseDetail.expenseDetail.value?.purchasedAt = dateTime
     }
 
-    // 店舗を入力したときに呼ばれる from EnterStoreDialogFragment
+    /**
+     * 店舗を入力したときに呼ばれる from EnterStoreDialogFragment
+     */
     override fun selectStore(id: Long?, name: String?) {
         binding.storeName.text = name
         expenseDetail.expenseDetail.value?.storeId = id
         expenseDetail.expenseDetail.value?.storeName = name
     }
 
-    // 品物を入力したときに呼ばれる from AddItemDialogFragment
+    /**
+     * 品物を入力したときに呼ばれる from AddItemDialogFragment
+     */
     override fun addItem(item: Item) {
         expenseDetail.addItem(item)
         // 品物の合計額更新
         updateItemTotal()
     }
 
-    // 品物を更新したときに呼ばれる from AddItemDialogFragment
+    /**
+     * 品物を更新したときに呼ばれる from AddItemDialogFragment
+     */
     override fun updateItem() {
         binding.itemList.adapter?.notifyDataSetChanged()
         // 品物の合計額更新
         updateItemTotal()
     }
 
-    // 支払いを入力したときに呼ばれる from AddPaymentDialogFragment
+    /**
+     * 支払いを入力したときに呼ばれる from AddPaymentDialogFragment
+     */
     override fun addPayment(payment: Payment) {
         expenseDetail.addPayment(payment)
         // 支払いの合計額更新
         updatePaymentTotal()
     }
 
-    // 支払いを更新したときに呼ばれる from AddPaymentDialogFragment
+    /**
+     * 支払いを更新したときに呼ばれる from AddPaymentDialogFragment
+     */
     override fun updatePayment() {
         binding.paymentList.adapter?.notifyDataSetChanged()
         // 支払いの合計額更新
         updatePaymentTotal()
     }
 
-    // 品物の合計額を計算して表示
+    /**
+     * 品物の合計額を計算して表示
+     */
     private fun updateItemTotal() {
 
         val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
             acc + item.price
         }
-        binding.numTotalItem.text = TextUtil.convertToStrWithCurrency(total)
+        binding.numTotalItem.text = TextUtil.convertToStr(total)
     }
 
-    // 支払いの合計額を計算して表示
+    /**
+     * 支払いの合計額を計算して表示
+     */
     private fun updatePaymentTotal() {
 
         val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
             acc + payment.total
         }
-        binding.numTotalPayment.text = TextUtil.convertToStrWithCurrency(total)
+        binding.numTotalPayment.text = TextUtil.convertToStr(total)
+    }
+
+    /**
+     * 入力内容のバリデーションチェック
+     */
+    private fun validationCheck(): Boolean {
+
+        var isValidated = true
+        var message = ""
+
+        // 店舗名が入力されていない
+        if (TextUtils.isEmpty(expenseDetail.expenseDetail.value?.storeName)) {
+            isValidated = false
+            message += getString(R.string.store_is_empty)
+        }
+        // 品物が0件
+        if (expenseDetail.getItemList().isNullOrEmpty()) {
+            isValidated = false
+            message += getString(R.string.item_is_empty)
+        }
+        // 支払いが0件
+        if (expenseDetail.getPaymentList().isNullOrEmpty()) {
+            isValidated = false
+            message += getString(R.string.payment_is_empty)
+        }
+        // 品物の合計と支払いの合計が一致しているか
+        if (!binding.numTotalItem.text.equals(binding.numTotalPayment.text)) {
+            isValidated = false
+            message += getString(R.string.total_are_not_corresponding)
+        }
+
+        // バリデーションチェックがfalseならエラートーストを出す
+        if (!isValidated) {
+            Toast.makeText(activity, message, Toast.LENGTH_LONG)
+                .show()
+        }
+        return isValidated
     }
 
 }

@@ -4,12 +4,15 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
@@ -58,10 +61,14 @@ class EnterStoreDialogFragment(
 
         // ダイアログのOKボタンのタップイベント
         binding.confirmBtn.setOnClickListener {
-            // リストから選択していないので店舗IDはnull
-            listener.selectStore(null, binding.enterStoreArea.text.toString())
-            // ダイアログを閉じる
-            this.dismiss()
+            // バリデーションチェック
+            if (validationCheck()) {
+                // 成功
+                // リストから選択していないので店舗IDはnull
+                listener.selectStore(null, binding.enterStoreArea.text.toString())
+                // ダイアログを閉じる
+                this.dismiss()
+            }
         }
 
         recyclerView = binding.storeList
@@ -101,6 +108,21 @@ class EnterStoreDialogFragment(
             )
         )
 
-    return mBuilder
+        return mBuilder
+    }
+
+    /**
+     * 入力内容のバリデーションチェック
+     */
+    private fun validationCheck(): Boolean {
+        return if (TextUtils.isEmpty(binding.enterStoreArea.text.toString())) {
+            // 店舗が入力されていない
+            // エラートーストを出す
+            Toast.makeText(activity, getString(R.string.store_is_empty), Toast.LENGTH_LONG)
+                .show()
+            false
+        } else {
+            true
+        }
     }
 }

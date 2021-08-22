@@ -4,11 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterSpinnerAdapter
 import com.example.accountbookforme.databinding.DialogAddPaymentBinding
 import com.example.accountbookforme.model.Filter
@@ -63,7 +66,7 @@ class AddPaymentDialogFragment(
                 pm.id == payment.paymentId
             }
             binding.payment.setSelection(position, false)
-            binding.paymentTotal.setText(TextUtil.convertToStrWithCurrency(payment.total))
+            binding.paymentTotal.setText(TextUtil.convertToStr(payment.total))
         }
 
         // 決済方法リストのリスナー設定
@@ -88,7 +91,34 @@ class AddPaymentDialogFragment(
         val builder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle("Enter a payment")
-            .setPositiveButton("Add") { _, _ ->
+            .setPositiveButton("Add", null)
+            .setNeutralButton("Cancel", null)
+
+
+        if (position != null && payment != null) {
+            // 更新時は削除ボタンも表示する
+            builder.setNegativeButton("Delete") { _, _ ->
+                if (payment.id == null) {
+                    // まだDBには登録されていないのでリストから削除するだけ
+                    expenseDetail.removePayment(position)
+                } else {
+                    // リストから削除して、削除済みリストに登録する
+                    expenseDetail.deletePayment(position)
+                }
+
+                // 更新リスナー呼び出し
+                listener.updatePayment()
+            }
+        }
+
+        val dialog = builder.create()
+        dialog.show()
+        // OKボタンタップ時の処理
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            // バリデーションチェック
+            if (validationCheck()) {
+                // 成功
+
                 // 入力内容を反映
                 // TODO: いずれは双方向データバインディングで
                 if (position == null || payment == null) {
@@ -112,27 +142,27 @@ class AddPaymentDialogFragment(
                     // 更新リスナー呼び出し
                     listener.updatePayment()
                 }
-
-            }
-            .setNeutralButton("Cancel", null)
-
-
-        if (position != null && payment != null) {
-            // 更新時は削除ボタンも表示する
-            builder.setNegativeButton("Delete") { _, _ ->
-                if (payment.id == null) {
-                    // まだDBには登録されていないのでリストから削除するだけ
-                    expenseDetail.removePayment(position)
-                } else {
-                    // リストから削除して、削除済みリストに登録する
-                    expenseDetail.deletePayment(position)
-                }
-
-                // 更新リスナー呼び出し
-                listener.updatePayment()
+                // ダイアログを閉じる
+                dialog.dismiss()
             }
         }
 
-        return builder.create()
+        return dialog
+    }
+
+    /**
+     * バリデーションチェック
+     */
+    private fun validationCheck(): Boolean {
+
+        // 金額が入力されていない
+        return if (TextUtils.isEmpty(binding.paymentTotal.text.toString())) {
+            // エラートーストを出す
+            Toast.makeText(activity, getString(R.string.price_is_empty), Toast.LENGTH_LONG)
+                .show()
+            false
+        } else {
+            true
+        }
     }
 }

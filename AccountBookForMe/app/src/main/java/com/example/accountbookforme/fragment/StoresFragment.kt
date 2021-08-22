@@ -81,7 +81,7 @@ class StoresFragment : Fragment() {
         expensesViewModel.totalStoreList.observe(viewLifecycleOwner, { totalStoreList ->
             totalListAdapter.setTotalListItems(totalStoreList)
             // 総額を表示
-            binding.allTotal.text = TextUtil.convertToStrWithCurrency(expensesViewModel.calcTotalStore())
+            binding.allTotal.text = TextUtil.convertToStr(expensesViewModel.calcTotalStore())
         })
     }
 }

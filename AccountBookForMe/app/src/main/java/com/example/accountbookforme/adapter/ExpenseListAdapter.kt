@@ -44,7 +44,7 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
 
         holder.purchasedAt.text =
             DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
-        holder.total.text = TextUtil.convertToStrWithCurrency(expenseItem.total)
+        holder.total.text = TextUtil.convertToStr(expenseItem.total)
         holder.storeName.text = expenseItem.storeName
 
         // セルのクリックイベントにリスナーをセット

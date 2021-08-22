@@ -41,7 +41,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListAdapter.ItemViewHolder>() {
         val item = itemList[position]
 
         holder.name.text = item.name
-        holder.total.text = TextUtil.convertToStrWithCurrency(item.price)
+        holder.total.text = TextUtil.convertToStr(item.price)
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {

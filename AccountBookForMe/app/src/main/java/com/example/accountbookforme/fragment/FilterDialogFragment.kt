@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import com.example.accountbookforme.R
 import com.example.accountbookforme.databinding.DialogFilterBinding
@@ -51,19 +53,7 @@ class FilterDialogFragment(
         val builder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle(title)
-            .setPositiveButton(R.string.label_save) { _, _ ->
-                // 入力内容を反映
-                // TODO: いずれは双方向データバインディングで
-
-                if (filter == null) {
-                    // 新規作成
-                    listener.create(Name(binding.editFilterName.text.toString()))
-                } else {
-                    // 更新
-                    filter.name = binding.editFilterName.text.toString()
-                    listener.update(filter)
-                }
-            }
+            .setPositiveButton(R.string.label_save, null)
             .setNeutralButton(R.string.label_cancel, null)
 
         if (filter != null) {
@@ -75,6 +65,46 @@ class FilterDialogFragment(
             }
         }
 
-        return builder.create()
+        val dialog = builder.create()
+        dialog.show()
+        // OKボタンタップ時の処理
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            // バリデーションチェック
+            if (validationCheck()) {
+                // 成功
+
+                // 入力内容を反映
+                // TODO: いずれは双方向データバインディングで
+
+                if (filter == null) {
+                    // 新規作成
+                    listener.create(Name(binding.editFilterName.text.toString()))
+                } else {
+                    // 更新
+                    filter.name = binding.editFilterName.text.toString()
+                    listener.update(filter)
+                }
+                // ダイアログを閉じる
+                dialog.dismiss()
+            }
+        }
+
+        return dialog
+    }
+
+    /**
+     * バリデーションチェック
+     */
+    private fun validationCheck(): Boolean {
+
+        // 名称が入力されていない
+        return if (TextUtils.isEmpty(binding.editFilterName.text.toString())) {
+                // エラートーストを出す
+                Toast.makeText(activity, getString(R.string.name_is_empty), Toast.LENGTH_LONG)
+                    .show()
+                false
+            } else {
+            true
+        }
     }
 }

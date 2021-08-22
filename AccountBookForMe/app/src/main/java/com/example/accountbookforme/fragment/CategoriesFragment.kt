@@ -81,7 +81,7 @@ class CategoriesFragment : Fragment() {
         itemsViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
             totalListAdapter.setTotalListItems(totalList)
             // 総額を表示
-            binding.allTotal.text = TextUtil.convertToStrWithCurrency(itemsViewModel.calcTotal())
+            binding.allTotal.text = TextUtil.convertToStr(itemsViewModel.calcTotal())
         })
     }
 }

@@ -32,7 +32,7 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
 
         fun bind(payment: Payment) {
             binding.label.text = paymentsViewModel.getNameById(payment.paymentId)
-            binding.value.text = TextUtil.convertToStrWithCurrency(payment.total)
+            binding.value.text = TextUtil.convertToStr(payment.total)
         }
     }
 

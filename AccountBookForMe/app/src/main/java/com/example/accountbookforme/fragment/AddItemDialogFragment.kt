@@ -4,11 +4,14 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
 import android.os.Bundle
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.AdapterView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterSpinnerAdapter
 import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
@@ -65,7 +68,7 @@ class AddItemDialogFragment(
             }
             binding.itemCategory.setSelection(position, false)
             binding.itemName.setText(item.name)
-            binding.itemPrice.setText(TextUtil.convertToStrWithCurrency(item.price))
+            binding.itemPrice.setText(TextUtil.convertToStr(item.price))
         }
 
         // カテゴリリストのリスナー設定
@@ -90,34 +93,7 @@ class AddItemDialogFragment(
         val builder = AlertDialog.Builder(context)
             .setView(binding.root)
             .setTitle("Enter an item")
-            .setPositiveButton("Add") { _, _ ->
-                // 入力内容を反映
-                // TODO: いずれは双方向データバインディングで
-                if (position == null || item == null) {
-                    // 新規追加
-
-                    newItem.name = binding.itemName.text.toString()
-                    newItem.price = BigDecimal(binding.itemPrice.text.toString())
-                    // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
-
-                    // 入力した品物データを渡すリスナー呼び出し
-                    listener.addItem(newItem)
-
-                } else {
-                    // 更新
-
-                    expenseDetailViewModel.setItemName(position, binding.itemName.text.toString())
-                    expenseDetailViewModel.setItemPrice(
-                        position,
-                        BigDecimal(binding.itemPrice.text.toString())
-                    )
-                    expenseDetailViewModel.setItemCategory(position, item.categoryId)
-
-                    // 更新リスナー呼び出し
-                    listener.updateItem()
-                }
-
-            }
+            .setPositiveButton("Add", null)
             .setNeutralButton("Cancel", null)
 
         if (position != null && item != null) {
@@ -136,6 +112,74 @@ class AddItemDialogFragment(
             }
         }
 
-        return builder.create()
+        val dialog = builder.create()
+        dialog.show()
+        // OKボタンタップ時の処理
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
+            // バリデーションチェック
+            if (validationCheck()) {
+                // 成功
+
+                // 入力内容を反映
+                // TODO: いずれは双方向データバインディングで
+                if (position == null || item == null) {
+                    // 新規追加
+
+                    newItem.name = binding.itemName.text.toString()
+                    newItem.price = BigDecimal(binding.itemPrice.text.toString())
+                    // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
+
+                    // 入力した品物データを渡すリスナー呼び出し
+                    listener.addItem(newItem)
+
+                } else {
+                    // 更新
+
+                    expenseDetailViewModel.setItemName(
+                        position,
+                        binding.itemName.text.toString()
+                    )
+                    expenseDetailViewModel.setItemPrice(
+                        position,
+                        BigDecimal(binding.itemPrice.text.toString())
+                    )
+                    expenseDetailViewModel.setItemCategory(position, item.categoryId)
+
+                    // 更新リスナー呼び出し
+                    listener.updateItem()
+                }
+                // ダイアログを閉じる
+                dialog.dismiss()
+            }
+        }
+
+        return dialog
+    }
+
+    /**
+     * バリデーションチェック
+     */
+    private fun validationCheck(): Boolean {
+
+        var isValidated = true
+        var message = ""
+
+        // 品名が入力されていない
+        if (TextUtils.isEmpty(binding.itemName.text.toString())) {
+            isValidated = false
+            message += getString(R.string.name_is_empty)
+        }
+        // 金額が入力されていない
+        if (TextUtils.isEmpty(binding.itemPrice.text.toString())) {
+            isValidated = false
+            message += getString(R.string.price_is_empty)
+        }
+
+        // バリデーションチェックがfalseならエラートーストを出す
+        if (!isValidated) {
+            Toast.makeText(activity, message, Toast.LENGTH_LONG)
+                .show()
+        }
+        return isValidated
     }
 }

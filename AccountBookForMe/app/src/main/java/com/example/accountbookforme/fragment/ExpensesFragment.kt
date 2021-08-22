@@ -83,7 +83,7 @@ class ExpensesFragment : Fragment() {
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
             expenseListAdapter.setExpenseListItems(expenseList)
             // 総額を表示
-            binding.allTotal.text = TextUtil.convertToStrWithCurrency(expensesViewModel.calcAllTotal())
+            binding.allTotal.text = TextUtil.convertToStr(expensesViewModel.calcAllTotal())
         })
     }
 
