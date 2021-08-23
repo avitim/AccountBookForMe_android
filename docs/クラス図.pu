@@ -42,6 +42,10 @@ package Model {
         expenseId: Long?
     }
 
+    Entity Name {
+        name: String
+    }
+
     Entity Payment {
 
         id: Long?
@@ -66,7 +70,7 @@ package Repository {
     interface CategoryRepository {
         --
         findAll()
-        create(Filter)
+        create(Name)
         update(Filter)
         delete(Long)
     }
@@ -92,7 +96,7 @@ package Repository {
     interface PaymentRepository {
         --
         findAll()
-        create(Filter)
+        create(Name)
         update(Filter)
         delete(Long)
     }
@@ -100,19 +104,22 @@ package Repository {
     interface StoreRepository {
         --
         findAll()
-        create(Filter)
+        create(Name)
         update(Filter)
         delete(Long)
     }
 }
 CategoryRepository --> Filter
+CategoryRepository --> Name
 ExpenseRepository --> Expense
 ExpenseRepository --> ExpenseDetail
 ExpenseRepository --> Total
 ItemRepository --> Item
 ItemRepository --> Total
 PaymentRepository --> Filter
+PaymentRepository --> Name
 StoreRepository --> Filter
+StoreRepository --> Name
 
 package ViewModel {
 
@@ -122,6 +129,9 @@ package ViewModel {
         - init
         - loadCategoryList()
         getNameById(Long)
+        create(Name)
+        update(Filter)
+        delete(Long)
     }
 
     class ExpenseDetailViewModel {
@@ -182,6 +192,9 @@ package ViewModel {
         - init
         - loadPaymentList()
         getNameById(Long)
+        create(Name)
+        update(Filter)
+        delete(Long)
     }
 
     class StoresViewModel {
@@ -189,6 +202,9 @@ package ViewModel {
         --
         - init
         - loadStoreList()
+        create(Name)
+        update(Filter)
+        delete(Long)
     }
 }
 CategoriesViewModel --> CategoryRepository
@@ -298,6 +314,7 @@ package View {
             --
             override onAttach()
             override onCreateDialog()
+            - validationCheck()
         }
 
         class AddPaymentDialogFragment {
@@ -307,6 +324,7 @@ package View {
             --
             override onAttach()
             override onCreateDialog()
+            - validationCheck()
         }
 
         class CategoriesFragment {
@@ -340,6 +358,7 @@ package View {
             --
             override onAttach()
             override onCreateDialog()
+            - validationCheck()
         }
 
         class ExpenseDetailFragment {
@@ -357,7 +376,7 @@ package View {
             override updatePayment()
             - updateItemTotal()
             - updatePaymentTotal()
-
+            - validationCheck()
         }
 
         class ExpensesFragment {
@@ -369,6 +388,15 @@ package View {
             override onOptionsItemSelected()
         }
 
+        class FilterDialogFragment {
+           - binding: DialogFilterBinding
+           - listener: OnAddFilterListener
+            --
+            override onAttach()
+            override onCreateDialog()
+            - validationCheck()
+        }
+
         class PaymentsFragment {
             - binding: FragmentListWithMonthBinding
             --
@@ -376,10 +404,40 @@ package View {
             override onViewCreated()
         }
 
-        class SettingsFragment {
+        class SettingCategoryFragment {
+            - binding: FragmentListBinding
             --
             override onCreateView()
             override onViewCreated()
+            override create()
+            override update()
+            override delete()
+        }
+
+        class SettingPaymentFragment {
+            - binding: FragmentListBinding
+            --
+            override onCreateView()
+            override onViewCreated()
+            override create()
+            override update()
+            override delete()
+        }
+
+        class SettingsFragment {
+            - binding: FragmentSettingsBinding
+            --
+            override onCreateView()
+        }
+
+        class SettingStoreFragment {
+            - binding: FragmentListBinding
+            --
+            override onCreateView()
+            override onViewCreated()
+            override create()
+            override update()
+            override delete()
         }
 
         class StoreExpenseFragment {
@@ -443,6 +501,9 @@ ExpensesFragment --> ExpensesViewModel
 ExpensesFragment --> ExpenseListAdapter
 PaymentsFragment --> ExpensesViewModel
 PaymentsFragment --> TotalListAdapter
+SettingCategoryFragment --> CategoriesViewModel
+SettingPaymentFragment --> PaymentsViewModel
+SettingStoreFragment --> StoresViewModel
 StoreExpenseFragment --> ExpensesViewModel
 StoreExpenseFragment --> StoreExpenseListAdapter
 StoresFragment --> ExpensesViewModel
@@ -452,9 +513,12 @@ MainActivity --> CategoriesFragment
 MainActivity --> CategoryItemFragment
 MainActivity --> ExpensesFragment
 MainActivity --> PaymentsFragment
+MainActivity --> SettingCategoryFragment
+MainActivity --> SettingPaymentFragment
+MainActivity --> SettingsFragment
+MainActivity --> SettingStoreFragment
 MainActivity --> StoreExpenseFragment
 MainActivity --> StoresFragment
-MainActivity --> SettingsFragment
 DetailActivity --> ExpenseDetailFragment
 
 package Util {
