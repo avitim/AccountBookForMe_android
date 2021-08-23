@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/itemName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:ems="10"
+            android:hint="@string/name"
+            android:inputType="text"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:autofillHints="" />
+
+        <TextView
+            android:id="@+id/itemPriceLabel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/price"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrierName" />
+
+        <EditText
+            android:id="@+id/itemPrice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            android:hint="@string/price"
+            android:inputType="numberSigned"
+            android:textColor="@color/secondaryTextColor"
+            app:layout_constraintBottom_toBottomOf="@+id/itemPriceLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/barrierLabel"
+            app:layout_constraintTop_toTopOf="@+id/itemPriceLabel"
+            android:autofillHints="" />
+
+        <TextView
+            android:id="@+id/itemCategoryLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:text="@string/category"
+            android:textColor="@color/secondaryTextColor"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/barrierPrice" />
+
+        <Spinner
+            android:id="@+id/itemCategory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="15dp"
+            android:ems="10"
+            app:layout_constraintBottom_toBottomOf="@+id/itemCategoryLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/barrierLabel"
+            app:layout_constraintTop_toTopOf="@+id/itemCategoryLabel" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:barrierMargin="10dp"
+            app:constraint_referenced_ids="itemPriceLabel,itemCategoryLabel"
+            tools:layout_editor_absoluteX="72dp" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:barrierMargin="15dp"
+            app:constraint_referenced_ids="itemPrice,itemPriceLabel"
+            tools:layout_editor_absoluteY="60dp" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrierName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:barrierMargin="15dp"
+            app:constraint_referenced_ids="itemName"
+            tools:layout_editor_absoluteX="221dp"
+            tools:layout_editor_absoluteY="441dp" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

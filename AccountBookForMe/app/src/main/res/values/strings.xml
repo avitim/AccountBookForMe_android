@@ -1,13 +1,34 @@
 <resources>
-    <string name="app_name">家計簿 for me</string>
-    <string name="month">Month</string>
+    <string name="app_name">My money</string>
     <string name="title_expenses">Expenses</string>
     <string name="title_categories">Categories</string>
     <string name="title_payments">Payments</string>
     <string name="title_stores">Stores</string>
     <string name="title_settings">Settings</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="delete"><u>Delete</u></string>
+    <string name="title_items">Items</string>
     <string name="title_detail">Detail</string>
+    <string name="total">Total</string>
+    <string name="name">Name</string>
+    <string name="price">Price</string>
+    <string name="category">Category</string>
+    <string name="store">Store</string>
+    <string name="label_list">List</string>
+    <string name="note">Note</string>
+    <string name="favorites">Favorites</string>
+    <string name="OK">OK</string>
+    <string name="label_add">Add</string>
+    <string name="label_save">Save</string>
+    <string name="label_delete">Delete</string>
+    <string name="delete_u"><u>Delete</u></string>
+    <string name="label_cancel">Cancel</string>
+    <string name="enter_a_category">Enter a category</string>
+    <string name="enter_a_payment">Enter a payment</string>
+    <string name="enter_a_store">Enter a store</string>
+    <string name="store_is_empty">店舗が入力されていません。</string>
+    <string name="name_is_empty">名称が入力されていません。</string>
+    <string name="item_is_empty">品物が入力されていません。</string>
+    <string name="payment_is_empty">支払いが入力されていません。</string>
+    <string name="price_is_empty">金額が入力されていません。</string>
+    <string name="total_are_not_corresponding">合計金額が不一致です。</string>
+    <string name="yen">¥</string>
 </resources>

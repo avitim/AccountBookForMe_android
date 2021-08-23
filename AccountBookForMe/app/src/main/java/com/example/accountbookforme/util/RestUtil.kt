@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RestUtil {
 
-    val client = builderHttpClient()
+    private val client = builderHttpClient()
 
     val retrofit: Retrofit = Retrofit.Builder()
         .addConverterFactory(GsonConverterFactory.create())

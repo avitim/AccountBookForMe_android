@@ -13,15 +13,15 @@ android {
         minSdkVersion 26
         targetSdkVersion 30
         versionCode 1
-        versionName "1.0"
+        versionName "1.1"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-//            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.12:8080\""
-            buildConfigField "String", "API_BASE_URL", "\"https://account-book-for-me.herokuapp.com\""
+            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.10:8080\""
+//            buildConfigField "String", "API_BASE_URL", "\"https://account-book-for-me.herokuapp.com\""
         }
 
         release {
@@ -39,11 +39,9 @@ android {
         jvmTarget = '1.8'
     }
 
-    viewBinding {
-        enabled true
-    }
-    dataBinding {
-        enabled true
+    buildFeatures {
+        viewBinding true
+        dataBinding true
     }
 }
 
@@ -57,8 +55,11 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.navigation:navigation-fragment:2.3.3'
     implementation 'androidx.navigation:navigation-ui:2.3.3'
+
+    // LiveData, ViewModel
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
@@ -91,9 +92,6 @@ dependencies {
     // Android Architecture Components
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.0'
-
-    // viewModelScopeを使うため
-    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
 
     // OkHttp
     def okhttp_version = '4.0.0'
