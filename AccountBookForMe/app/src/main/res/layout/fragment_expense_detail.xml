@@ -29,50 +29,21 @@
                 android:textAlignment="center"
                 android:textColor="@color/secondaryTextColor"
                 android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@+id/store"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/store"
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/storeName"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:hint="@string/enter_a_store"
+                android:padding="5dp"
+                android:text="@={vm.expenseDetail.storeName}"
+                android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/purchasedAt">
-
-                <TextView
-                    android:id="@+id/storeName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="5dp"
-                    android:layout_marginEnd="10dp"
-                    android:hint="@string/enter_a_store"
-                    android:padding="5dp"
-                    android:text="@={vm.expenseDetail.storeName}"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/storeList"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/storeList"
-                    android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_marginEnd="5dp"
-                    android:contentDescription="@string/label_list"
-                    android:scaleX="1.2"
-                    android:scaleY="1.2"
-                    android:src="@drawable/ic_baseline_list_alt_24"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/storeName"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@+id/purchasedAt" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/items"
@@ -82,7 +53,7 @@
                 android:padding="5dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/store">
+                app:layout_constraintTop_toBottomOf="@+id/storeName">
 
                 <TextView
                     android:id="@+id/titleItems"

@@ -16,7 +16,7 @@ import com.example.accountbookforme.adapter.FilterSpinnerAdapter
 import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import java.math.BigDecimal
 
@@ -68,7 +68,7 @@ class AddItemDialogFragment(
             }
             binding.itemCategory.setSelection(position, false)
             binding.itemName.setText(item.name)
-            binding.itemPrice.setText(TextUtil.convertToStr(item.price))
+            binding.itemPrice.setText(Utils.convertToStrDecimal(item.price))
         }
 
         // カテゴリリストのリスナー設定

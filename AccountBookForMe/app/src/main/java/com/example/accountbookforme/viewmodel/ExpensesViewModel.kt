@@ -9,7 +9,6 @@ import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class ExpensesViewModel : ViewModel() {
 
@@ -109,35 +108,4 @@ class ExpensesViewModel : ViewModel() {
             }
         }
     }
-
-    /**
-     * すべての総額を計算
-     */
-    fun calcAllTotal(): BigDecimal? = expenseList.value?.fold(BigDecimal.ZERO) { acc, expense ->
-        acc + expense.total
-    }
-
-    /**
-     * 支払い額をもとに支出の総額を計算
-     */
-    fun calcTotalPayment(): BigDecimal? =
-        totalPaymentList.value?.fold(BigDecimal.ZERO) { acc, expense ->
-            acc + expense.total
-        }
-
-    /**
-     * 店舗ごとの金額をもとに支出の総額を計算
-     */
-    fun calcTotalStore(): BigDecimal? =
-        totalStoreList.value?.fold(BigDecimal.ZERO) { acc, expense ->
-            acc + expense.total
-        }
-
-    /**
-     * 店舗ごとの金額をもとに支出の総額を計算
-     */
-    fun calcTotalByStore(): BigDecimal? =
-        storeExpenseList.value?.fold(BigDecimal.ZERO) { acc, expense ->
-            acc + expense.total
-        }
 }

@@ -18,6 +18,7 @@ import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.ItemListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ItemsViewModel
 
 class CategoryItemFragment : Fragment() {
@@ -101,7 +102,7 @@ class CategoryItemFragment : Fragment() {
         itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
             itemListAdapter.setItemListItems(itemList)
             // 総額を表示
-            binding.allTotal.text = itemsViewModel.calcItemTotal().toString()
+            binding.allTotal.text = itemsViewModel.itemList.value?.let { Utils.calcItemTotal(it).toString() }
         })
     }
 

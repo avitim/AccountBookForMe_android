@@ -18,6 +18,7 @@ import com.example.accountbookforme.activity.DetailActivity
 import com.example.accountbookforme.adapter.StoreExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Expense
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 
 class StoreExpenseFragment : Fragment() {
@@ -98,7 +99,8 @@ class StoreExpenseFragment : Fragment() {
         expensesViewModel.storeExpenseList.observe(viewLifecycleOwner, { expenseStoreList ->
             storeExpenseListAdapter.setExpenseStoreListItems(expenseStoreList)
             // 総額を表示
-            binding.allTotal.text = expensesViewModel.calcTotalByStore().toString()
+            binding.allTotal.text =
+                expensesViewModel.storeExpenseList.value?.let { Utils.calcExpenseTotal(it).toString() }
         })
     }
 
