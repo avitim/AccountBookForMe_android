@@ -9,7 +9,6 @@ import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.repository.ItemRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
-import java.math.BigDecimal
 
 class ItemsViewModel : ViewModel() {
 
@@ -62,19 +61,5 @@ class ItemsViewModel : ViewModel() {
                 Log.e("CategoriesViewModel", "Something is wrong: $e")
             }
         }
-    }
-
-    /**
-     * 総額を計算
-     */
-    fun calcTotal(): BigDecimal? = totalList.value?.fold(BigDecimal.ZERO) { acc, total ->
-        acc + total.total
-    }
-
-    /**
-     * 品物の総額を計算
-     */
-    fun calcItemTotal(): BigDecimal? = itemList.value?.fold(BigDecimal.ZERO) { acc, item ->
-        acc + item.price
     }
 }

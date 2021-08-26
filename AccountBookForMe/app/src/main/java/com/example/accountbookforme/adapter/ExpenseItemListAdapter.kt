@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.NormalListItemBinding
 import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
 
 class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewModel) :
@@ -33,7 +33,7 @@ class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewMode
         fun bind(item: Item) {
             binding.label.text = item.name
             binding.subLabel.text = categoriesViewModel.getNameById(item.categoryId)
-            binding.value.text = TextUtil.convertToStr(item.price)
+            binding.value.text = Utils.convertToStrDecimal(item.price)
         }
     }
 

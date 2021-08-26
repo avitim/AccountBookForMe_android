@@ -23,7 +23,7 @@ import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
@@ -90,7 +90,7 @@ class ExpenseDetailFragment : Fragment(),
 
         }
 
-        // 日付入力欄をタップしたらカレンダーダイアログを表示する
+        // 日付欄をタップしたらカレンダーダイアログを表示する
         binding.purchasedAt.setOnClickListener {
             DatePickerDialogFragment(expenseDetail.getPurchasedAt()).show(
                 childFragmentManager,
@@ -98,8 +98,8 @@ class ExpenseDetailFragment : Fragment(),
             )
         }
 
-        // 店舗リストアイコンをタップしたら店舗リストダイアログを表示する
-        binding.storeList.setOnClickListener {
+        // 店舗欄をタップしたら店舗リストダイアログを表示する
+        binding.storeName.setOnClickListener {
             EnterStoreDialogFragment(
                 expenseDetail.expenseDetail.value?.storeId,
                 expenseDetail.expenseDetail.value?.storeName
@@ -327,7 +327,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
             acc + item.price
         }
-        binding.numTotalItem.text = TextUtil.convertToStr(total)
+        binding.numTotalItem.text = total?.let { Utils.convertToStrDecimal(it) }
     }
 
     /**
@@ -338,7 +338,7 @@ class ExpenseDetailFragment : Fragment(),
         val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
             acc + payment.total
         }
-        binding.numTotalPayment.text = TextUtil.convertToStr(total)
+        binding.numTotalPayment.text = total?.let { Utils.convertToStrDecimal(it) }
     }
 
     /**
