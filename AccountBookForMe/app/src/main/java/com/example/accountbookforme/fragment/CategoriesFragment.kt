@@ -16,7 +16,7 @@ import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ItemsViewModel
 
 class CategoriesFragment : Fragment() {
@@ -81,7 +81,9 @@ class CategoriesFragment : Fragment() {
         itemsViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
             totalListAdapter.setTotalListItems(totalList)
             // 総額を表示
-            binding.allTotal.text = TextUtil.convertToStr(itemsViewModel.calcTotal())
+            binding.allTotal.text = itemsViewModel.totalList.value?.let {
+                Utils.calcTotal(it)
+            }?.let { Utils.convertToStrDecimal(it) }
         })
     }
 }

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.NormalListItemBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 
 class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHolder>() {
 
@@ -44,7 +44,7 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
 
         holder.purchasedAt.text =
             DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
-        holder.total.text = TextUtil.convertToStr(expenseItem.total)
+        holder.total.text = Utils.calcExpenseTotal(expenseList)?.let { Utils.totalWithPercentage(expenseItem.total, it) }
         holder.storeName.text = expenseItem.storeName
 
         // セルのクリックイベントにリスナーをセット

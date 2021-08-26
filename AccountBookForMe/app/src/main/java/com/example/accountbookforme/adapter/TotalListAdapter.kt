@@ -6,7 +6,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
 import com.example.accountbookforme.model.Total
-import com.example.accountbookforme.util.TextUtil
+import com.example.accountbookforme.util.Utils
 
 class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>() {
 
@@ -41,7 +41,7 @@ class TotalListAdapter : RecyclerView.Adapter<TotalListAdapter.TotalViewHolder>(
         val category = totalList[position]
 
         holder.name.text = category.name
-        holder.total.text = TextUtil.convertToStr(category.total)
+        holder.total.text = Utils.calcTotal(totalList)?.let { Utils.totalWithPercentage(category.total, it) }
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {
