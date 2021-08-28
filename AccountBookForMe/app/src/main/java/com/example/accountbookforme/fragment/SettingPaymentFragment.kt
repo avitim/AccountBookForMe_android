@@ -113,9 +113,9 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
     /**
      * 決済方法新規作成
      */
-    override fun create(name: Name) {
+    override fun create(name: String) {
         // 決済方法をDBに新規作成するAPIを投げる
-        paymentsViewModel.create(name)
+        paymentsViewModel.create(Name(name))
     }
 
     /**

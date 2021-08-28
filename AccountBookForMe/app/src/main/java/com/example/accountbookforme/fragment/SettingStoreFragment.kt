@@ -113,9 +113,9 @@ class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListene
     /**
      * 店舗新規作成
      */
-    override fun create(name: Name) {
+    override fun create(name: String) {
         // 店舗をDBに新規作成するAPIを投げる
-        storesViewModel.create(name)
+        storesViewModel.create(Name(name))
     }
 
     /**

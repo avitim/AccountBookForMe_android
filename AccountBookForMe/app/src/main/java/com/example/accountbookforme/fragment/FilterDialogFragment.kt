@@ -11,7 +11,6 @@ import androidx.fragment.app.DialogFragment
 import com.example.accountbookforme.R
 import com.example.accountbookforme.databinding.DialogFilterBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
 
 class FilterDialogFragment(
     private val title: Int,
@@ -25,7 +24,7 @@ class FilterDialogFragment(
 
     // 結果を渡すリスナー
     interface OnAddFilterListener {
-        fun create(name: Name)
+        fun create(name: String)
 
         fun update(filter: Filter)
 
@@ -78,7 +77,7 @@ class FilterDialogFragment(
 
                 if (filter == null) {
                     // 新規作成
-                    listener.create(Name(binding.editFilterName.text.toString()))
+                    listener.create(binding.editFilterName.text.toString())
                 } else {
                     // 更新
                     filter.name = binding.editFilterName.text.toString()

@@ -13,18 +13,21 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.accountbookforme.R
 import com.example.accountbookforme.activity.MainActivity
 import com.example.accountbookforme.adapter.ExpenseItemListAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentListAdapter
+import com.example.accountbookforme.application.MMApplication
 import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
+import com.example.accountbookforme.viewmodel.CategoriesViewModelFactory
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
 import java.math.BigDecimal
@@ -39,7 +42,9 @@ class ExpenseDetailFragment : Fragment(),
     private val binding get() = _binding!!
 
     private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
-    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val categoriesViewModel: CategoriesViewModel by viewModels {
+        CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
+    }
     private val paymentsViewModel: PaymentsViewModel by activityViewModels()
 
     private lateinit var itemListAdapter: ExpenseItemListAdapter
@@ -106,21 +111,7 @@ class ExpenseDetailFragment : Fragment(),
             ).show(childFragmentManager, null)
         }
 
-        // 品物リストのクリックイベントを設定
-        itemListAdapter.setOnExpenseItemClickListener(
-            object : ExpenseItemListAdapter.OnExpenseItemClickListener {
-                override fun onItemClick(position: Int, item: Item) {
-                    AddItemDialogFragment(
-                        position,
-                        item,
-                        categoriesViewModel.categoryList.value!!
-                    ).show(
-                        childFragmentManager,
-                        null
-                    )
-                }
-            }
-        )
+        // 品物リストの表示設定
         binding.itemList.adapter = itemListAdapter
         val itemLinearLayoutManager = LinearLayoutManager(view.context)
         binding.itemList.layoutManager = itemLinearLayoutManager
@@ -168,13 +159,35 @@ class ExpenseDetailFragment : Fragment(),
             updatePaymentTotal()
         })
 
-        // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
-        binding.addItemBtn.setOnClickListener {
-            AddItemDialogFragment(null, null, categoriesViewModel.categoryList.value!!).show(
-                childFragmentManager,
-                null
+        // カテゴリリストの監視開始
+        categoriesViewModel.categoryList.observe(viewLifecycleOwner, {
+
+            // 品物追加アイコンをタップしたら品物追加ダイアログを表示する
+            binding.addItemBtn.setOnClickListener {
+                AddItemDialogFragment(null, null, categoriesViewModel.getCategoriesAsFilter()).show(
+                    childFragmentManager,
+                    null
+                )
+            }
+
+
+            // 品物リストのクリックイベントを設定
+            itemListAdapter.setOnExpenseItemClickListener(
+                object : ExpenseItemListAdapter.OnExpenseItemClickListener {
+                    override fun onItemClick(position: Int, item: Item) {
+                        AddItemDialogFragment(
+                            position,
+                            item,
+                            categoriesViewModel.getCategoriesAsFilter()
+                        ).show(
+                            childFragmentManager,
+                            null
+                        )
+                    }
+                }
             )
-        }
+        })
+
 
         // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
         binding.addPaymentBtn.setOnClickListener {

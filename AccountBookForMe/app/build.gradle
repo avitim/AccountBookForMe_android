@@ -60,6 +60,14 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.3.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.3.0'
 
+    // Room
+    def room_version = '2.3.0'
+    implementation "androidx.room:room-runtime:$room_version"
+    // To use Kotlin annotation processing tool (kapt)
+    kapt "androidx.room:room-compiler:$room_version"
+    // Kotlin Extensions and Coroutines support for Room
+    implementation "androidx.room:room-ktx:$room_version"
+
     testImplementation 'junit:junit:4.+'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'

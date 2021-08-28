@@ -32,7 +32,7 @@ class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewMode
 
         fun bind(item: Item) {
             binding.label.text = item.name
-            binding.subLabel.text = categoriesViewModel.getNameById(item.categoryId)
+            binding.subLabel.text = categoriesViewModel.getById(item.categoryId)?.name
             binding.value.text = Utils.convertToStrDecimal(item.price)
         }
     }

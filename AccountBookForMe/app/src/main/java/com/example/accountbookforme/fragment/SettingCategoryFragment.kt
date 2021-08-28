@@ -9,24 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterListAdapter
+import com.example.accountbookforme.application.MMApplication
 import com.example.accountbookforme.databinding.FragmentListBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
+import com.example.accountbookforme.viewmodel.CategoriesViewModelFactory
 
 class SettingCategoryFragment : Fragment(), FilterDialogFragment.OnAddFilterListener {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
-    private val categoriesViewModel: CategoriesViewModel by activityViewModels()
+    private val categoriesViewModel: CategoriesViewModel by viewModels {
+        CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var filterListAdapter: FilterListAdapter
@@ -77,8 +80,8 @@ class SettingCategoryFragment : Fragment(), FilterDialogFragment.OnAddFilterList
         )
 
         // カテゴリリストの監視開始
-        categoriesViewModel.categoryList.observe(viewLifecycleOwner, { categoryList ->
-            filterListAdapter.submitList(categoryList)
+        categoriesViewModel.categoryList.observe(viewLifecycleOwner, {
+            filterListAdapter.submitList(categoriesViewModel.getCategoriesAsFilter())
         })
     }
 
@@ -113,7 +116,7 @@ class SettingCategoryFragment : Fragment(), FilterDialogFragment.OnAddFilterList
     /**
      * カテゴリ新規作成
      */
-    override fun create(name: Name) {
+    override fun create(name: String) {
         // カテゴリをDBに新規作成するAPIを投げる
         categoriesViewModel.create(name)
     }
@@ -132,6 +135,6 @@ class SettingCategoryFragment : Fragment(), FilterDialogFragment.OnAddFilterList
      */
     override fun delete(filter: Filter) {
         // カテゴリをDB上で更新するAPIを投げる
-        categoriesViewModel.delete(filter.id!!)
+        categoriesViewModel.deleteById(filter.id!!)
     }
 }

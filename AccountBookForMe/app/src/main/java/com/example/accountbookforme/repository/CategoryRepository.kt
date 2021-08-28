@@ -1,25 +1,28 @@
 package com.example.accountbookforme.repository
 
-import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import androidx.annotation.WorkerThread
+import com.example.accountbookforme.dao.CategoryDao
+import com.example.accountbookforme.entity.CategoryEntity
+import kotlinx.coroutines.flow.Flow
 
-interface CategoryRepository {
+class CategoryRepository(private val categoryDao: CategoryDao) {
 
-    @GET("/categories")
-    suspend fun findAll(): Response<List<Filter>>
+    // Room executes all queries on a separate thread.
+    // Observed Flow will notify the observer when the data has changed.
+    val categoryList: Flow<List<CategoryEntity>> = categoryDao.findAll()
 
-    @PUT("/categories/create")
-    suspend fun create(@Body name: Name): Response<List<Filter>>
+    // By default Room runs suspend queries off the main thread, therefore, we don't need to
+    // implement anything else to ensure we're not doing long running database work
+    // off the main thread.
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun create(categoryEntity: CategoryEntity) = categoryDao.create(categoryEntity)
 
-    @PUT("/categories/update")
-    suspend fun update(@Body filter: Filter): Response<List<Filter>>
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun update(categoryEntity: CategoryEntity) = categoryDao.update(categoryEntity)
 
-    @DELETE("/categories/delete/{id}")
-    suspend fun delete(@Path("id") id: Long): Response<List<Filter>>
+    @Suppress("RedundantSuspendModifier")
+    @WorkerThread
+    suspend fun deleteById(id: Long) = categoryDao.deleteById(id)
 }
