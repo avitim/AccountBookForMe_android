@@ -9,24 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.FragmentListBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
 import com.example.accountbookforme.viewmodel.StoresViewModel
+import com.example.accountbookforme.viewmodel.StoresViewModelFactory
 
 class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListener {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
-    private val storesViewModel: StoresViewModel by activityViewModels()
+    private val storesViewModel: StoresViewModel by viewModels {
+        StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var filterListAdapter: FilterListAdapter
@@ -77,8 +80,8 @@ class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListene
         )
 
         // 店舗リストの監視開始
-        storesViewModel.storeList.observe(viewLifecycleOwner, { storeList ->
-            filterListAdapter.submitList(storeList)
+        storesViewModel.storeList.observe(viewLifecycleOwner, {
+            filterListAdapter.submitList(storesViewModel.getStoresAsFilter())
         })
     }
 
@@ -115,7 +118,7 @@ class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListene
      */
     override fun create(name: String) {
         // 店舗をDBに新規作成するAPIを投げる
-        storesViewModel.create(Name(name))
+        storesViewModel.create(name)
     }
 
     /**
@@ -132,6 +135,6 @@ class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListene
      */
     override fun delete(filter: Filter) {
         // 店舗をDB上で更新するAPIを投げる
-        storesViewModel.delete(filter.id!!)
+        storesViewModel.deleteById(filter.id!!)
     }
 }

@@ -18,7 +18,7 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
     /**
      * IDからカテゴリを取得
      */
-    fun getById(id: Long) = categoryList.value?.find { category -> category.id == id}
+    fun getById(id: Long) = categoryList.value?.find { category -> category.id == id }
 
     /**
      * カテゴリ一覧をFilter型のリストで取得
@@ -42,7 +42,8 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
      * カテゴリ更新
      */
     fun update(filter: Filter) = viewModelScope.launch {
-        filter.id?.let { CategoryEntity(id = it, name = filter.name) }?.let { repository.update(it) }
+        filter.id?.let { CategoryEntity(id = it, name = filter.name) }
+            ?.let { repository.update(it) }
     }
 
     /**
@@ -53,7 +54,8 @@ class CategoriesViewModel(private val repository: CategoryRepository) : ViewMode
     }
 }
 
-class CategoriesViewModelFactory(private val repository: CategoryRepository): ViewModelProvider.Factory {
+class CategoriesViewModelFactory(private val repository: CategoryRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(CategoriesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

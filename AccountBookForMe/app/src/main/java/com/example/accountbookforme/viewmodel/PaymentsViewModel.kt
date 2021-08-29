@@ -1,111 +1,65 @@
 package com.example.accountbookforme.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
+import com.example.accountbookforme.database.entity.PaymentEntity
 import com.example.accountbookforme.database.repository.PaymentRepository
-import com.example.accountbookforme.util.RestUtil
+import com.example.accountbookforme.model.Filter
 import kotlinx.coroutines.launch
 
-class PaymentsViewModel : ViewModel() {
-
-    private val paymentRepository: PaymentRepository =
-        RestUtil.retrofit.create(PaymentRepository::class.java)
+class PaymentsViewModel(private val repository: PaymentRepository) : ViewModel() {
 
     // 決済方法一覧
-    var paymentList: MutableLiveData<List<Filter>> = MutableLiveData()
-
-    init {
-        loadPaymentList()
-    }
+    var paymentList: LiveData<List<PaymentEntity>> = repository.paymentList.asLiveData()
 
     /**
-     *  決済方法一覧取得
+     * IDから決済方法を取得
      */
-    private fun loadPaymentList() {
-
-        viewModelScope.launch {
-            try {
-                val request = paymentRepository.findAll()
-                if (request.isSuccessful) {
-                    paymentList.value = request.body()
-                } else {
-                    Log.e("PaymentsViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("PaymentsViewModel", "Something is wrong: $e")
-            }
-        }
-    }
+    fun getById(id: Long) = paymentList.value?.find { payment -> payment.id == id }
 
     /**
-     * IDから名称を取得
+     * 決済方法一覧をFilter型のリストで取得
      */
-    fun getNameById(id: Long): String {
-
-        val payment = paymentList.value?.find { payment ->
-            payment.id == id
+    fun getPaymentsAsFilter(): List<Filter> {
+        val filterList: MutableList<Filter> = arrayListOf()
+        paymentList.value?.forEach { payment ->
+            filterList.add(Filter(payment.id, payment.name))
         }
-        return payment?.name ?: "Invalid payment method"
+        return filterList
     }
 
     /**
      * カテゴリ新規作成
      */
-    fun create(name: Name) {
-
-        viewModelScope.launch {
-            try {
-                val response = paymentRepository.create(name)
-                if (response.isSuccessful) {
-                    paymentList.value = response.body()
-                } else {
-                    Log.e("PaymentsViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("PaymentsViewModel", "Something is wrong: $e")
-            }
-        }
+    fun create(name: String) = viewModelScope.launch {
+        repository.create(PaymentEntity(name = name))
     }
 
     /**
      * カテゴリ更新
      */
-    fun update(filter: Filter) {
-
-        viewModelScope.launch {
-            try {
-                val response = paymentRepository.update(filter)
-                if (response.isSuccessful) {
-                    paymentList.value = response.body()
-                } else {
-                    Log.e("PaymentsViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("PaymentsViewModel", "Something is wrong: $e")
-            }
-        }
+    fun update(filter: Filter) = viewModelScope.launch {
+        filter.id?.let { PaymentEntity(id = it, name = filter.name) }?.let { repository.update(it) }
     }
 
     /**
      * カテゴリ削除
      */
-    fun delete(id: Long) {
+    fun deleteById(id: Long) = viewModelScope.launch {
+        repository.deleteById(id)
+    }
+}
 
-        viewModelScope.launch {
-            try {
-                val response = paymentRepository.delete(id)
-                if (response.isSuccessful) {
-                    paymentList.value = response.body()
-                } else {
-                    Log.e("PaymentsViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("PaymentsViewModel", "Something is wrong: $e")
-            }
+class PaymentsViewModelFactory(private val repository: PaymentRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(PaymentsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return PaymentsViewModel(repository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

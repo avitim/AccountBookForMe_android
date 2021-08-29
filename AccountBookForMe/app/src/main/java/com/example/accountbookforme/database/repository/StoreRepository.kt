@@ -1,25 +1,22 @@
 package com.example.accountbookforme.database.repository
 
-import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import androidx.annotation.WorkerThread
+import com.example.accountbookforme.database.dao.StoreDao
+import com.example.accountbookforme.database.entity.StoreEntity
+import kotlinx.coroutines.flow.Flow
 
-interface StoreRepository {
+class StoreRepository(private val storeDao: StoreDao) {
 
-    @GET("/stores")
-    suspend fun findAll(): Response<List<Filter>>
+    // Room executes all queries on a separate thread.
+    // Observed Flow will notify the observer when the data has changed.
+    val storeList: Flow<List<StoreEntity>> = storeDao.findAll()
 
-    @PUT("/stores/create")
-    suspend fun create(@Body name: Name): Response<List<Filter>>
+    @WorkerThread
+    suspend fun create(storeEntity: StoreEntity) = storeDao.create(storeEntity)
 
-    @PUT("/stores/update")
-    suspend fun update(@Body filter: Filter): Response<List<Filter>>
+    @WorkerThread
+    suspend fun update(storeEntity: StoreEntity) = storeDao.update(storeEntity)
 
-    @DELETE("/stores/delete/{id}")
-    suspend fun delete(@Path("id") id: Long): Response<List<Filter>>
+    @WorkerThread
+    suspend fun deleteById(id: Long) = storeDao.deleteById(id)
 }

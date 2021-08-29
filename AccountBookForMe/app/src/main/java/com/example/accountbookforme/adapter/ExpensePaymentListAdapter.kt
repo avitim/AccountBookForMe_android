@@ -31,7 +31,7 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(payment: Payment) {
-            binding.label.text = paymentsViewModel.getNameById(payment.paymentId)
+            binding.label.text = paymentsViewModel.getById(payment.paymentId)?.name
             binding.value.text = Utils.convertToStrDecimal(payment.total)
         }
     }

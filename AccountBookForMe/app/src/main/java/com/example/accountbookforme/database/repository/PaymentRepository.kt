@@ -1,25 +1,22 @@
 package com.example.accountbookforme.database.repository
 
-import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import androidx.annotation.WorkerThread
+import com.example.accountbookforme.database.dao.PaymentDao
+import com.example.accountbookforme.database.entity.PaymentEntity
+import kotlinx.coroutines.flow.Flow
 
-interface PaymentRepository {
+class PaymentRepository(private val paymentDao: PaymentDao) {
 
-    @GET("/payments")
-    suspend fun findAll(): Response<List<Filter>>
+    // Room executes all queries on a separate thread.
+    // Observed Flow will notify the observer when the data has changed.
+    val paymentList: Flow<List<PaymentEntity>> = paymentDao.findAll()
 
-    @PUT("/payments/create")
-    suspend fun create(@Body name: Name): Response<List<Filter>>
+    @WorkerThread
+    suspend fun create(paymentEntity: PaymentEntity) = paymentDao.create(paymentEntity)
 
-    @PUT("/payments/update")
-    suspend fun update(@Body filter: Filter): Response<List<Filter>>
+    @WorkerThread
+    suspend fun update(paymentEntity: PaymentEntity) = paymentDao.update(paymentEntity)
 
-    @DELETE("/payments/delete/{id}")
-    suspend fun delete(@Path("id") id: Long): Response<List<Filter>>
+    @WorkerThread
+    suspend fun deleteById(id: Long) = paymentDao.deleteById(id)
 }

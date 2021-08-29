@@ -9,24 +9,27 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.FragmentListBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
+import com.example.accountbookforme.viewmodel.PaymentsViewModelFactory
 
 class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListener {
 
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
-    private val paymentsViewModel: PaymentsViewModel by activityViewModels()
+    private val paymentsViewModel: PaymentsViewModel by viewModels {
+        PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var filterListAdapter: FilterListAdapter
@@ -77,8 +80,8 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
         )
 
         // 決済方法リストの監視開始
-        paymentsViewModel.paymentList.observe(viewLifecycleOwner, { paymentList ->
-            filterListAdapter.submitList(paymentList)
+        paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
+            filterListAdapter.submitList(paymentsViewModel.getPaymentsAsFilter())
         })
     }
 
@@ -115,7 +118,7 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
      */
     override fun create(name: String) {
         // 決済方法をDBに新規作成するAPIを投げる
-        paymentsViewModel.create(Name(name))
+        paymentsViewModel.create(name)
     }
 
     /**
@@ -132,6 +135,6 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
      */
     override fun delete(filter: Filter) {
         // 決済方法をDB上で更新するAPIを投げる
-        paymentsViewModel.delete(filter.id!!)
+        paymentsViewModel.deleteById(filter.id!!)
     }
 }

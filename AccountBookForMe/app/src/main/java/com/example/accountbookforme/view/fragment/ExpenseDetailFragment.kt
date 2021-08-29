@@ -30,6 +30,7 @@ import com.example.accountbookforme.viewmodel.CategoriesViewModel
 import com.example.accountbookforme.viewmodel.CategoriesViewModelFactory
 import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
+import com.example.accountbookforme.viewmodel.PaymentsViewModelFactory
 import java.math.BigDecimal
 
 class ExpenseDetailFragment : Fragment(),
@@ -45,7 +46,9 @@ class ExpenseDetailFragment : Fragment(),
     private val categoriesViewModel: CategoriesViewModel by viewModels {
         CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
     }
-    private val paymentsViewModel: PaymentsViewModel by activityViewModels()
+    private val paymentsViewModel: PaymentsViewModel by viewModels {
+        PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
+    }
 
     private lateinit var itemListAdapter: ExpenseItemListAdapter
     private lateinit var paymentListAdapter: ExpensePaymentListAdapter
@@ -122,18 +125,7 @@ class ExpenseDetailFragment : Fragment(),
             )
         )
 
-        // 支払いリストのクリックイベントを設定
-        paymentListAdapter.setOnExpensePaymentClickListener(
-            object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
-                override fun onItemClick(position: Int, payment: Payment) {
-                    AddPaymentDialogFragment(
-                        position,
-                        payment,
-                        paymentsViewModel.paymentList.value!!
-                    ).show(childFragmentManager, null)
-                }
-            }
-        )
+        // 決済方法リストの表示設定
         binding.paymentList.adapter = paymentListAdapter
         val paymentLinearLayoutManager = LinearLayoutManager(view.context)
         binding.paymentList.layoutManager = paymentLinearLayoutManager
@@ -159,6 +151,31 @@ class ExpenseDetailFragment : Fragment(),
             updatePaymentTotal()
         })
 
+        // 決済方法リストの監視開始
+        paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
+
+            // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
+            binding.addPaymentBtn.setOnClickListener {
+                AddPaymentDialogFragment(null, null, paymentsViewModel.getPaymentsAsFilter()).show(
+                    childFragmentManager,
+                    null
+                )
+            }
+
+            // 支払いリストのクリックイベントを設定
+            paymentListAdapter.setOnExpensePaymentClickListener(
+                object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
+                    override fun onItemClick(position: Int, payment: Payment) {
+                        AddPaymentDialogFragment(
+                            position,
+                            payment,
+                            paymentsViewModel.getPaymentsAsFilter()
+                        ).show(childFragmentManager, null)
+                    }
+                }
+            )
+        })
+
         // カテゴリリストの監視開始
         categoriesViewModel.categoryList.observe(viewLifecycleOwner, {
 
@@ -169,7 +186,6 @@ class ExpenseDetailFragment : Fragment(),
                     null
                 )
             }
-
 
             // 品物リストのクリックイベントを設定
             itemListAdapter.setOnExpenseItemClickListener(
@@ -187,15 +203,6 @@ class ExpenseDetailFragment : Fragment(),
                 }
             )
         })
-
-
-        // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
-        binding.addPaymentBtn.setOnClickListener {
-            AddPaymentDialogFragment(null, null, paymentsViewModel.paymentList.value!!).show(
-                childFragmentManager,
-                null
-            )
-        }
 
         // 削除ボタンをタップしたら確認ダイアログを表示する
         binding.deleteExpense.setOnClickListener {

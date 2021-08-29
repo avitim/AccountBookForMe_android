@@ -1,100 +1,60 @@
 package com.example.accountbookforme.viewmodel
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
+import com.example.accountbookforme.database.entity.StoreEntity
 import com.example.accountbookforme.database.repository.StoreRepository
-import com.example.accountbookforme.util.RestUtil
+import com.example.accountbookforme.model.Filter
 import kotlinx.coroutines.launch
 
-class StoresViewModel : ViewModel() {
-
-    private val storeRepository: StoreRepository =
-        RestUtil.retrofit.create(StoreRepository::class.java)
+class StoresViewModel(private val repository: StoreRepository) : ViewModel() {
 
     // 店舗一覧
-    var storeList: MutableLiveData<List<Filter>> = MutableLiveData()
+    var storeList: LiveData<List<StoreEntity>> = repository.storeList.asLiveData()
 
-    init {
-        loadStoreList()
+    /**
+     * カテゴリ一覧をFilter型のリストで取得
+     */
+    fun getStoresAsFilter(): List<Filter> {
+        val filterList: MutableList<Filter> = arrayListOf()
+        storeList.value?.forEach { store ->
+            filterList.add(Filter(store.id, store.name))
+        }
+        return filterList
     }
 
     /**
-     * 登録済み店舗一覧取得
+     * 店舗新規作成
      */
-    private fun loadStoreList() {
-
-        viewModelScope.launch {
-            try {
-                val request = storeRepository.findAll()
-                if (request.isSuccessful) {
-                    storeList.value = request.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
-        }
+    fun create(name: String) = viewModelScope.launch {
+        repository.create(StoreEntity(name = name))
     }
 
     /**
-     * カテゴリ新規作成
+     * 店舗更新
      */
-    fun create(name: Name) {
-
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.create(name)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
-        }
+    fun update(filter: Filter) = viewModelScope.launch {
+        filter.id?.let { StoreEntity(id = it, name = filter.name) }?.let { repository.update(it) }
     }
 
     /**
-     * カテゴリ更新
+     * 店舗削除
      */
-    fun update(filter: Filter) {
-
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.update(filter)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
-        }
+    fun deleteById(id: Long) = viewModelScope.launch {
+        repository.deleteById(id)
     }
+}
 
-    /**
-     * カテゴリ削除
-     */
-    fun delete(id: Long) {
-
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.delete(id)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
+class StoresViewModelFactory(private val repository: StoreRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(StoresViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return StoresViewModel(repository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

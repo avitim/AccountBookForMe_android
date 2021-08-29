@@ -8,15 +8,17 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterListAdapter
 import com.example.accountbookforme.databinding.DialogEnterStoreBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.viewmodel.StoresViewModel
+import com.example.accountbookforme.viewmodel.StoresViewModelFactory
 
 class EnterStoreDialogFragment(
     private var id: Long?,
@@ -28,7 +30,9 @@ class EnterStoreDialogFragment(
     private var _binding: DialogEnterStoreBinding? = null
     private val binding get() = _binding!!
 
-    private val storesViewModel: StoresViewModel by activityViewModels()
+    private val storesViewModel: StoresViewModel by viewModels {
+        StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var filterListAdapter: FilterListAdapter
@@ -74,9 +78,9 @@ class EnterStoreDialogFragment(
         recyclerView = binding.storeList
         filterListAdapter = FilterListAdapter()
 
-        storesViewModel.storeList.observe(this, { storeList ->
+        storesViewModel.storeList.observe(this, {
             // 登録済み店舗リスト表示
-            filterListAdapter.submitList(storeList)
+            filterListAdapter.submitList(storesViewModel.getStoresAsFilter())
         })
 
         // セルのクリック処理
