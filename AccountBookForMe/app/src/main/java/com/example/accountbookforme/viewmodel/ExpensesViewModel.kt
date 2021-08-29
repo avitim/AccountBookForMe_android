@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.Total
-import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.database.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
 

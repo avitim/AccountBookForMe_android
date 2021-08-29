@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Name
-import com.example.accountbookforme.repository.PaymentRepository
+import com.example.accountbookforme.database.repository.PaymentRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
 

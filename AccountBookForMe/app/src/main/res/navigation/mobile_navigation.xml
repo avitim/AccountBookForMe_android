@@ -7,13 +7,13 @@
 
     <fragment
         android:id="@+id/navigation_expenses"
-        android:name="com.example.accountbookforme.fragment.ExpensesFragment"
+        android:name="com.example.accountbookforme.view.fragment.ExpensesFragment"
         android:label="@string/title_expenses"
         tools:layout="@layout/fragment_list_with_month" />
 
     <fragment
         android:id="@+id/navigation_categories"
-        android:name="com.example.accountbookforme.fragment.CategoriesFragment"
+        android:name="com.example.accountbookforme.view.fragment.CategoriesFragment"
         android:label="@string/title_categories" >
         <action
             android:id="@+id/action_navigation_categories_to_categoryItemFragment"
@@ -22,12 +22,12 @@
 
     <fragment
         android:id="@+id/navigation_payments"
-        android:name="com.example.accountbookforme.fragment.PaymentsFragment"
+        android:name="com.example.accountbookforme.view.fragment.PaymentsFragment"
         android:label="@string/title_payments" />
 
     <fragment
         android:id="@+id/navigation_stores"
-        android:name="com.example.accountbookforme.fragment.StoresFragment"
+        android:name="com.example.accountbookforme.view.fragment.StoresFragment"
         android:label="@string/title_stores" >
         <action
             android:id="@+id/action_navigation_stores_to_storeExpenseFragment"
@@ -36,7 +36,7 @@
 
     <fragment
         android:id="@+id/navigation_settings"
-        android:name="com.example.accountbookforme.fragment.SettingsFragment"
+        android:name="com.example.accountbookforme.view.fragment.SettingsFragment"
         android:label="@string/title_settings"
         tools:layout="@layout/fragment_settings" >
         <action
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/expenseCategoryFragment"
-        android:name="com.example.accountbookforme.fragment.CategoryItemFragment"
+        android:name="com.example.accountbookforme.view.fragment.CategoryItemFragment"
         android:label="ExpenseCategoryFragment" >
         <argument
             android:name="categoryId"
@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/expenseStoreFragment"
-        android:name="com.example.accountbookforme.fragment.StoreExpenseFragment"
+        android:name="com.example.accountbookforme.view.fragment.StoreExpenseFragment"
         android:label="ExpenseStoreFragment" >
         <argument
             android:name="storeId"
@@ -73,15 +73,15 @@
     </fragment>
     <fragment
         android:id="@+id/settingCategoryFragment"
-        android:name="com.example.accountbookforme.fragment.SettingCategoryFragment"
+        android:name="com.example.accountbookforme.view.fragment.SettingCategoryFragment"
         android:label="SettingCategoryFragment" />
     <fragment
         android:id="@+id/settingPaymentFragment"
-        android:name="com.example.accountbookforme.fragment.SettingPaymentFragment"
+        android:name="com.example.accountbookforme.view.fragment.SettingPaymentFragment"
         android:label="SettingPaymentFragment" />
     <fragment
         android:id="@+id/settingStoreFragment"
-        android:name="com.example.accountbookforme.fragment.SettingStoreFragment"
+        android:name="com.example.accountbookforme.view.fragment.SettingStoreFragment"
         android:label="SettingStoreFragment" />
 
 </navigation>

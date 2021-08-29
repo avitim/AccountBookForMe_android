@@ -17,7 +17,7 @@
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".fragment.ExpenseDetailFragment">
+            tools:context=".view.fragment.ExpenseDetailFragment">
 
             <TextView
                 android:id="@+id/purchasedAt"

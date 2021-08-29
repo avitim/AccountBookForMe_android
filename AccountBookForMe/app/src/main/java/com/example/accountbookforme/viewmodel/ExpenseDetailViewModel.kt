@@ -8,7 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.accountbookforme.model.ExpenseDetail
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.model.Payment
-import com.example.accountbookforme.repository.ExpenseRepository
+import com.example.accountbookforme.database.repository.ExpenseRepository
 import com.example.accountbookforme.util.RestUtil
 import kotlinx.coroutines.launch
 import java.lang.IndexOutOfBoundsException

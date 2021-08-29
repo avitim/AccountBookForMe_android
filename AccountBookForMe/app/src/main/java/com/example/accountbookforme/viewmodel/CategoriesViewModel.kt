@@ -5,9 +5,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
-import com.example.accountbookforme.entity.CategoryEntity
+import com.example.accountbookforme.database.entity.CategoryEntity
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.repository.CategoryRepository
+import com.example.accountbookforme.database.repository.CategoryRepository
 import kotlinx.coroutines.launch
 
 class CategoriesViewModel(private val repository: CategoryRepository) : ViewModel() {

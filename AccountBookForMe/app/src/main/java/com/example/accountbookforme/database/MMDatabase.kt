@@ -4,8 +4,8 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import com.example.accountbookforme.dao.CategoryDao
-import com.example.accountbookforme.entity.CategoryEntity
+import com.example.accountbookforme.database.dao.CategoryDao
+import com.example.accountbookforme.database.entity.CategoryEntity
 
 @Database(entities = [CategoryEntity::class], version = 1)
 abstract class MMDatabase : RoomDatabase() {
