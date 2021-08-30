@@ -35,8 +35,12 @@ object Utils {
      * return パーセンテージ
      */
     private fun calcPercentage(partialValue: BigDecimal, totalValue: BigDecimal): BigDecimal =
-        partialValue.divide(totalValue, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal(100))
-    
+        if (totalValue == BigDecimal.ZERO) {
+            BigDecimal.ZERO
+        } else {
+            partialValue.divide(totalValue, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal(100))
+        }
+
     /**
      * 総額を計算
      */

@@ -17,7 +17,7 @@ import com.example.accountbookforme.databinding.DialogAddPaymentBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.Utils
-import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
+import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModel
 import java.math.BigDecimal
 
 class AddPaymentDialogFragment(
@@ -31,7 +31,7 @@ class AddPaymentDialogFragment(
     private var _binding: DialogAddPaymentBinding? = null
     private val binding get() = _binding!!
 
-    private val expenseDetail: ExpenseDetailViewModel by activityViewModels()
+    private val expenseDetail: ExpenseDetailsViewModel by activityViewModels()
 
     // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
     private var newPayment = payment ?: Payment()

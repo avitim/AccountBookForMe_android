@@ -39,7 +39,7 @@ class EnterStoreDialogFragment(
 
     // 結果を渡すリスナー
     interface OnSelectedStoreListener {
-        fun selectStore(id: Long?, name: String?)
+        fun selectStore(id: Long?, name: String)
     }
 
     override fun onAttach(context: Context) {

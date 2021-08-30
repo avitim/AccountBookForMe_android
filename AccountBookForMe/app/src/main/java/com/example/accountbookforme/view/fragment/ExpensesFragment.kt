@@ -9,25 +9,29 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
-import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.adapter.ExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
+import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
+import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
 
 class ExpensesFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val expensesViewModel: ExpensesViewModel by activityViewModels()
+    private val expensesViewModel: ExpensesViewModel by viewModels {
+        ExpensesViewModelFactory((activity?.application as MMApplication).expenseRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var expenseListAdapter: ExpenseListAdapter
@@ -55,6 +59,8 @@ class ExpensesFragment : Fragment() {
                     val intent = Intent(context, DetailActivity::class.java)
                     // 支出IDを渡す
                     intent.putExtra("expenseId", expense.id)
+                    // 店舗名を渡す
+                    intent.putExtra("storeName", expense.storeName?:expense.storeNameByStoreId)
                     // 支出詳細画面に遷移する
                     startActivity(intent)
                 }

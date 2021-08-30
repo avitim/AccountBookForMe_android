@@ -17,7 +17,7 @@ import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
 import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.util.Utils
-import com.example.accountbookforme.viewmodel.ExpenseDetailViewModel
+import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModel
 import java.math.BigDecimal
 
 class AddItemDialogFragment(
@@ -32,7 +32,7 @@ class AddItemDialogFragment(
     private var _binding: DialogAddItemBinding? = null
     private val binding get() = _binding!!
 
-    private val expenseDetailViewModel: ExpenseDetailViewModel by activityViewModels()
+    private val expenseDetailsViewModel: ExpenseDetailsViewModel by activityViewModels()
 
     // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
     private var newItem = item ?: Item()
@@ -101,10 +101,10 @@ class AddItemDialogFragment(
             builder.setNegativeButton("Delete") { _, _ ->
                 if (item.id == null) {
                     // まだDBには登録されていないのでリストから削除するだけ
-                    expenseDetailViewModel.removeItem(position)
+                    expenseDetailsViewModel.removeItem(position)
                 } else {
                     // リストから削除して、削除済みリストに登録する
-                    expenseDetailViewModel.deleteItem(position)
+                    expenseDetailsViewModel.deleteItem(position)
                 }
 
                 // 更新リスナー呼び出し
@@ -135,15 +135,15 @@ class AddItemDialogFragment(
                 } else {
                     // 更新
 
-                    expenseDetailViewModel.setItemName(
+                    expenseDetailsViewModel.setItemName(
                         position,
                         binding.itemName.text.toString()
                     )
-                    expenseDetailViewModel.setItemPrice(
+                    expenseDetailsViewModel.setItemPrice(
                         position,
                         BigDecimal(binding.itemPrice.text.toString())
                     )
-                    expenseDetailViewModel.setItemCategory(position, item.categoryId)
+                    expenseDetailsViewModel.setItemCategory(position, item.categoryId)
 
                     // 更新リスナー呼び出し
                     listener.updateItem()

@@ -21,14 +21,14 @@ class DetailActivity : AppCompatActivity() {
         // ツールバーに戻るボタン設置
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        // Expenses画面からの支出IDを受け取る
+        // Expenses画面からの値を受け取る
         val expenseId = intent.extras?.getLong("expenseId")
+        val storeName = intent.extras?.getString("storeName")
 
-        // 支出IDをFragmentに渡す
+        // 値をFragmentに渡す
         val bundle = Bundle()
-        if (expenseId != null) {
-            bundle.putLong("id", expenseId)
-        }
+        expenseId?.let { bundle.putLong("id", it) }
+        storeName?.let { bundle.putString("storeName", it) }
 
         val fragment = ExpenseDetailFragment()
         fragment.arguments = bundle

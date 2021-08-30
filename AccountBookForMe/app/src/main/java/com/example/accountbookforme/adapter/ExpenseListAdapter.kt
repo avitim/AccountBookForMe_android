@@ -45,7 +45,7 @@ class ExpenseListAdapter : RecyclerView.Adapter<ExpenseListAdapter.ExpenseViewHo
         holder.purchasedAt.text =
             DateUtil.formatDate(expenseItem.purchasedAt, DateUtil.DATE_YYYYMMDD)
         holder.total.text = Utils.calcExpenseTotal(expenseList)?.let { Utils.totalWithPercentage(expenseItem.total, it) }
-        holder.storeName.text = expenseItem.storeName
+        holder.storeName.text = expenseItem.storeName?: expenseItem.storeNameByStoreId
 
         // セルのクリックイベントにリスナーをセット
         holder.itemView.setOnClickListener {

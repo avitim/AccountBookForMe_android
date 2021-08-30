@@ -1,38 +1,38 @@
 package com.example.accountbookforme.database.repository
 
-import com.example.accountbookforme.model.ExpenseDetail
+import androidx.annotation.WorkerThread
+import com.example.accountbookforme.database.dao.ExpenseDao
+import com.example.accountbookforme.database.entity.ExpenseDetailEntity
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.Total
-import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.DELETE
-import retrofit2.http.GET
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import kotlinx.coroutines.flow.Flow
 
-interface ExpenseRepository {
+class ExpenseRepository(private val expenseDao: ExpenseDao) {
 
-    @GET("/expenses")
-    suspend fun findAll(): Response<List<Expense>>
+    // Room executes all queries on a separate thread.
+    // Observed Flow will notify the observer when the data has changed.
+    val expenseList: Flow<List<Expense>> = expenseDao.findAll()
 
-    @GET("/expenses/{id}")
-    suspend fun getDetailById(@Path("id") expenseId: Long): Response<ExpenseDetail>
+    @WorkerThread
+    suspend fun getDetailById(id: Long) = expenseDao.findById(id)
 
-    @GET("/expenses/store/{id}")
-    suspend fun findByStoreId(@Path("id") storeId: Long): Response<List<Expense>>
+    @WorkerThread
+    suspend fun findByStoreId(storeId: Long) = expenseDao.findByStoreId(storeId)
 
-    @GET("/expenses/payment/totals")
-    suspend fun getTotalPaymentList(): Response<List<Total>>
+    // TODO: 実装
+    @WorkerThread
+    suspend fun getTotalPaymentList(): List<Total> = arrayListOf()
 
-    @GET("/expenses/store/totals")
-    suspend fun getTotalStoreList(): Response<List<Total>>
+    // TODO: 実装
+    @WorkerThread
+    suspend fun getTotalStoreList(): List<Total> = arrayListOf()
 
-    @PUT("/expenses/create")
-    suspend fun create(@Body expenseDetail: ExpenseDetail): Response<Void>
+    @WorkerThread
+    suspend fun create(expenseDetailEntity: ExpenseDetailEntity) = expenseDao.create(expenseDetailEntity)
 
-    @PUT("/expenses/update")
-    suspend fun update(@Body expenseDetail: ExpenseDetail): Response<Void>
+    @WorkerThread
+    suspend fun update(expenseDetailEntity: ExpenseDetailEntity) = expenseDao.update(expenseDetailEntity)
 
-    @DELETE("/expenses/delete/{id}")
-    suspend fun delete(@Path("id") expenseId: Long): Response<Void>
+    @WorkerThread
+    suspend fun deleteById(id: Long) = expenseDao.deleteById(id)
 }
