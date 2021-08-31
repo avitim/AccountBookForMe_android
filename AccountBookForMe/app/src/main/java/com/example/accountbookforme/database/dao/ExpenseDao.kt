@@ -14,13 +14,13 @@ interface ExpenseDao {
     /**
      * 支出全件取得
      */
-    @Query("SELECT expense_details.id, purchased_at, total, store_name, stores.name AS storeNameByStoreId FROM expense_details LEFT JOIN stores ON expense_details.store_id IS stores.id")
+    @Query("SELECT expense_details.id, purchased_at, 0 AS total, store_name, stores.name AS storeNameByStoreId FROM expense_details LEFT JOIN stores ON expense_details.store_id IS stores.id")
     fun findAll(): Flow<List<Expense>>
 
     /**
      * 店舗IDから支出リストを取得
      */
-    @Query("SELECT expense_details.id, purchased_at, total, store_name, stores.name AS storeNameByStoreId FROM expense_details LEFT JOIN stores ON expense_details.store_id IS stores.id WHERE store_id IS (:storeId)")
+    @Query("SELECT expense_details.id, purchased_at, 0 AS total, store_name, stores.name AS storeNameByStoreId FROM expense_details LEFT JOIN stores ON expense_details.store_id IS stores.id WHERE store_id IS (:storeId)")
     suspend fun findByStoreId(storeId: Long): List<Expense>
 
     /**
@@ -33,7 +33,7 @@ interface ExpenseDao {
      * 支出詳細新規作成
      */
     @Insert
-    suspend fun create(expenseDetailEntity: ExpenseDetailEntity)
+    suspend fun create(expenseDetailEntity: ExpenseDetailEntity): Long
 
     /**
      * 支出詳細更新

@@ -10,7 +10,7 @@ data class Expense(
     @ColumnInfo(name = "purchased_at")
     val purchasedAt: String,
 
-    val total: BigDecimal,
+    var total: BigDecimal,
 
     // テーブル上の店舗名（storeId が null のときのみ non null）
     @ColumnInfo(name = "store_name")

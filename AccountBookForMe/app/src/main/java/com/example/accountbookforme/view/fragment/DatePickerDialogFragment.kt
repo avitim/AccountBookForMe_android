@@ -55,6 +55,6 @@ class DatePickerDialogFragment(private val dateTime: String?) : DialogFragment()
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        listener.selectDate(year, month, dayOfMonth)
+        listener.selectDate(year, month + 1, dayOfMonth)
     }
 }

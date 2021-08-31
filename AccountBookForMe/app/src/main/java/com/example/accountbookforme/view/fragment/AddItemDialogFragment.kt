@@ -11,18 +11,20 @@ import android.widget.AdapterView
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.FilterSpinnerAdapter
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.databinding.DialogAddItemBinding
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModel
+import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModelFactory
 import java.math.BigDecimal
 
 class AddItemDialogFragment(
     private val position: Int?,
-    private val item: Item?,
+    private val item: ItemEntity?,
     private val categoryList: List<Filter>
 ) :
     DialogFragment() {
@@ -32,16 +34,24 @@ class AddItemDialogFragment(
     private var _binding: DialogAddItemBinding? = null
     private val binding get() = _binding!!
 
-    private val expenseDetailsViewModel: ExpenseDetailsViewModel by activityViewModels()
+    private val expenseDetail: ExpenseDetailsViewModel by activityViewModels {
+        ExpenseDetailsViewModelFactory(
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).itemRepository,
+            (activity?.application as MMApplication).epRepository
+        )
+    }
 
     // 保存するデータ。既存があれば流用してなければ新規インスタンス生成。
-    private var newItem = item ?: Item()
+    private var newItem = item ?: ItemEntity()
 
     // 結果を渡すリスナー
     interface OnAddedItemListener {
-        fun addItem(item: Item)
+        fun addItem(item: ItemEntity)
 
-        fun updateItem()
+        fun updateItem(position: Int, item: ItemEntity)
+
+        fun deleteItem()
     }
 
     override fun onAttach(context: Context) {
@@ -99,16 +109,16 @@ class AddItemDialogFragment(
         if (position != null && item != null) {
             // 更新時は削除ボタンも表示する
             builder.setNegativeButton("Delete") { _, _ ->
-                if (item.id == null) {
+                if (item.id == 0L) {
                     // まだDBには登録されていないのでリストから削除するだけ
-                    expenseDetailsViewModel.removeItem(position)
+                    expenseDetail.removeItem(position)
                 } else {
                     // リストから削除して、削除済みリストに登録する
-                    expenseDetailsViewModel.deleteItem(position)
+                    expenseDetail.deleteItem(position)
                 }
 
-                // 更新リスナー呼び出し
-                listener.updateItem()
+                // 削除リスナー呼び出し
+                listener.deleteItem()
             }
         }
 
@@ -135,18 +145,12 @@ class AddItemDialogFragment(
                 } else {
                     // 更新
 
-                    expenseDetailsViewModel.setItemName(
-                        position,
-                        binding.itemName.text.toString()
-                    )
-                    expenseDetailsViewModel.setItemPrice(
-                        position,
-                        BigDecimal(binding.itemPrice.text.toString())
-                    )
-                    expenseDetailsViewModel.setItemCategory(position, item.categoryId)
+                    item.name = binding.itemName.text.toString()
+                    item.price = BigDecimal(binding.itemPrice.text.toString())
+                    // categoryIdはスピナーで選択時に値更新済みなのでここでは不要
 
-                    // 更新リスナー呼び出し
-                    listener.updateItem()
+                    // 入力した品物データを渡す更新リスナー呼び出し
+                    listener.updateItem(position, item)
                 }
                 // ダイアログを閉じる
                 dialog.dismiss()

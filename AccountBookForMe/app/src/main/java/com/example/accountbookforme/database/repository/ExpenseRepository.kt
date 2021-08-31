@@ -6,12 +6,15 @@ import com.example.accountbookforme.database.entity.ExpenseDetailEntity
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.Total
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class ExpenseRepository(private val expenseDao: ExpenseDao) {
 
     // Room executes all queries on a separate thread.
     // Observed Flow will notify the observer when the data has changed.
-    val expenseList: Flow<List<Expense>> = expenseDao.findAll()
+    val expenseList: Flow<List<Expense>> = expenseDao.findAll().map { list ->
+        list.sortedByDescending { it.purchasedAt }
+    }
 
     @WorkerThread
     suspend fun getDetailById(id: Long) = expenseDao.findById(id)
@@ -28,7 +31,7 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
     suspend fun getTotalStoreList(): List<Total> = arrayListOf()
 
     @WorkerThread
-    suspend fun create(expenseDetailEntity: ExpenseDetailEntity) = expenseDao.create(expenseDetailEntity)
+    suspend fun create(expenseDetailEntity: ExpenseDetailEntity): Long = expenseDao.create(expenseDetailEntity)
 
     @WorkerThread
     suspend fun update(expenseDetailEntity: ExpenseDetailEntity) = expenseDao.update(expenseDetailEntity)

@@ -6,15 +6,20 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.accountbookforme.database.repository.ExpensePaymentRepository
 import com.example.accountbookforme.database.repository.ExpenseRepository
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.model.Total
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
-class ExpensesViewModel(private val repository: ExpenseRepository) : ViewModel() {
+class ExpensesViewModel(
+    private val expenseRepository: ExpenseRepository,
+    private val epRepository: ExpensePaymentRepository
+) : ViewModel() {
 
     // 支出リスト
-    var expenseList: LiveData<List<Expense>> = repository.expenseList.asLiveData()
+    var expenseList: LiveData<List<Expense>> = expenseRepository.expenseList.asLiveData()
 
     // 決済方法ごとの支出額リスト
     var totalPaymentList: MutableLiveData<List<Total>> = MutableLiveData()
@@ -31,33 +36,41 @@ class ExpensesViewModel(private val repository: ExpenseRepository) : ViewModel()
 //    }
 
     /**
+     * 支出の総額取得
+     */
+    suspend fun calcTotal(expenseId: Long): BigDecimal = epRepository.calcTotalByExpenseId(expenseId)
+
+    /**
      * 決済方法ごとの支出額リスト取得
      */
     private fun getTotalPaymentList() = viewModelScope.launch {
-        repository.getTotalPaymentList()
+        expenseRepository.getTotalPaymentList()
     }
 
     /**
      * 店舗ごとの支出額リスト取得
      */
     private fun getTotalStoreList() = viewModelScope.launch {
-        repository.getTotalStoreList()
+        expenseRepository.getTotalStoreList()
     }
 
     /**
      * 店舗IDから支出リスト取得
      */
     fun findByStoreId(storeId: Long) = viewModelScope.launch {
-        repository.findByStoreId(storeId)
+        expenseRepository.findByStoreId(storeId)
     }
 }
 
-class ExpensesViewModelFactory(private val repository: ExpenseRepository) :
+class ExpensesViewModelFactory(
+    private val expenseRepository: ExpenseRepository,
+    private val epRepository: ExpensePaymentRepository
+) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ExpensesViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ExpensesViewModel(repository) as T
+            return ExpensesViewModel(expenseRepository, epRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

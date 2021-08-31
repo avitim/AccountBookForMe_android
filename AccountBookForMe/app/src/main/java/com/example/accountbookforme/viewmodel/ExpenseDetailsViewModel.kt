@@ -3,46 +3,155 @@ package com.example.accountbookforme.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.room.Transaction
 import com.example.accountbookforme.database.entity.ExpenseDetailEntity
+import com.example.accountbookforme.database.entity.ExpensePaymentEntity
+import com.example.accountbookforme.database.entity.ItemEntity
+import com.example.accountbookforme.database.repository.ExpensePaymentRepository
 import com.example.accountbookforme.database.repository.ExpenseRepository
-import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.model.Payment
-import java.math.BigDecimal
+import com.example.accountbookforme.database.repository.ItemRepository
 import java.time.LocalDateTime
 
-class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewModel() {
+class ExpenseDetailsViewModel(
+    private val expenseRepository: ExpenseRepository,
+    private val itemRepository: ItemRepository,
+    private val epRepository: ExpensePaymentRepository
+) : ViewModel() {
 
     // 支出詳細
-    var expenseDetail: MutableLiveData<ExpenseDetailEntity> = MutableLiveData()
+    val expenseDetail = MutableLiveData<ExpenseDetailEntity>()
+
+    // 品物リスト
+    val itemList = MutableLiveData<MutableList<ItemEntity>>()
+
+    // 支払いリスト
+    val paymentList = MutableLiveData<MutableList<ExpensePaymentEntity>>()
+
+    // 品物削除リスト
+    // 要素: ItemEntity.id: Long
+    private var deleteItemList: MutableList<Long> = mutableListOf()
+
+    // 支払い削除リスト
+    // 要素: ExpensePaymentEntity.id: Long
+    private var deletePaymentList: MutableList<Long> = mutableListOf()
 
     /**
-     * 空のExpenseDetail生成
+     * 初期化
      */
-    fun createExpenseDetail() {
+    fun initExpenseDetail() {
         expenseDetail.value = ExpenseDetailEntity()
+        itemList.value = mutableListOf()
+        paymentList.value = mutableListOf()
     }
 
     /**
      * 支出詳細の取得
      */
     suspend fun getDetailById(id: Long) {
-        expenseDetail.value = repository.getDetailById(id)
+        expenseDetail.value = expenseRepository.getDetailById(id)
     }
 
     /**
      * 支出詳細の新規作成
      */
-    suspend fun create() = expenseDetail.value?.let { repository.create(it) }
+    @Transaction
+    suspend fun create() {
+
+        expenseDetail.value?.let {
+
+            // 支出詳細の作成
+            val expenseId = expenseRepository.create(it)
+
+            itemList.value?.forEach { item ->
+                // 支出IDをセット
+                item.expenseId = expenseId
+                // 品物の作成
+                itemRepository.insert(item)
+            }
+
+            paymentList.value?.forEach { payment ->
+                // 支出IDをセット
+                payment.expenseId = expenseId
+                // 支払いの作成
+                epRepository.insert(payment)
+            }
+        }
+    }
 
     /**
      * 支出詳細の更新
      */
-    suspend fun update() = expenseDetail.value?.let { repository.update(it) }
+    @Transaction
+    suspend fun update() {
+
+        expenseDetail.value?.let { expenseDetail ->
+
+            // 支出詳細の更新
+            expenseRepository.update(expenseDetail)
+
+            // 品物の更新 or 作成
+            itemList.value?.forEach { item ->
+
+                if (item.id == 0L) {
+                    // 支出IDをセット
+                    item.expenseId = expenseDetail.id
+                    // 新規作成
+                    itemRepository.insert(item)
+                } else {
+                    // 更新
+                    itemRepository.update(item)
+                }
+            }
+
+            // 支払いの更新 or 作成
+            paymentList.value?.forEach { payment ->
+
+                if (payment.id == 0L) {
+                    // 支出IDをセット
+                    payment.expenseId = expenseDetail.id
+                    // 新規作成
+                    epRepository.insert(payment)
+                } else {
+                    // 更新
+                    epRepository.update(payment)
+                }
+            }
+        }
+
+        // 品物の削除
+        deleteItemList.forEach { itemId ->
+            itemRepository.deleteById(itemId)
+        }
+
+        // 支払いの削除
+        deletePaymentList.forEach { epId ->
+            epRepository.deleteById(epId)
+        }
+    }
 
     /**
      * 支出詳細の削除
+     * DBの設定でexpense.idをexpense_idに持つitemとexpensePaymentは自動で削除される
      */
-    suspend fun delete() = expenseDetail.value?.id?.let { repository.deleteById(it) }
+    @Transaction
+    suspend fun delete() {
+
+        expenseDetail.value?.id?.let {
+
+            // 支出詳細の削除
+            expenseRepository.deleteById(it)
+
+//            // 品物の削除
+//            itemRepository.findByExpenseId(it).forEach { item ->
+//                itemRepository.deleteById(item.id)
+//            }
+//
+//            // 支払いの削除
+//            epRepository.findByExpenseId(it).forEach { payment ->
+//                epRepository.deleteById(payment.id)
+//            }
+        }
+    }
 
     /**
      * 購入日を返す
@@ -69,74 +178,46 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
     }
 
     /**
-     * 品物リストを返す
+     * 品物リストを取得
      */
-    fun getItemList(): List<Item>? {
-//        return expenseDetail.value?.itemList?.toList()
-        // TODO: 要実装
-        return arrayListOf()
+    suspend fun getItemList(expenseId: Long) {
+        itemList.postValue(itemRepository.findByExpenseId(expenseId) as MutableList<ItemEntity>?)
     }
 
     /**
-     * 支払いリストを返す
+     * 支払いリストを取得
      */
-    fun getPaymentList(): List<Payment>? {
-//        return expenseDetail.value?.paymentList?.toList()
-        // TODO: 要実装
-        return arrayListOf()
-    }
-
-    /**
-     * アイテムを位置で指定して名前をセットする
-     */
-    fun setItemName(position: Int, itemName: String) {
-        try {
-            // TODO: 要実装
-//            val item = expenseDetail.value?.itemList?.get(position)
-//            if (item != null) {
-//                item.name = itemName
-//            }
-        } catch (e: IndexOutOfBoundsException) {
-            // 何もしない
-        }
-    }
-
-    /**
-     * アイテムをIDで指定して値段をセットする
-     */
-    fun setItemPrice(position: Int, itemPrice: BigDecimal) {
-        try {
-            // TODO: 要実装
-//            val item = expenseDetail.value?.itemList?.get(position)
-//            if (item != null) {
-//                item.price = itemPrice
-//            }
-        } catch (e: IndexOutOfBoundsException) {
-            // 何もしない
-        }
-    }
-
-    /**
-     * アイテムをIDで指定してカテゴリIDをセットする
-     */
-    fun setItemCategory(position: Int, categoryId: Long) {
-        try {
-            // TODO: 要実装
-//            val item = expenseDetail.value?.itemList?.get(position)
-//            if (item != null) {
-//                item.categoryId = categoryId
-//            }
-        } catch (e: IndexOutOfBoundsException) {
-            // 何もしない
-        }
+    suspend fun getPaymentList(expenseId: Long) {
+        paymentList.postValue(epRepository.findByExpenseId(expenseId) as MutableList<ExpensePaymentEntity>)
     }
 
     /**
      * 品物追加
      */
-    fun addItem(item: Item) {
-        // TODO: 要実装
-//        expenseDetail.value?.itemList?.add(item)
+    fun addItem(item: ItemEntity) {
+        itemList.value?.add(item)
+    }
+
+    /**
+     * 品物更新
+     */
+    fun updateItem(position: Int, item: ItemEntity) {
+        try {
+            val oldItem = itemList.value?.get(position)
+            if (oldItem != null) {
+                if (oldItem.name != item.name) {
+                    oldItem.name = item.name
+                }
+                if (oldItem.price != item.price) {
+                    oldItem.price = item.price
+                }
+                if (oldItem.categoryId != item.categoryId) {
+                    oldItem.categoryId = item.categoryId
+                }
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
+        }
     }
 
     /**
@@ -144,8 +225,7 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
      */
     fun removeItem(position: Int) {
         try {
-            // TODO: 要実装
-//            expenseDetail.value?.itemList?.removeAt(position)
+            itemList.value?.removeAt(position)
         } catch (e: IndexOutOfBoundsException) {
             // 何もしない
         }
@@ -156,42 +236,11 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
      */
     fun deleteItem(position: Int) {
         try {
-            // TODO: 要実装
-//            val item = expenseDetail.value?.itemList?.get(position)
-//            expenseDetail.value?.itemList?.removeAt(position)
-//            if (item != null) {
-//                expenseDetail.value?.deletedItemList?.add(item.id!!)
-//            }
-        } catch (e: IndexOutOfBoundsException) {
-            // 何もしない
-        }
-    }
-
-    /**
-     * 支払いを位置で指定して決済方法IDをセットする
-     */
-    fun setPaymentMethod(position: Int, paymentMethodId: Long) {
-        try {
-            // TODO: 要実装
-//            val payment = expenseDetail.value?.paymentList?.get(position)
-//            if (payment != null) {
-//                payment.paymentId = paymentMethodId
-//            }
-        } catch (e: IndexOutOfBoundsException) {
-            // 何もしない
-        }
-    }
-
-    /**
-     * 支払いを位置で指定して金額をセットする
-     */
-    fun setPaymentTotal(position: Int, paymentTotal: BigDecimal) {
-        try {
-            // TODO: 要実装
-//            val payment = expenseDetail.value?.paymentList?.get(position)
-//            if (payment != null) {
-//                payment.total = paymentTotal
-//            }
+            val item = itemList.value?.get(position)
+            itemList.value?.removeAt(position)
+            if (item != null) {
+                deleteItemList.add(item.id)
+            }
         } catch (e: IndexOutOfBoundsException) {
             // 何もしない
         }
@@ -200,9 +249,25 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
     /**
      * 支払い追加
      */
-    fun addPayment(payment: Payment) {
-        // TODO: 要実装
-//        expenseDetail.value?.paymentList?.add(payment)
+    fun addPayment(ep: ExpensePaymentEntity) = paymentList.value?.add(ep)
+
+    /**
+     * 支払い更新
+     */
+    fun updatePayment(position: Int, ep: ExpensePaymentEntity) {
+        try {
+            val oldPayment = paymentList.value?.get(position)
+            if (oldPayment != null) {
+                if (oldPayment.total != ep.total) {
+                    oldPayment.total = ep.total
+                }
+                if (oldPayment.paymentId != ep.paymentId) {
+                    oldPayment.paymentId = ep.paymentId
+                }
+            }
+        } catch (e: IndexOutOfBoundsException) {
+            // 何もしない
+        }
     }
 
     /**
@@ -210,8 +275,7 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
      */
     fun removePayment(position: Int) {
         try {
-            // TODO: 要実装
-//            expenseDetail.value?.paymentList?.removeAt(position)
+            paymentList.value?.removeAt(position)
         } catch (e: IndexOutOfBoundsException) {
             // 何もしない
         }
@@ -222,24 +286,27 @@ class ExpenseDetailsViewModel(private val repository: ExpenseRepository) : ViewM
      */
     fun deletePayment(position: Int) {
         try {
-            // TODO: 要実装
-//            val payment = expenseDetail.value?.paymentList?.get(position)
-//            expenseDetail.value?.paymentList?.removeAt(position)
-//            if (payment != null) {
-//                expenseDetail.value?.deletedPaymentList?.add(payment.id!!)
-//            }
+            val payment = paymentList.value?.get(position)
+            paymentList.value?.removeAt(position)
+            if (payment != null) {
+                deletePaymentList.add(payment.id)
+            }
         } catch (e: IndexOutOfBoundsException) {
             // 何もしない
         }
     }
 }
 
-class ExpenseDetailsViewModelFactory(private val repository: ExpenseRepository) :
+class ExpenseDetailsViewModelFactory(
+    private val expenseRepository: ExpenseRepository,
+    private val itemRepository: ItemRepository,
+    private val epRepository: ExpensePaymentRepository
+) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel?> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ExpenseDetailsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ExpenseDetailsViewModel(repository) as T
+            return ExpenseDetailsViewModel(expenseRepository, itemRepository, epRepository) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

@@ -9,19 +9,26 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
+import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
 
 class PaymentsFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val expensesViewModel: ExpensesViewModel by activityViewModels()
+    private val expensesViewModel: ExpensesViewModel by activityViewModels {
+        ExpensesViewModelFactory(
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).epRepository
+        )
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var totalListAdapter: TotalListAdapter

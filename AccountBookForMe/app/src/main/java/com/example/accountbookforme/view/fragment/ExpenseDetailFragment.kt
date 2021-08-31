@@ -12,7 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,9 +20,9 @@ import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.ExpenseItemListAdapter
 import com.example.accountbookforme.adapter.ExpensePaymentListAdapter
+import com.example.accountbookforme.database.entity.ExpensePaymentEntity
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.databinding.FragmentExpenseDetailBinding
-import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.view.activity.MainActivity
@@ -48,13 +48,17 @@ class ExpenseDetailFragment : Fragment(),
     private var _binding: FragmentExpenseDetailBinding? = null
     private val binding get() = _binding!!
 
-    private val expenseDetail: ExpenseDetailsViewModel by viewModels {
-        ExpenseDetailsViewModelFactory((activity?.application as MMApplication).expenseRepository)
+    private val expenseDetail: ExpenseDetailsViewModel by activityViewModels {
+        ExpenseDetailsViewModelFactory(
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).itemRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
-    private val categoriesViewModel: CategoriesViewModel by viewModels {
+    private val categoriesViewModel: CategoriesViewModel by activityViewModels {
         CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
     }
-    private val paymentsViewModel: PaymentsViewModel by viewModels {
+    private val paymentsViewModel: PaymentsViewModel by activityViewModels {
         PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
     }
 
@@ -99,8 +103,8 @@ class ExpenseDetailFragment : Fragment(),
             if (id == null) {
                 // 新規作成時
 
-                // 空の支出詳細生成
-                expenseDetail.createExpenseDetail()
+                // 初期化
+                expenseDetail.initExpenseDetail()
 
                 // 削除ボタンを非表示にする
                 binding.deleteExpense.visibility = View.GONE
@@ -113,6 +117,12 @@ class ExpenseDetailFragment : Fragment(),
 
                 // 店舗表示
                 binding.storeName.text = storeName
+
+                // 品物リスト取得
+                expenseDetail.getItemList(id!!)
+
+                // 支払いリスト取得
+                expenseDetail.getPaymentList(id!!)
 
                 // メモ表示
                 binding.note.setText(expenseDetail.getNote())
@@ -158,26 +168,27 @@ class ExpenseDetailFragment : Fragment(),
                     paymentLinearLayoutManager.orientation
                 )
             )
-
-            // 支出詳細の監視開始
-            expenseDetail.expenseDetail.observe(viewLifecycleOwner, { expenseDetail ->
-
-                // 品物リストをセットする
-//            itemListAdapter.submitList(expenseDetail.itemList)
-                // TODO: 要実装
-                itemListAdapter.submitList(arrayListOf())
-                // 支払いリストをセットする
-//            paymentListAdapter.submitList(expenseDetail.paymentList)
-                // TODO: 要実装
-                itemListAdapter.submitList(arrayListOf())
-
-                // 品物の合計額表示
-                updateItemTotal()
-
-                // 支払いの合計額表示
-                updatePaymentTotal()
-            })
         }
+
+        // 品物リストの監視開始
+        expenseDetail.itemList.observe(viewLifecycleOwner, { itemList ->
+
+            // 品物リストをセットする
+            itemListAdapter.submitList(itemList)
+
+            // 品物の合計額表示
+            updateItemTotal()
+        })
+
+        // 支払いリストの監視開始
+        expenseDetail.paymentList.observe(viewLifecycleOwner, { paymentList ->
+
+            // 支払いリストをセットする
+            paymentListAdapter.submitList(paymentList)
+
+            // 支払いの合計額表示
+            updatePaymentTotal()
+        })
 
         // 決済方法リストの監視開始
         paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
@@ -193,10 +204,10 @@ class ExpenseDetailFragment : Fragment(),
             // 支払いリストのクリックイベントを設定
             paymentListAdapter.setOnExpensePaymentClickListener(
                 object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
-                    override fun onItemClick(position: Int, payment: Payment) {
+                    override fun onItemClick(position: Int, ep: ExpensePaymentEntity) {
                         AddPaymentDialogFragment(
                             position,
-                            payment,
+                            ep,
                             paymentsViewModel.getPaymentsAsFilter()
                         ).show(childFragmentManager, null)
                     }
@@ -218,7 +229,7 @@ class ExpenseDetailFragment : Fragment(),
             // 品物リストのクリックイベントを設定
             itemListAdapter.setOnExpenseItemClickListener(
                 object : ExpenseItemListAdapter.OnExpenseItemClickListener {
-                    override fun onItemClick(position: Int, item: Item) {
+                    override fun onItemClick(position: Int, item: ItemEntity) {
                         AddItemDialogFragment(
                             position,
                             item,
@@ -270,10 +281,10 @@ class ExpenseDetailFragment : Fragment(),
                 expenseDetail.setNote(binding.note.text.toString())
 
                 // バリデーションチェック
-//                if (!validationCheck()) {
-//                    // 失敗したら何もせず終了
-//                    return true
-//                }
+                if (!validationCheck()) {
+                    // 失敗したら何もせず終了
+                    return true
+                }
 
                 // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
                 if (id == null) {
@@ -323,8 +334,9 @@ class ExpenseDetailFragment : Fragment(),
     /**
      * 品物を入力したときに呼ばれる from AddItemDialogFragment
      */
-    override fun addItem(item: Item) {
+    override fun addItem(item: ItemEntity) {
         expenseDetail.addItem(item)
+        binding.itemList.adapter?.notifyDataSetChanged()
         // 品物の合計額更新
         updateItemTotal()
     }
@@ -332,7 +344,17 @@ class ExpenseDetailFragment : Fragment(),
     /**
      * 品物を更新したときに呼ばれる from AddItemDialogFragment
      */
-    override fun updateItem() {
+    override fun updateItem(position: Int, item: ItemEntity) {
+        expenseDetail.updateItem(position, item)
+        binding.itemList.adapter?.notifyDataSetChanged()
+        // 品物の合計額更新
+        updateItemTotal()
+    }
+
+    /**
+     * 品物を削除したときに呼ばれる from AddItemDialogFragment
+     */
+    override fun deleteItem() {
         binding.itemList.adapter?.notifyDataSetChanged()
         // 品物の合計額更新
         updateItemTotal()
@@ -341,8 +363,9 @@ class ExpenseDetailFragment : Fragment(),
     /**
      * 支払いを入力したときに呼ばれる from AddPaymentDialogFragment
      */
-    override fun addPayment(payment: Payment) {
-        expenseDetail.addPayment(payment)
+    override fun addPayment(ep: ExpensePaymentEntity) {
+        expenseDetail.addPayment(ep)
+        binding.paymentList.adapter?.notifyDataSetChanged()
         // 支払いの合計額更新
         updatePaymentTotal()
     }
@@ -350,7 +373,17 @@ class ExpenseDetailFragment : Fragment(),
     /**
      * 支払いを更新したときに呼ばれる from AddPaymentDialogFragment
      */
-    override fun updatePayment() {
+    override fun updatePayment(position: Int, ep: ExpensePaymentEntity) {
+        expenseDetail.updatePayment(position, ep)
+        binding.paymentList.adapter?.notifyDataSetChanged()
+        // 支払いの合計額更新
+        updatePaymentTotal()
+    }
+
+    /**
+     * 支払いを削除したときに呼ばれる from AddPaymentDialogFragment
+     */
+    override fun deletePayment() {
         binding.paymentList.adapter?.notifyDataSetChanged()
         // 支払いの合計額更新
         updatePaymentTotal()
@@ -361,7 +394,7 @@ class ExpenseDetailFragment : Fragment(),
      */
     private fun updateItemTotal() {
 
-        val total = expenseDetail.getItemList()?.fold(BigDecimal.ZERO) { acc, item ->
+        val total = expenseDetail.itemList.value?.fold(BigDecimal.ZERO) { acc, item ->
             acc + item.price
         }
         binding.numTotalItem.text = total?.let { Utils.convertToStrDecimal(it) }
@@ -372,7 +405,7 @@ class ExpenseDetailFragment : Fragment(),
      */
     private fun updatePaymentTotal() {
 
-        val total = expenseDetail.getPaymentList()?.fold(BigDecimal.ZERO) { acc, payment ->
+        val total = expenseDetail.paymentList.value?.fold(BigDecimal.ZERO) { acc, payment ->
             acc + payment.total
         }
         binding.numTotalPayment.text = total?.let { Utils.convertToStrDecimal(it) }
@@ -387,17 +420,17 @@ class ExpenseDetailFragment : Fragment(),
         var message = ""
 
         // 店舗名が入力されていない
-        if (TextUtils.isEmpty(expenseDetail.expenseDetail.value?.storeName)) {
+        if (TextUtils.isEmpty(binding.storeName.text)) {
             isValidated = false
             message += getString(R.string.store_is_empty)
         }
         // 品物が0件
-        if (expenseDetail.getItemList().isNullOrEmpty()) {
+        if (expenseDetail.itemList.value.isNullOrEmpty()) {
             isValidated = false
             message += getString(R.string.item_is_empty)
         }
         // 支払いが0件
-        if (expenseDetail.getPaymentList().isNullOrEmpty()) {
+        if (expenseDetail.paymentList.value.isNullOrEmpty()) {
             isValidated = false
             message += getString(R.string.payment_is_empty)
         }

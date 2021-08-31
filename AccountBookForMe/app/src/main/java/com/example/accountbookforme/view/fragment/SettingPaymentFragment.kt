@@ -9,7 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +27,7 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
     private var _binding: FragmentListBinding? = null
     private val binding get() = _binding!!
 
-    private val paymentsViewModel: PaymentsViewModel by viewModels {
+    private val paymentsViewModel: PaymentsViewModel by activityViewModels {
         PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
     }
 

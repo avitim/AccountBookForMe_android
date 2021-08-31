@@ -9,7 +9,8 @@ import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,14 +24,18 @@ import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
+import kotlinx.coroutines.launch
 
 class ExpensesFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val expensesViewModel: ExpensesViewModel by viewModels {
-        ExpensesViewModelFactory((activity?.application as MMApplication).expenseRepository)
+    private val expensesViewModel: ExpensesViewModel by activityViewModels {
+        ExpensesViewModelFactory(
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
 
     private lateinit var recyclerView: RecyclerView
@@ -60,7 +65,7 @@ class ExpensesFragment : Fragment() {
                     // 支出IDを渡す
                     intent.putExtra("expenseId", expense.id)
                     // 店舗名を渡す
-                    intent.putExtra("storeName", expense.storeName?:expense.storeNameByStoreId)
+                    intent.putExtra("storeName", expense.storeName ?: expense.storeNameByStoreId)
                     // 支出詳細画面に遷移する
                     startActivity(intent)
                 }
@@ -87,11 +92,17 @@ class ExpensesFragment : Fragment() {
 
         // 支出リストの監視開始
         expensesViewModel.expenseList.observe(viewLifecycleOwner, { expenseList ->
-            expenseListAdapter.setExpenseListItems(expenseList)
-            // 総額を表示
-            binding.allTotal.text = expensesViewModel.expenseList.value?.let {
-                Utils.calcExpenseTotal(it)
-            }?.let { Utils.convertToStrDecimal(it) }
+            lifecycleScope.launch {
+                // 支出の総額を取得
+                expenseList.forEach { expense ->
+                    expense.total = expensesViewModel.calcTotal(expense.id)
+                }
+                expenseListAdapter.setExpenseListItems(expenseList)
+                // 支出リストの合計総額を表示
+                binding.allTotal.text = expensesViewModel.expenseList.value?.let {
+                    Utils.calcExpenseTotal(it)
+                }?.let { Utils.convertToStrDecimal(it) }
+            }
         })
     }
 

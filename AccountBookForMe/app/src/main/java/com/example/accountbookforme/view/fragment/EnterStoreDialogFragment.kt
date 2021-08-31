@@ -8,7 +8,7 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.widget.Toast
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -30,7 +30,7 @@ class EnterStoreDialogFragment(
     private var _binding: DialogEnterStoreBinding? = null
     private val binding get() = _binding!!
 
-    private val storesViewModel: StoresViewModel by viewModels {
+    private val storesViewModel: StoresViewModel by activityViewModels {
         StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
     }
 

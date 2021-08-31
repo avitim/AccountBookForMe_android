@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
 import com.example.accountbookforme.adapter.TotalListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
@@ -18,13 +19,16 @@ import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.ItemsViewModel
+import com.example.accountbookforme.viewmodel.ItemsViewModelFactory
 
 class CategoriesFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val itemsViewModel: ItemsViewModel by activityViewModels()
+    private val itemsViewModel: ItemsViewModel by activityViewModels {
+        ItemsViewModelFactory((activity?.application as MMApplication).itemRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var totalListAdapter: TotalListAdapter

@@ -9,24 +9,30 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
-import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.adapter.ItemListAdapter
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
-import com.example.accountbookforme.model.Item
 import com.example.accountbookforme.util.Utils
+import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.viewmodel.ItemsViewModel
+import com.example.accountbookforme.viewmodel.ItemsViewModelFactory
+import kotlinx.coroutines.launch
 
 class CategoryItemFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!
 
-    private val itemsViewModel: ItemsViewModel by activityViewModels()
+    private val itemsViewModel: ItemsViewModel by activityViewModels {
+        ItemsViewModelFactory((activity?.application as MMApplication).itemRepository)
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var itemListAdapter: ItemListAdapter
@@ -53,16 +59,13 @@ class CategoryItemFragment : Fragment() {
         // クリックした品物が登録されている支出詳細を表示する
         itemListAdapter.setOnItemClickListener(
             object : ItemListAdapter.OnItemClickListener {
-                override fun onItemClick(item: Item) {
+                override fun onItemClick(item: ItemEntity) {
 
-                    if (item.expenseId != null) {
-
-                        val intent = Intent(context, DetailActivity::class.java)
-                        // 支出IDを渡す
-                        intent.putExtra("expenseId", item.expenseId!!)
-                        // 支出詳細画面に遷移する
-                        startActivity(intent)
-                    }
+                    val intent = Intent(context, DetailActivity::class.java)
+                    // 支出IDを渡す
+                    intent.putExtra("expenseId", item.expenseId)
+                    // 支出詳細画面に遷移する
+                    startActivity(intent)
                 }
             }
         )
@@ -95,15 +98,18 @@ class CategoryItemFragment : Fragment() {
         // アクションバーのタイトルを設定
         (activity as AppCompatActivity).supportActionBar?.title = categoryName
 
-        // 品物リスト取得
-        itemsViewModel.findByCategoryId(categoryId)
+        lifecycleScope.launch {
 
-        // 支出リストの監視開始
-        itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
-            itemListAdapter.setItemListItems(itemList)
-            // 総額を表示
-            binding.allTotal.text = itemsViewModel.itemList.value?.let { Utils.calcItemTotal(it).toString() }
-        })
+            // 品物リスト取得
+            itemsViewModel.findByCategoryId(categoryId)
+
+            // 支出リストの監視開始
+            itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
+                itemListAdapter.setItemListItems(itemList)
+                // 総額を表示
+                binding.allTotal.text = itemsViewModel.itemList.value?.let { Utils.calcItemTotal(it).toString() }
+            })
+        }
     }
 
     // メニュータップ時の処理設定

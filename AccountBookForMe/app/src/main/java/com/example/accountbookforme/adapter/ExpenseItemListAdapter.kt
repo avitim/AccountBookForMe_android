@@ -6,18 +6,18 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.NormalListItemBinding
-import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.CategoriesViewModel
 
 class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewModel) :
-    ListAdapter<Item, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
+    ListAdapter<ItemEntity, ExpenseItemListAdapter.ExpenseItemViewHolder>(DiffCallback) {
 
     private lateinit var listener: OnExpenseItemClickListener
 
     // 結果を渡すリスナー
     interface OnExpenseItemClickListener {
-        fun onItemClick(position: Int, item: Item)
+        fun onItemClick(position: Int, item: ItemEntity)
     }
 
     // リスナーをセット
@@ -30,7 +30,7 @@ class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewMode
         private val categoriesViewModel: CategoriesViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Item) {
+        fun bind(item: ItemEntity) {
             binding.label.text = item.name
             binding.subLabel.text = categoriesViewModel.getById(item.categoryId)?.name
             binding.value.text = Utils.convertToStrDecimal(item.price)
@@ -57,13 +57,13 @@ class ExpenseItemListAdapter(private val categoriesViewModel: CategoriesViewMode
     }
 }
 
-private object DiffCallback : DiffUtil.ItemCallback<Item>() {
+private object DiffCallback : DiffUtil.ItemCallback<ItemEntity>() {
 
-    override fun areItemsTheSame(oldItem: Item, newItem: Item): Boolean {
+    override fun areItemsTheSame(oldItem: ItemEntity, newItem: ItemEntity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Item, newItem: Item): Boolean {
+    override fun areContentsTheSame(oldItem: ItemEntity, newItem: ItemEntity): Boolean {
         return oldItem == newItem
     }
 }

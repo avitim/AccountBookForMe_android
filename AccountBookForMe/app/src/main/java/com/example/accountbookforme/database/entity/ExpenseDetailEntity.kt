@@ -5,7 +5,6 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.math.BigDecimal
 import java.time.LocalDateTime
 
 @Entity(
@@ -26,8 +25,6 @@ data class ExpenseDetailEntity(
     // デフォルトは今日
     @ColumnInfo(name = "purchased_at")
     var purchasedAt: LocalDateTime = LocalDateTime.now(),
-
-    var total: BigDecimal = BigDecimal.ZERO,
 
     @ColumnInfo(name = "store_id")
     var storeId: Long? = null,

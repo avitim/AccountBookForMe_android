@@ -1,65 +1,41 @@
 package com.example.accountbookforme.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
-import com.example.accountbookforme.model.Item
-import com.example.accountbookforme.model.Total
+import androidx.lifecycle.ViewModelProvider
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.database.repository.ItemRepository
-import com.example.accountbookforme.util.RestUtil
-import kotlinx.coroutines.launch
+import com.example.accountbookforme.model.Total
 
-class ItemsViewModel : ViewModel() {
-
-    private val itemRepository: ItemRepository =
-        RestUtil.retrofit.create(ItemRepository::class.java)
+class ItemsViewModel(private val repository: ItemRepository) : ViewModel() {
 
     // 支出額リスト
     var totalList: MutableLiveData<List<Total>> = MutableLiveData()
 
     // 品物リスト
-    var itemList: MutableLiveData<List<Item>> = MutableLiveData()
-
-    init {
-        loadTotalList()
-    }
+    var itemList: MutableLiveData<List<ItemEntity>> = MutableLiveData()
 
     /**
      * 支出額リスト取得
      */
-    private fun loadTotalList() {
-
-        viewModelScope.launch {
-            try {
-                val request = itemRepository.getTotalCategoryList()
-                if (request.isSuccessful) {
-                    totalList.value = request.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
-        }
-    }
+    // TODO: 要実装
+    suspend fun loadTotalList() = repository.getTotalCategoryList()
 
     /**
      * カテゴリIDから品物リスト取得
      */
-    fun findByCategoryId(categoryId: Long) {
+    suspend fun findByCategoryId(categoryId: Long) {
+        itemList.value = repository.findByCategoryId(categoryId)
+    }
+}
 
-        viewModelScope.launch {
-            try {
-                val request = itemRepository.findByCategoryId(categoryId)
-                if (request.isSuccessful) {
-                    itemList.value = request.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
+class ItemsViewModelFactory(private val repository: ItemRepository) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(ItemsViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return ItemsViewModel(repository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -13,20 +13,27 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.MMApplication
 import com.example.accountbookforme.R
-import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.adapter.StoreExpenseListAdapter
 import com.example.accountbookforme.databinding.FragmentListWithTitleBinding
 import com.example.accountbookforme.model.Expense
 import com.example.accountbookforme.util.Utils
+import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
+import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
 
 class StoreExpenseFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!
 
-    private val expensesViewModel: ExpensesViewModel by activityViewModels()
+    private val expensesViewModel: ExpensesViewModel by activityViewModels {
+        ExpensesViewModelFactory(
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).epRepository
+        )
+    }
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var storeExpenseListAdapter: StoreExpenseListAdapter
