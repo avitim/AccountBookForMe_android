@@ -5,21 +5,11 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.database.repository.ItemRepository
-import com.example.accountbookforme.model.Total
 
 class ItemsViewModel(private val repository: ItemRepository) : ViewModel() {
 
-    // 支出額リスト
-    var totalList: MutableLiveData<List<Total>> = MutableLiveData()
-
     // 品物リスト
     var itemList: MutableLiveData<List<ItemEntity>> = MutableLiveData()
-
-    /**
-     * 支出額リスト取得
-     */
-    // TODO: 要実装
-    suspend fun loadTotalList() = repository.getTotalCategoryList()
 
     /**
      * カテゴリIDから品物リスト取得

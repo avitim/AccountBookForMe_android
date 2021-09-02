@@ -56,7 +56,10 @@ class ExpenseDetailFragment : Fragment(),
         )
     }
     private val categoriesViewModel: CategoriesViewModel by activityViewModels {
-        CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
+        CategoriesViewModelFactory(
+            (activity?.application as MMApplication).categoryRepository,
+            (activity?.application as MMApplication).itemRepository
+        )
     }
     private val paymentsViewModel: PaymentsViewModel by activityViewModels {
         PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
@@ -129,7 +132,8 @@ class ExpenseDetailFragment : Fragment(),
             }
 
             // 日付表示
-            binding.purchasedAt.text = DateTimeFormatter.ofPattern(DateUtil.DATE_EDMMMYYYY).format(expenseDetail.getPurchasedAt())
+            binding.purchasedAt.text = DateTimeFormatter.ofPattern(DateUtil.DATE_EDMMMYYYY)
+                .format(expenseDetail.getPurchasedAt())
 
             // 日付欄をタップしたらカレンダーダイアログを表示する
             binding.purchasedAt.setOnClickListener {
@@ -146,74 +150,7 @@ class ExpenseDetailFragment : Fragment(),
                     expenseDetail.expenseDetail.value?.storeName
                 ).show(childFragmentManager, null)
             }
-
-            // 品物リストの表示設定
-            binding.itemList.adapter = itemListAdapter
-            val itemLinearLayoutManager = LinearLayoutManager(view.context)
-            binding.itemList.layoutManager = itemLinearLayoutManager
-            binding.itemList.addItemDecoration(
-                DividerItemDecoration(
-                    view.context,
-                    itemLinearLayoutManager.orientation
-                )
-            )
-
-            // 決済方法リストの表示設定
-            binding.paymentList.adapter = paymentListAdapter
-            val paymentLinearLayoutManager = LinearLayoutManager(view.context)
-            binding.paymentList.layoutManager = paymentLinearLayoutManager
-            binding.paymentList.addItemDecoration(
-                DividerItemDecoration(
-                    view.context,
-                    paymentLinearLayoutManager.orientation
-                )
-            )
         }
-
-        // 品物リストの監視開始
-        expenseDetail.itemList.observe(viewLifecycleOwner, { itemList ->
-
-            // 品物リストをセットする
-            itemListAdapter.submitList(itemList)
-
-            // 品物の合計額表示
-            updateItemTotal()
-        })
-
-        // 支払いリストの監視開始
-        expenseDetail.paymentList.observe(viewLifecycleOwner, { paymentList ->
-
-            // 支払いリストをセットする
-            paymentListAdapter.submitList(paymentList)
-
-            // 支払いの合計額表示
-            updatePaymentTotal()
-        })
-
-        // 決済方法リストの監視開始
-        paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
-
-            // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
-            binding.addPaymentBtn.setOnClickListener {
-                AddPaymentDialogFragment(null, null, paymentsViewModel.getPaymentsAsFilter()).show(
-                    childFragmentManager,
-                    null
-                )
-            }
-
-            // 支払いリストのクリックイベントを設定
-            paymentListAdapter.setOnExpensePaymentClickListener(
-                object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
-                    override fun onItemClick(position: Int, ep: ExpensePaymentEntity) {
-                        AddPaymentDialogFragment(
-                            position,
-                            ep,
-                            paymentsViewModel.getPaymentsAsFilter()
-                        ).show(childFragmentManager, null)
-                    }
-                }
-            )
-        })
 
         // カテゴリリストの監視開始
         categoriesViewModel.categoryList.observe(viewLifecycleOwner, {
@@ -225,23 +162,94 @@ class ExpenseDetailFragment : Fragment(),
                     null
                 )
             }
-
-            // 品物リストのクリックイベントを設定
-            itemListAdapter.setOnExpenseItemClickListener(
-                object : ExpenseItemListAdapter.OnExpenseItemClickListener {
-                    override fun onItemClick(position: Int, item: ItemEntity) {
-                        AddItemDialogFragment(
-                            position,
-                            item,
-                            categoriesViewModel.getCategoriesAsFilter()
-                        ).show(
-                            childFragmentManager,
-                            null
-                        )
-                    }
-                }
-            )
         })
+
+        // 決済方法リストの監視開始
+        paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
+
+            // 支払い追加アイコンをタップしたら支払い追加ダイアログを表示する
+            binding.addPaymentBtn.setOnClickListener {
+                AddPaymentDialogFragment(
+                    null,
+                    null,
+                    paymentsViewModel.getPaymentsAsFilter()
+                ).show(
+                    childFragmentManager,
+                    null
+                )
+            }
+        })
+
+        // 品物リストの監視開始
+        expenseDetail.itemList.observe(viewLifecycleOwner, { itemList ->
+
+            // 品物リストをセットする
+            itemListAdapter.submitList(itemList)
+
+            // 品物の合計額表示
+            updateItemTotal()
+        })
+
+        // 品物リストの表示設定
+        binding.itemList.adapter = itemListAdapter
+        val itemLinearLayoutManager = LinearLayoutManager(view.context)
+        binding.itemList.layoutManager = itemLinearLayoutManager
+        binding.itemList.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                itemLinearLayoutManager.orientation
+            )
+        )
+
+        // 品物リストのクリックイベントを設定
+        itemListAdapter.setOnExpenseItemClickListener(
+            object : ExpenseItemListAdapter.OnExpenseItemClickListener {
+                override fun onItemClick(position: Int, item: ItemEntity) {
+                    AddItemDialogFragment(
+                        position,
+                        item,
+                        categoriesViewModel.getCategoriesAsFilter()
+                    ).show(
+                        childFragmentManager,
+                        null
+                    )
+                }
+            }
+        )
+
+        // 支払いリストの監視開始
+        expenseDetail.paymentList.observe(viewLifecycleOwner, { paymentList ->
+
+            // 支払いリストをセットする
+            paymentListAdapter.submitList(paymentList)
+
+            // 支払いの合計額表示
+            updatePaymentTotal()
+        })
+
+        // 支払いリストの表示設定
+        binding.paymentList.adapter = paymentListAdapter
+        val paymentLinearLayoutManager = LinearLayoutManager(view.context)
+        binding.paymentList.layoutManager = paymentLinearLayoutManager
+        binding.paymentList.addItemDecoration(
+            DividerItemDecoration(
+                view.context,
+                paymentLinearLayoutManager.orientation
+            )
+        )
+
+        // 支払いリストのクリックイベントを設定
+        paymentListAdapter.setOnExpensePaymentClickListener(
+            object : ExpensePaymentListAdapter.OnExpensePaymentClickListener {
+                override fun onItemClick(position: Int, ep: ExpensePaymentEntity) {
+                    AddPaymentDialogFragment(
+                        position,
+                        ep,
+                        paymentsViewModel.getPaymentsAsFilter()
+                    ).show(childFragmentManager, null)
+                }
+            }
+        )
 
         // 削除ボタンをタップしたら確認ダイアログを表示する
         binding.deleteExpense.setOnClickListener {
@@ -286,22 +294,18 @@ class ExpenseDetailFragment : Fragment(),
                     return true
                 }
 
-                // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
-                if (id == null) {
-                    lifecycleScope.launch {
+                lifecycleScope.launch {
+                    // 支出IDがnullなら新規作成API、それ以外なら更新APIを投げる
+                    if (id == null) {
                         // 支出詳細をDB上で新規作成するAPIを投げる
                         expenseDetail.create()
-                        // 支出一覧画面に遷移する
-                        startActivity(Intent(context, MainActivity::class.java))
-                    }
-                } else {
-                    lifecycleScope.launch {
+                    } else {
                         // 支出詳細をDB上で更新するAPIを投げる
                         expenseDetail.update()
-                        // 支出一覧画面に遷移する
-                        startActivity(Intent(context, MainActivity::class.java))
                     }
                 }
+                // 支出一覧画面に遷移する
+                startActivity(Intent(context, MainActivity::class.java))
             }
             android.R.id.home -> {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
@@ -316,7 +320,12 @@ class ExpenseDetailFragment : Fragment(),
     override fun selectDate(year: Int, month: Int, day: Int) {
         val dateTime = DateUtil.parseLocalDateTimeFromInt(year, month, day)
         binding.purchasedAt.text = DateUtil.formatDate(dateTime, DateUtil.DATE_EDMMMYYYY)
-        expenseDetail.setPurchasedAt(LocalDateTime.of(LocalDate.of(year, month, day), LocalTime.now()))
+        expenseDetail.setPurchasedAt(
+            LocalDateTime.of(
+                LocalDate.of(year, month, day),
+                LocalTime.now()
+            )
+        )
     }
 
     /**
@@ -328,7 +337,11 @@ class ExpenseDetailFragment : Fragment(),
 
         expenseDetail.expenseDetail.value?.storeId = id
         // idがnullなら手入力なので店舗名を記憶する、それ以外ならidから辿れるので記憶しない
-        expenseDetail.expenseDetail.value?.storeName = if (id == null) { name } else { null }
+        expenseDetail.expenseDetail.value?.storeName = if (id == null) {
+            name
+        } else {
+            null
+        }
     }
 
     /**

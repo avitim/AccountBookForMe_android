@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -18,16 +19,20 @@ import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
-import com.example.accountbookforme.viewmodel.ItemsViewModel
-import com.example.accountbookforme.viewmodel.ItemsViewModelFactory
+import com.example.accountbookforme.viewmodel.CategoriesViewModel
+import com.example.accountbookforme.viewmodel.CategoriesViewModelFactory
+import kotlinx.coroutines.launch
 
 class CategoriesFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val itemsViewModel: ItemsViewModel by activityViewModels {
-        ItemsViewModelFactory((activity?.application as MMApplication).itemRepository)
+    private val categoriesViewModel: CategoriesViewModel by activityViewModels {
+        CategoriesViewModelFactory(
+            (activity?.application as MMApplication).categoryRepository,
+            (activity?.application as MMApplication).itemRepository
+        )
     }
 
     private lateinit var recyclerView: RecyclerView
@@ -82,12 +87,15 @@ class CategoriesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 支出リストの監視開始
-        itemsViewModel.totalList.observe(viewLifecycleOwner, { totalList ->
-            totalListAdapter.setTotalListItems(totalList)
-            // 総額を表示
-            binding.allTotal.text = itemsViewModel.totalList.value?.let {
-                Utils.calcTotal(it)
-            }?.let { Utils.convertToStrDecimal(it) }
+        categoriesViewModel.categoryList.observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                categoriesViewModel.loadTotalList()
+                totalListAdapter.setTotalListItems(categoriesViewModel.getTotalList())
+                // 総額を表示
+                binding.allTotal.text =
+                    Utils.calcTotal(categoriesViewModel.getTotalList())
+                        ?.let { Utils.convertToStrDecimal(it) }
+            }
         })
     }
 }

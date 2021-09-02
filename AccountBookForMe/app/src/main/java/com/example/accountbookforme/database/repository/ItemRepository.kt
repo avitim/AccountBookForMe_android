@@ -3,7 +3,7 @@ package com.example.accountbookforme.database.repository
 import androidx.annotation.WorkerThread
 import com.example.accountbookforme.database.dao.ItemDao
 import com.example.accountbookforme.database.entity.ItemEntity
-import com.example.accountbookforme.model.Total
+import java.math.BigDecimal
 
 class ItemRepository(private val itemDao: ItemDao) {
 
@@ -22,6 +22,12 @@ class ItemRepository(private val itemDao: ItemDao) {
     @WorkerThread
     suspend fun findByCategoryId(categoryId: Long) = itemDao.findByCategoryId(categoryId)
 
-    // TODO: 要実装
-    suspend fun getTotalCategoryList(): List<Total> = arrayListOf()
+    /**
+     * カテゴリIDの品物の合計額を取得
+     */
+    @WorkerThread
+    suspend fun getCategoryTotal(categoryId: Long): BigDecimal =
+        itemDao.findByCategoryId(categoryId).fold(BigDecimal.ZERO) { acc, item ->
+            acc + item.price
+        }
 }

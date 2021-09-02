@@ -28,7 +28,10 @@ class SettingCategoryFragment : Fragment(), FilterDialogFragment.OnAddFilterList
     private val binding get() = _binding!!
 
     private val categoriesViewModel: CategoriesViewModel by activityViewModels {
-        CategoriesViewModelFactory((activity?.application as MMApplication).categoryRepository)
+        CategoriesViewModelFactory(
+            (activity?.application as MMApplication).categoryRepository,
+            (activity?.application as MMApplication).itemRepository
+        )
     }
 
     private lateinit var recyclerView: RecyclerView
