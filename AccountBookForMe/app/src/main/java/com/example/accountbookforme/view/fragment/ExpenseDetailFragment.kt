@@ -67,7 +67,10 @@ class ExpenseDetailFragment : Fragment(),
         )
     }
     private val paymentsViewModel: PaymentsViewModel by activityViewModels {
-        PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
+        PaymentsViewModelFactory(
+            (activity?.application as MMApplication).paymentRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
 
     // 支出ID

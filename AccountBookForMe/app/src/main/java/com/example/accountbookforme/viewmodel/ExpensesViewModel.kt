@@ -21,38 +21,16 @@ class ExpensesViewModel(
     // 支出リスト
     var expenseList: LiveData<List<Expense>> = expenseRepository.expenseList.asLiveData()
 
-    // 決済方法ごとの支出額リスト
-    var totalPaymentList: MutableLiveData<List<Total>> = MutableLiveData()
-
     // 店舗ごとの支出額リスト
     var totalStoreList: MutableLiveData<List<Total>> = MutableLiveData()
 
     // 店舗ごとの支出リスト
     var storeExpenseList: MutableLiveData<List<Expense>> = MutableLiveData()
 
-//    init {
-//        getTotalPaymentList()
-//        getTotalStoreList()
-//    }
-
     /**
      * 支出の総額取得
      */
     suspend fun calcTotal(expenseId: Long): BigDecimal = epRepository.calcTotalByExpenseId(expenseId)
-
-    /**
-     * 決済方法ごとの支出額リスト取得
-     */
-    private fun getTotalPaymentList() = viewModelScope.launch {
-        expenseRepository.getTotalPaymentList()
-    }
-
-    /**
-     * 店舗ごとの支出額リスト取得
-     */
-    private fun getTotalStoreList() = viewModelScope.launch {
-        expenseRepository.getTotalStoreList()
-    }
 
     /**
      * 店舗IDから支出リスト取得

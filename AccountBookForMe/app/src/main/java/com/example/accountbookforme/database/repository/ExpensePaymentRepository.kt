@@ -19,12 +19,21 @@ class ExpensePaymentRepository(private val expensePaymentDao: ExpensePaymentDao)
     @WorkerThread
     suspend fun findByExpenseId(expenseId: Long) = expensePaymentDao.findByExpenseId(expenseId)
 
-    @WorkerThread
-    suspend fun findByPaymentId(paymentId: Long) = expensePaymentDao.findByPaymentId(paymentId)
-
+    /**
+     * 支出IDから総額を取得
+     */
     @WorkerThread
     suspend fun calcTotalByExpenseId(expenseId: Long): BigDecimal =
         expensePaymentDao.findByExpenseId(expenseId).fold(BigDecimal.ZERO) { acc, ep ->
+            acc + ep.total
+        }
+
+    /**
+     * 決済方法IDから支払い額を取得
+     */
+    @WorkerThread
+    suspend fun getPaymentTotal(paymentId: Long): BigDecimal =
+        expensePaymentDao.findByPaymentId(paymentId).fold(BigDecimal.ZERO) { acc, ep ->
             acc + ep.total
         }
 }

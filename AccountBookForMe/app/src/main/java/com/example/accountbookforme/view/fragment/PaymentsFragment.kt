@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -15,17 +16,18 @@ import com.example.accountbookforme.databinding.FragmentListWithMonthBinding
 import com.example.accountbookforme.model.Total
 import com.example.accountbookforme.util.DateUtil
 import com.example.accountbookforme.util.Utils
-import com.example.accountbookforme.viewmodel.ExpensesViewModel
-import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
+import com.example.accountbookforme.viewmodel.PaymentsViewModel
+import com.example.accountbookforme.viewmodel.PaymentsViewModelFactory
+import kotlinx.coroutines.launch
 
 class PaymentsFragment : Fragment() {
 
     private var _binding: FragmentListWithMonthBinding? = null
     private val binding get() = _binding!!
 
-    private val expensesViewModel: ExpensesViewModel by activityViewModels {
-        ExpensesViewModelFactory(
-            (activity?.application as MMApplication).expenseRepository,
+    private val paymentsViewModel: PaymentsViewModel by activityViewModels {
+        PaymentsViewModelFactory(
+            (activity?.application as MMApplication).paymentRepository,
             (activity?.application as MMApplication).epRepository
         )
     }
@@ -76,12 +78,15 @@ class PaymentsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         // 支出リストの監視開始
-        expensesViewModel.totalPaymentList.observe(viewLifecycleOwner, { totalPaymentList ->
-            totalListAdapter.setTotalListItems(totalPaymentList)
-            // 総額を表示
-            binding.allTotal.text = expensesViewModel.totalPaymentList.value?.let {
-                Utils.calcTotal(it)
-            }?.let { Utils.convertToStrDecimal(it) }
+        paymentsViewModel.paymentList.observe(viewLifecycleOwner, {
+            lifecycleScope.launch {
+                paymentsViewModel.loadTotalList()
+                totalListAdapter.setTotalListItems(paymentsViewModel.getTotalList())
+                // 総額を表示
+                binding.allTotal.text =
+                    Utils.calcTotal(paymentsViewModel.getTotalList())
+                        ?.let { Utils.convertToStrDecimal(it) }
+            }
         })
     }
 }

@@ -28,7 +28,10 @@ class SettingPaymentFragment : Fragment(), FilterDialogFragment.OnAddFilterListe
     private val binding get() = _binding!!
 
     private val paymentsViewModel: PaymentsViewModel by activityViewModels {
-        PaymentsViewModelFactory((activity?.application as MMApplication).paymentRepository)
+        PaymentsViewModelFactory(
+            (activity?.application as MMApplication).paymentRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
 
     private lateinit var recyclerView: RecyclerView
