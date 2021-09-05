@@ -27,6 +27,11 @@ class StoresViewModel(private val repository: StoreRepository) : ViewModel() {
     }
 
     /**
+     * 店舗IDをもとにStoreEntityを取得する
+     */
+    suspend fun findById(id: Long): StoreEntity = repository.findById(id)
+
+    /**
      * 店舗新規作成
      */
     fun create(name: String) = viewModelScope.launch {

@@ -32,6 +32,8 @@ import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModel
 import com.example.accountbookforme.viewmodel.ExpenseDetailsViewModelFactory
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
 import com.example.accountbookforme.viewmodel.PaymentsViewModelFactory
+import com.example.accountbookforme.viewmodel.StoresViewModel
+import com.example.accountbookforme.viewmodel.StoresViewModelFactory
 import kotlinx.coroutines.launch
 import java.math.BigDecimal
 import java.time.LocalDate
@@ -54,6 +56,9 @@ class ExpenseDetailFragment : Fragment(),
             (activity?.application as MMApplication).itemRepository,
             (activity?.application as MMApplication).epRepository
         )
+    }
+    private val storesViewModel: StoresViewModel by activityViewModels {
+        StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
     }
     private val categoriesViewModel: CategoriesViewModel by activityViewModels {
         CategoriesViewModelFactory(
@@ -91,14 +96,9 @@ class ExpenseDetailFragment : Fragment(),
         // 前画面から渡された値を取得
         val bundle = arguments
 
-        // 店舗名
-        var storeName: String? = null
-
         if (bundle != null) {
             // 支出ID取得
             id = bundle.get("id") as Long?
-            // 店舗名取得
-            storeName = bundle.get("storeName") as String?
         }
 
         lifecycleScope.launch {
@@ -119,7 +119,9 @@ class ExpenseDetailFragment : Fragment(),
                 expenseDetail.getDetailById(id!!)
 
                 // 店舗表示
-                binding.storeName.text = storeName
+                // storeNameがnullならstoreIdをもとに取得する
+                binding.storeName.text = expenseDetail.getStoreName() ?: expenseDetail.getStoreId()
+                    ?.let { storesViewModel.findById(it).name }
 
                 // 品物リスト取得
                 expenseDetail.getItemList(id!!)
@@ -335,12 +337,12 @@ class ExpenseDetailFragment : Fragment(),
         // 店舗表示
         binding.storeName.text = name
 
-        expenseDetail.expenseDetail.value?.storeId = id
-        // idがnullなら手入力なので店舗名を記憶する、それ以外ならidから辿れるので記憶しない
-        expenseDetail.expenseDetail.value?.storeName = if (id == null) {
-            name
+        if (id == null) {
+            // idがnullなら手入力なので店舗名を記憶する
+            expenseDetail.setStoreName(name)
         } else {
-            null
+            // それ以外ならidから辿れるのでidだけ記憶する
+            expenseDetail.setStoreId(id)
         }
     }
 

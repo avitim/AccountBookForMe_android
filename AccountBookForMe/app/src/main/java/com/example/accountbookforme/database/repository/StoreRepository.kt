@@ -12,6 +12,9 @@ class StoreRepository(private val storeDao: StoreDao) {
     val storeList: Flow<List<StoreEntity>> = storeDao.findAll()
 
     @WorkerThread
+    suspend fun findById(id: Long) = storeDao.findById(id)
+
+    @WorkerThread
     suspend fun create(storeEntity: StoreEntity) = storeDao.create(storeEntity)
 
     @WorkerThread

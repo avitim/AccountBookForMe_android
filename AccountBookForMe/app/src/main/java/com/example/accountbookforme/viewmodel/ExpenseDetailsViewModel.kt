@@ -140,16 +140,6 @@ class ExpenseDetailsViewModel(
 
             // 支出詳細の削除
             expenseRepository.deleteById(it)
-
-//            // 品物の削除
-//            itemRepository.findByExpenseId(it).forEach { item ->
-//                itemRepository.deleteById(item.id)
-//            }
-//
-//            // 支払いの削除
-//            epRepository.findByExpenseId(it).forEach { payment ->
-//                epRepository.deleteById(payment.id)
-//            }
         }
     }
 
@@ -163,6 +153,30 @@ class ExpenseDetailsViewModel(
      */
     fun setPurchasedAt(date: LocalDateTime) {
         expenseDetail.value?.purchasedAt = date
+    }
+
+    /**
+     * 店舗IDを返す
+     */
+    fun getStoreId() = expenseDetail.value?.storeId
+
+    /**
+     * 店舗IDを設定する
+     */
+    fun setStoreId(storeId: Long) {
+        expenseDetail.value?.storeId = storeId
+    }
+
+    /**
+     * 店舗名を返す
+     */
+    fun getStoreName() = expenseDetail.value?.storeName
+
+    /**
+     * 店舗名を設定する
+     */
+    fun setStoreName(storeName: String) {
+        expenseDetail.value?.storeName = storeName
     }
 
     /**

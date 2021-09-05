@@ -64,8 +64,6 @@ class ExpensesFragment : Fragment() {
                     val intent = Intent(context, DetailActivity::class.java)
                     // 支出IDを渡す
                     intent.putExtra("expenseId", expense.id)
-                    // 店舗名を渡す
-                    intent.putExtra("storeName", expense.storeName ?: expense.storeNameByStoreId)
                     // 支出詳細画面に遷移する
                     startActivity(intent)
                 }

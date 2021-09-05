@@ -23,12 +23,10 @@ class DetailActivity : AppCompatActivity() {
 
         // Expenses画面からの値を受け取る
         val expenseId = intent.extras?.getLong("expenseId")
-        val storeName = intent.extras?.getString("storeName")
 
         // 値をFragmentに渡す
         val bundle = Bundle()
         expenseId?.let { bundle.putLong("id", it) }
-        storeName?.let { bundle.putString("storeName", it) }
 
         val fragment = ExpenseDetailFragment()
         fragment.arguments = bundle

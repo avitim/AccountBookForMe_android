@@ -17,6 +17,12 @@ interface StoreDao {
     fun findAll(): Flow<List<StoreEntity>>
 
     /**
+     * 1件取得
+     */
+    @Query("SELECT * FROM stores WHERE id IS (:id)")
+    suspend fun findById(id: Long): StoreEntity
+
+    /**
      * 新規作成
      */
     @Insert
