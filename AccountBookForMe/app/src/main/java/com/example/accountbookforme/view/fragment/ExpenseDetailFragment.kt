@@ -58,7 +58,11 @@ class ExpenseDetailFragment : Fragment(),
         )
     }
     private val storesViewModel: StoresViewModel by activityViewModels {
-        StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
+        StoresViewModelFactory(
+            (activity?.application as MMApplication).storeRepository,
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
     private val categoriesViewModel: CategoriesViewModel by activityViewModels {
         CategoriesViewModelFactory(

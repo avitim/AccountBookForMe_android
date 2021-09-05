@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,8 +23,9 @@ import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.view.activity.DetailActivity
 import com.example.accountbookforme.viewmodel.ExpensesViewModel
 import com.example.accountbookforme.viewmodel.ExpensesViewModelFactory
+import kotlinx.coroutines.launch
 
-class StoreExpenseFragment : Fragment() {
+class StoreExpensesFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!
@@ -99,16 +101,28 @@ class StoreExpenseFragment : Fragment() {
         // アクションバーのタイトルを設定
         (activity as AppCompatActivity).supportActionBar?.title = storeName
 
-        // 品物リスト取得
-        expensesViewModel.findByStoreId(storeId)
+        lifecycleScope.launch {
 
-        // 支出リストの監視開始
-        expensesViewModel.storeExpenseList.observe(viewLifecycleOwner, { expenseStoreList ->
-            storeExpenseListAdapter.setExpenseStoreListItems(expenseStoreList)
-            // 総額を表示
-            binding.allTotal.text =
-                expensesViewModel.storeExpenseList.value?.let { Utils.calcExpenseTotal(it).toString() }
-        })
+            // 支出リスト取得
+            // 店舗IDが0ならstoreIdがnullの支出を取得する
+            expensesViewModel.findByStoreId(storeId)
+
+            // 支出リストの監視開始
+            expensesViewModel.storeExpenseList.observe(viewLifecycleOwner, { expenseStoreList ->
+                lifecycleScope.launch {
+                    // 支出の総額を取得
+                    expenseStoreList.forEach { expense ->
+                        expense.total = expensesViewModel.calcTotal(expense.id)
+                    }
+                    storeExpenseListAdapter.setExpenseStoreListItems(expenseStoreList)
+                    // 総額を表示
+                    binding.allTotal.text =
+                        expensesViewModel.storeExpenseList.value?.let {
+                            Utils.calcExpenseTotal(it).toString()
+                        }
+                }
+            })
+        }
     }
 
     // メニュータップ時の処理設定

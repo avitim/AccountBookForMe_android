@@ -4,7 +4,6 @@ import androidx.annotation.WorkerThread
 import com.example.accountbookforme.database.dao.ExpenseDao
 import com.example.accountbookforme.database.entity.ExpenseDetailEntity
 import com.example.accountbookforme.model.Expense
-import com.example.accountbookforme.model.Total
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -20,15 +19,7 @@ class ExpenseRepository(private val expenseDao: ExpenseDao) {
     suspend fun getDetailById(id: Long) = expenseDao.findById(id)
 
     @WorkerThread
-    suspend fun findByStoreId(storeId: Long) = expenseDao.findByStoreId(storeId)
-
-    // TODO: 実装
-    @WorkerThread
-    suspend fun getTotalPaymentList(): List<Total> = arrayListOf()
-
-    // TODO: 実装
-    @WorkerThread
-    suspend fun getTotalStoreList(): List<Total> = arrayListOf()
+    suspend fun findByStoreId(storeId: Long?) = expenseDao.findByStoreId(storeId)
 
     @WorkerThread
     suspend fun create(expenseDetailEntity: ExpenseDetailEntity): Long = expenseDao.create(expenseDetailEntity)

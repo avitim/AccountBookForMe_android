@@ -107,7 +107,8 @@ class CategoryItemsFragment : Fragment() {
             itemsViewModel.itemList.observe(viewLifecycleOwner, { itemList ->
                 itemListAdapter.setItemListItems(itemList)
                 // 総額を表示
-                binding.allTotal.text = itemsViewModel.itemList.value?.let { Utils.calcItemTotal(it).toString() }
+                binding.allTotal.text =
+                    itemsViewModel.itemList.value?.let { Utils.calcItemTotal(it).toString() }
             })
         }
     }

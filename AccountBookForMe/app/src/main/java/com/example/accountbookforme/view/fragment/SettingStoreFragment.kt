@@ -28,7 +28,11 @@ class SettingStoreFragment : Fragment(), FilterDialogFragment.OnAddFilterListene
     private val binding get() = _binding!!
 
     private val storesViewModel: StoresViewModel by activityViewModels {
-        StoresViewModelFactory((activity?.application as MMApplication).storeRepository)
+        StoresViewModelFactory(
+            (activity?.application as MMApplication).storeRepository,
+            (activity?.application as MMApplication).expenseRepository,
+            (activity?.application as MMApplication).epRepository
+        )
     }
 
     private lateinit var recyclerView: RecyclerView

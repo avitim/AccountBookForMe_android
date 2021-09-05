@@ -21,7 +21,7 @@ interface ExpenseDao {
      * 店舗IDから支出リストを取得
      */
     @Query("SELECT expense_details.id, purchased_at, 0 AS total, store_name, stores.name AS storeNameByStoreId FROM expense_details LEFT JOIN stores ON expense_details.store_id IS stores.id WHERE store_id IS (:storeId)")
-    suspend fun findByStoreId(storeId: Long): List<Expense>
+    suspend fun findByStoreId(storeId: Long?): List<Expense>
 
     /**
      * IDから支出詳細を取得

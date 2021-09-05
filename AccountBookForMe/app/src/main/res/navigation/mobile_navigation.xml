@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/expenseStoreFragment"
-        android:name="com.example.accountbookforme.view.fragment.StoreExpenseFragment"
+        android:name="com.example.accountbookforme.view.fragment.StoreExpensesFragment"
         android:label="ExpenseStoreFragment" >
         <argument
             android:name="storeId"

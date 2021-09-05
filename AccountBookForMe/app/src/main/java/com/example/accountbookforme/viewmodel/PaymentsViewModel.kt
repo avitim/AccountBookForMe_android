@@ -65,7 +65,8 @@ class PaymentsViewModel(
      * カテゴリ更新
      */
     fun update(filter: Filter) = viewModelScope.launch {
-        filter.id?.let { PaymentEntity(id = it, name = filter.name) }?.let { paymentRepository.update(it) }
+        filter.id?.let { PaymentEntity(id = it, name = filter.name) }
+            ?.let { paymentRepository.update(it) }
     }
 
     /**
