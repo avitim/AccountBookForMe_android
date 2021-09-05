@@ -25,7 +25,7 @@ import com.example.accountbookforme.viewmodel.ItemsViewModel
 import com.example.accountbookforme.viewmodel.ItemsViewModelFactory
 import kotlinx.coroutines.launch
 
-class CategoryItemFragment : Fragment() {
+class CategoryItemsFragment : Fragment() {
 
     private var _binding: FragmentListWithTitleBinding? = null
     private val binding get() = _binding!!

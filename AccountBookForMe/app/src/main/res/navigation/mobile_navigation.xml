@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/expenseCategoryFragment"
-        android:name="com.example.accountbookforme.view.fragment.CategoryItemFragment"
+        android:name="com.example.accountbookforme.view.fragment.CategoryItemsFragment"
         android:label="ExpenseCategoryFragment" >
         <argument
             android:name="categoryId"
