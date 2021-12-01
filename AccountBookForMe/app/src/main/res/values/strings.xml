@@ -5,6 +5,7 @@
     <string name="title_payments">Payments</string>
     <string name="title_stores">Stores</string>
     <string name="title_settings">Settings</string>
+    <string name="title_account">Account</string>
     <string name="title_items">Items</string>
     <string name="title_detail">Detail</string>
     <string name="total">Total</string>
@@ -30,4 +31,6 @@
     <string name="price_is_empty">金額が入力されていません。</string>
     <string name="total_are_not_corresponding">合計金額が不一致です。</string>
     <string name="yen">¥</string>
+    <string name="id">ID</string>
+    <string name="budget">Budget</string>
 </resources>
