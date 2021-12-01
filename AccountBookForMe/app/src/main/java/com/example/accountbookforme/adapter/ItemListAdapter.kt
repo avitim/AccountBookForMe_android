@@ -5,17 +5,17 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.accountbookforme.databinding.SimpleListItemBinding
-import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.util.Utils
 
 class ItemListAdapter : RecyclerView.Adapter<ItemListAdapter.ItemViewHolder>() {
 
     private lateinit var listener: OnItemClickListener
-    private var itemList: List<Item> = listOf()
+    private var itemList: List<ItemEntity> = listOf()
 
     // 結果を渡すリスナー
     interface OnItemClickListener {
-        fun onItemClick(item: Item)
+        fun onItemClick(item: ItemEntity)
     }
 
     // リスナーをセット
@@ -53,7 +53,7 @@ class ItemListAdapter : RecyclerView.Adapter<ItemListAdapter.ItemViewHolder>() {
     override fun getItemCount() = itemList.size
 
     // カテゴリごとの支出額リストをセットして変更を通知
-    fun setItemListItems(itemList: List<Item>) {
+    fun setItemListItems(itemList: List<ItemEntity>) {
         this.itemList = itemList
         notifyDataSetChanged()
     }

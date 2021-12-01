@@ -3,12 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="vm"
-            type="com.example.accountbookforme.viewmodel.ExpenseDetailViewModel" />
-    </data>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,7 +11,7 @@
             android:id="@+id/frameLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            tools:context=".fragment.ExpenseDetailFragment">
+            tools:context=".view.fragment.ExpenseDetailFragment">
 
             <TextView
                 android:id="@+id/purchasedAt"
@@ -25,7 +19,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/primaryLightColor"
                 android:padding="5dp"
-                android:text="@={vm.expenseDetail.purchasedAt}"
                 android:textAlignment="center"
                 android:textColor="@color/secondaryTextColor"
                 android:textSize="18sp"
@@ -39,7 +32,6 @@
                 android:layout_height="wrap_content"
                 android:hint="@string/enter_a_store"
                 android:padding="5dp"
-                android:text="@={vm.expenseDetail.storeName}"
                 android:textSize="18sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -241,7 +233,6 @@
                 android:gravity="start|top"
                 android:hint="@string/note"
                 android:inputType="textMultiLine"
-                android:text="@={vm.expenseDetail.note}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/noteLabel"

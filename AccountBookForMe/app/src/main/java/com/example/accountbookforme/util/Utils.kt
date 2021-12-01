@@ -1,7 +1,7 @@
 package com.example.accountbookforme.util
 
 import com.example.accountbookforme.model.Expense
-import com.example.accountbookforme.model.Item
+import com.example.accountbookforme.database.entity.ItemEntity
 import com.example.accountbookforme.model.Total
 import java.math.BigDecimal
 
@@ -35,8 +35,12 @@ object Utils {
      * return パーセンテージ
      */
     private fun calcPercentage(partialValue: BigDecimal, totalValue: BigDecimal): BigDecimal =
-        partialValue.divide(totalValue, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal(100))
-    
+        if (totalValue == BigDecimal.ZERO) {
+            BigDecimal.ZERO
+        } else {
+            partialValue.divide(totalValue, 4, BigDecimal.ROUND_HALF_UP).multiply(BigDecimal(100))
+        }
+
     /**
      * 総額を計算
      */
@@ -55,7 +59,7 @@ object Utils {
     /**
      * 品物の総額を計算
      */
-    fun calcItemTotal(itemList: List<Item>): BigDecimal? = itemList.fold(BigDecimal.ZERO) { acc, item ->
+    fun calcItemTotal(itemList: List<ItemEntity>): BigDecimal? = itemList.fold(BigDecimal.ZERO) { acc, item ->
         acc + item.price
     }
 }

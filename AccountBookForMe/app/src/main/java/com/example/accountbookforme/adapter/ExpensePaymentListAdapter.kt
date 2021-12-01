@@ -5,19 +5,19 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.accountbookforme.database.entity.ExpensePaymentEntity
 import com.example.accountbookforme.databinding.SimpleListItemBinding
-import com.example.accountbookforme.model.Payment
 import com.example.accountbookforme.util.Utils
 import com.example.accountbookforme.viewmodel.PaymentsViewModel
 
 class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel) :
-    ListAdapter<Payment, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(PaymentDiffCallback) {
+    ListAdapter<ExpensePaymentEntity, ExpensePaymentListAdapter.ExpensePaymentViewHolder>(PaymentDiffCallback) {
 
     private lateinit var listener: OnExpensePaymentClickListener
 
     // 結果を渡すリスナー
     interface OnExpensePaymentClickListener {
-        fun onItemClick(position: Int, payment: Payment)
+        fun onItemClick(position: Int, ep: ExpensePaymentEntity)
     }
 
     // リスナーをセット
@@ -30,9 +30,9 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
         private val paymentsViewModel: PaymentsViewModel
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(payment: Payment) {
-            binding.label.text = paymentsViewModel.getNameById(payment.paymentId)
-            binding.value.text = Utils.convertToStrDecimal(payment.total)
+        fun bind(ep: ExpensePaymentEntity) {
+            binding.label.text = paymentsViewModel.getById(ep.paymentId)?.name
+            binding.value.text = Utils.convertToStrDecimal(ep.total)
         }
     }
 
@@ -58,13 +58,13 @@ class ExpensePaymentListAdapter(private val paymentsViewModel: PaymentsViewModel
     }
 }
 
-private object PaymentDiffCallback : DiffUtil.ItemCallback<Payment>() {
+private object PaymentDiffCallback : DiffUtil.ItemCallback<ExpensePaymentEntity>() {
 
-    override fun areItemsTheSame(oldItem: Payment, newItem: Payment): Boolean {
+    override fun areItemsTheSame(oldItem: ExpensePaymentEntity, newItem: ExpensePaymentEntity): Boolean {
         return oldItem.id == newItem.id
     }
 
-    override fun areContentsTheSame(oldItem: Payment, newItem: Payment): Boolean {
+    override fun areContentsTheSame(oldItem: ExpensePaymentEntity, newItem: ExpensePaymentEntity): Boolean {
         return oldItem == newItem
     }
 }

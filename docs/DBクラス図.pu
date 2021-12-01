@@ -1,0 +1,125 @@
+@startuml
+title DB設計
+
+package Entity {
+
+    Entity ExpenseDetail {
+
+        *id: Long
+        purchasedAt: datetime
+        total: BigDecimal
+        storeId: Long?
+        storeName: String?
+        note: String?
+    }
+
+    Entity Item {
+
+        *id: Long
+        price: BigDecimal
+        expenseId: Long
+        categoryId: Long
+    }
+
+    Entity Category {
+
+        *id: Long
+        name: String
+    }
+
+    Entity Payment {
+
+        *id: Long
+        name: String
+    }
+
+    Entity Store {
+
+        *id: Long
+        name: String
+    }
+
+    Entity ExpensePayment {
+
+        *id: Long
+        total: BigDecimal
+        expenseId: Long
+        paymentId: Long
+    }
+}
+ExpenseDetail ||--|{ ExpensePayment
+Payment ||--o{ ExpensePayment
+Item }|--|| ExpenseDetail
+Category ||--o{ Item
+Store |o--o{ ExpenseDetail
+
+package DTO {
+
+    Entity Expense {
+        id: Long
+        purchasedAt: datetime
+        total: BigDecimal
+        storeName: String
+    }
+
+    Entity Total {
+
+        id: Long
+        name: String
+        total: BigDecimal
+    }
+}
+
+package DAO {
+        interface CategoryDao {
+        --
+        findAll()
+        create(String)
+        update(Category)
+        delete(Long)
+    }
+
+    interface ExpenseDao {
+        --
+        findAll()
+        getDetailById(Long)
+        findByStoreId(Long)
+        getTotalPaymentList()
+        getTotalStoreList()
+        create(ExpenseDetail)
+        update(ExpenseDetail)
+        delete(Long)
+    }
+
+    interface ItemDao {
+        --
+        findByCategoryId(Long)
+        getTotalCategoryList()
+    }
+
+    interface PaymentDao {
+        --
+        findAll()
+        create(String)
+        update(Payment)
+        delete(Long)
+    }
+
+    interface StoreDao {
+        --
+        findAll()
+        create(String)
+        update(Store)
+        delete(Long)
+    }
+}
+CategoryDao --> Category
+ExpenseDao --> Expense
+ExpenseDao --> ExpenseDetail
+ExpenseDao --> Total
+ItemDao --> Item
+ItemDao --> Total
+PaymentDao --> Payment
+StoreDao --> Store
+
+@enduml

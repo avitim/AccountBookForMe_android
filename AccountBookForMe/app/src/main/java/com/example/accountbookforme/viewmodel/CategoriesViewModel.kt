@@ -1,111 +1,93 @@
 package com.example.accountbookforme.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.accountbookforme.database.entity.CategoryEntity
+import com.example.accountbookforme.database.repository.CategoryRepository
+import com.example.accountbookforme.database.repository.ItemRepository
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
-import com.example.accountbookforme.repository.CategoryRepository
-import com.example.accountbookforme.util.RestUtil
+import com.example.accountbookforme.model.Total
 import kotlinx.coroutines.launch
 
-class CategoriesViewModel : ViewModel() {
-
-    private val categoryRepository: CategoryRepository =
-        RestUtil.retrofit.create(CategoryRepository::class.java)
+class CategoriesViewModel(
+    private val categoryRepository: CategoryRepository,
+    private val itemRepository: ItemRepository
+) : ViewModel() {
 
     // カテゴリ一覧
-    var categoryList: MutableLiveData<List<Filter>> = MutableLiveData()
+    var categoryList: LiveData<List<CategoryEntity>> = categoryRepository.categoryList.asLiveData()
 
-    init {
-        loadCategoryList()
-    }
+    // カテゴリごとの総額リスト
+    private var totalList = MutableLiveData<List<Total>>()
 
     /**
-     * カテゴリ一覧取得
+     * カテゴリ一覧をFilter型のリストで取得
      */
-    private fun loadCategoryList() {
+    fun getCategoriesAsFilter(): List<Filter> = categoryList.value?.map { category ->
+        Filter(category.id, category.name)
+    }.orEmpty()
 
-        viewModelScope.launch {
-            try {
-                val request = categoryRepository.findAll()
-                if (request.isSuccessful) {
-                    categoryList.value = request.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
+    /**
+     * カテゴリごとの総額を取得
+     */
+    suspend fun loadTotalList() {
+
+        totalList.value = categoryList.value?.map { category ->
+            Total(
+                id = category.id,
+                name = category.name,
+                total = itemRepository.getCategoryTotal(category.id)
+            )
         }
     }
 
     /**
-     * IDから名称を取得
+     * カテゴリごとの総額リストを返す
      */
-    fun getNameById(id: Long): String {
+    fun getTotalList(): List<Total> = totalList.value.orEmpty()
 
-        val category = categoryList.value?.find { category ->
-            category.id == id
-        }
-        return category?.name ?: "Invalid category"
-    }
+    /**
+     * IDからカテゴリを取得
+     */
+    fun getById(id: Long) = categoryList.value?.find { category -> category.id == id }
 
     /**
      * カテゴリ新規作成
      */
-    fun create(name: Name) {
-
-        viewModelScope.launch {
-            try {
-                val response = categoryRepository.create(name)
-                if (response.isSuccessful) {
-                    categoryList.value = response.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
-        }
+    fun create(name: String) = viewModelScope.launch {
+        categoryRepository.create(CategoryEntity(name = name))
     }
 
     /**
      * カテゴリ更新
      */
-    fun update(filter: Filter) {
-
-        viewModelScope.launch {
-            try {
-                val response = categoryRepository.update(filter)
-                if (response.isSuccessful) {
-                    categoryList.value = response.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
-        }
+    fun update(filter: Filter) = viewModelScope.launch {
+        filter.id?.let { CategoryEntity(id = it, name = filter.name) }
+            ?.let { categoryRepository.update(it) }
     }
 
     /**
      * カテゴリ削除
      */
-    fun delete(id: Long) {
+    fun deleteById(id: Long) = viewModelScope.launch {
+        categoryRepository.deleteById(id)
+    }
+}
 
-        viewModelScope.launch {
-            try {
-                val response = categoryRepository.delete(id)
-                if (response.isSuccessful) {
-                    categoryList.value = response.body()
-                } else {
-                    Log.e("CategoriesViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("CategoriesViewModel", "Something is wrong: $e")
-            }
+class CategoriesViewModelFactory(
+    private val categoryRepository: CategoryRepository,
+    private val itemRepository: ItemRepository
+) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(CategoriesViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return CategoriesViewModel(categoryRepository, itemRepository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

@@ -1,100 +1,113 @@
 package com.example.accountbookforme.viewmodel
 
-import android.util.Log
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.example.accountbookforme.database.entity.StoreEntity
+import com.example.accountbookforme.database.repository.ExpensePaymentRepository
+import com.example.accountbookforme.database.repository.ExpenseRepository
+import com.example.accountbookforme.database.repository.StoreRepository
 import com.example.accountbookforme.model.Filter
-import com.example.accountbookforme.model.Name
-import com.example.accountbookforme.repository.StoreRepository
-import com.example.accountbookforme.util.RestUtil
+import com.example.accountbookforme.model.Total
 import kotlinx.coroutines.launch
+import java.math.BigDecimal
 
-class StoresViewModel : ViewModel() {
-
-    private val storeRepository: StoreRepository =
-        RestUtil.retrofit.create(StoreRepository::class.java)
+class StoresViewModel(
+    private val storeRepository: StoreRepository,
+    private val expenseRepository: ExpenseRepository,
+    private val epRepository: ExpensePaymentRepository
+) : ViewModel() {
 
     // 店舗一覧
-    var storeList: MutableLiveData<List<Filter>> = MutableLiveData()
+    var storeList: LiveData<List<StoreEntity>> = storeRepository.storeList.asLiveData()
 
-    init {
-        loadStoreList()
-    }
+    // 店舗ごとの総額リスト
+    private var totalList = MutableLiveData<List<Total>>()
 
     /**
-     * 登録済み店舗一覧取得
+     * カテゴリ一覧をFilter型のリストで取得
      */
-    private fun loadStoreList() {
+    fun getStoresAsFilter(): List<Filter> =
+        storeList.value?.map { store -> Filter(store.id, store.name) }.orEmpty()
 
-        viewModelScope.launch {
-            try {
-                val request = storeRepository.findAll()
-                if (request.isSuccessful) {
-                    storeList.value = request.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $request")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
+    /**
+     * 店舗IDをもとにStoreEntityを取得する
+     */
+    suspend fun findById(id: Long): StoreEntity = storeRepository.findById(id)
+
+    /**
+     * 店舗ごとの総額を取得（店舗一覧にない場合はその他としてまとめる）
+     */
+    suspend fun loadTotalList() {
+
+        // その他枠を追加
+        val allStoreList = storeList.value?.plus(StoreEntity(name = "その他"))
+        totalList.value = allStoreList?.map { store ->
+            Total(
+                id = store.id,
+                name = store.name,
+                total = calcTotalByStore(store.id)
+            )
         }
     }
 
     /**
-     * カテゴリ新規作成
+     * 店舗ごとの総額リストを返す
      */
-    fun create(name: Name) {
+    fun getTotalList(): List<Total> = totalList.value.orEmpty()
 
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.create(name)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
+    /**
+     * 店舗IDから総額を取得
+     */
+    private suspend fun calcTotalByStore(storeId: Long): BigDecimal =
+        // storeIdが0ならnullで置き換える
+        expenseRepository.findByStoreId(
+            if (storeId == 0L) {
+                null
+            } else {
+                storeId
             }
+        ).fold(BigDecimal.ZERO) { acc, expense ->
+            acc + epRepository.calcTotalByExpenseId(expense.id)
         }
+
+    /**
+     * 店舗新規作成
+     */
+    fun create(name: String) = viewModelScope.launch {
+        storeRepository.create(StoreEntity(name = name))
     }
 
     /**
-     * カテゴリ更新
+     * 店舗更新
      */
-    fun update(filter: Filter) {
-
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.update(filter)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
-        }
+    fun update(filter: Filter) = viewModelScope.launch {
+        filter.id?.let { StoreEntity(id = it, name = filter.name) }
+            ?.let { storeRepository.update(it) }
     }
 
     /**
-     * カテゴリ削除
+     * 店舗削除
      */
-    fun delete(id: Long) {
+    fun deleteById(id: Long) = viewModelScope.launch {
+        storeRepository.deleteById(id)
+    }
+}
 
-        viewModelScope.launch {
-            try {
-                val response = storeRepository.delete(id)
-                if (response.isSuccessful) {
-                    storeList.value = response.body()
-                } else {
-                    Log.e("StoresViewModel", "Not successful: $response")
-                }
-            } catch (e: Exception) {
-                Log.e("StoresViewModel", "Something is wrong: $e")
-            }
+class StoresViewModelFactory(
+    private val storeRepository: StoreRepository,
+    private val expenseRepository: ExpenseRepository,
+    private val epRepository: ExpensePaymentRepository
+) :
+    ViewModelProvider.Factory {
+    override fun <T : ViewModel?> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(StoresViewModel::class.java)) {
+            @Suppress("UNCHECKED_CAST")
+            return StoresViewModel(storeRepository, expenseRepository, epRepository) as T
         }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

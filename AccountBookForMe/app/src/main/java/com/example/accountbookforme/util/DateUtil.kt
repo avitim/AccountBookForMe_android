@@ -12,7 +12,7 @@ object DateUtil {
 
     const val DATE_EDMMMYYYY = "E, d MMM. yyyy"
     const val DATE_YYYYMMDD = "yyyy-MM-dd"
-    const val DATE_YYYYMMDDHHMMSS = "yyyy-MM-dd'T'HH:mm:ss"
+    private const val DATE_YYYYMMDDHHMMSS = "yyyy-MM-dd'T'HH:mm:ss"
 
     /**
      * 年、月、日のInt型からLocalDateTimeフォーマットの文字列へ変換
