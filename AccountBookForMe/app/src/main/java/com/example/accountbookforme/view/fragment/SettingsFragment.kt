@@ -34,6 +34,10 @@ class SettingsFragment : Fragment() {
         binding.labelStores.setOnClickListener {
             findNavController().navigate(R.id.action_navigation_settings_to_settingStoreFragment)
         }
+        // Accountをタップしたら店舗一覧画面に遷移
+        binding.labelAccount.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_settings_to_settingAccountFragment)
+        }
 
         return binding.root
     }

@@ -5,30 +5,28 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "com.example.accountbookforme"
         minSdkVersion 26
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 1
-        versionName "1.1.1"
+        versionName "1.1.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_BASE_URL", "\"http://192.168.0.10:8080\""
-//            buildConfigField "String", "API_BASE_URL", "\"https://account-book-for-me.herokuapp.com\""
+            buildConfigField "String", "API_BASE_URL", "\"https://9953xos2gk.execute-api.us-east-1.amazonaws.com/prod/\""
         }
 
         release {
 //            TODO: 署名必要問題はのちのち対応予定
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "API_BASE_URL", "\"https://account-book-for-me.herokuapp.com\""
+            buildConfigField "String", "API_BASE_URL", "\"https://9953xos2gk.execute-api.us-east-1.amazonaws.com/prod\""
         }
     }
     compileOptions {
