@@ -65,7 +65,7 @@
 
 * Kotlin 1.4.30
 * Gradle 6.5
-* Android Studio 4.1.2
+* Android Studio Arctic Fox | 2020.3.1 Patch 3
 
 ## スクリーンショット
 
