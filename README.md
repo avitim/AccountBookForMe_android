@@ -86,3 +86,6 @@
 
 * 設定画面
 <img alt="設定" src="docs/captures/設定.png" width="300px" border="1px">
+
+* カテゴリ設定画面
+<img alt="カテゴリ設定" src="docs/captures/設定_カテゴリ.png" width="300px" border="1px">
