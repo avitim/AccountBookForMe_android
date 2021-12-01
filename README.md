@@ -1,5 +1,7 @@
 # My money
 
+<img alt="アイコン" src="docs/captures/icon.png" width="150px">
+
 ## コンセプト
 
 私の、私による、私のための家計簿アプリ
@@ -49,18 +51,38 @@
 
 ### 1.1.2
 
-* データの処理をAWSに移行
-* 再びネットワーク接続環境が必要になった
+* アカウント情報をAWS上のAPIから取得する機能実装
+  * そのAPIを使う場合、ネットワーク環境が必要
 
 ## 構成
 
-|- AccountBookForMe: アプリ
-|- docs: ドキュメント
-|- .gitignore
-|- README: Here
+|- AccountBookForMe: アプリ  
+|- docs: ドキュメント  
+|- .gitignore  
+|- README: Here  
 
 ## 環境
 
 * Kotlin 1.4.30
 * Gradle 6.5
 * Android Studio 4.1.2
+
+## スクリーンショット
+
+* 支出一覧画面
+<img alt="支出一覧" src="docs/captures/支出一覧.png" width="300px" border="1px">
+
+* 支出詳細画面
+<img alt="支出詳細" src="docs/captures/支出詳細.png" width="300px" border="1px">
+
+* カテゴリごとの支出画面
+<img alt="カテゴリごとの支出" src="docs/captures/カテゴリごとの支出.png" width="300px" border="1px">
+
+* 支払い方法ごとの支出画面
+<img alt="支払い方法ごとの支出" src="docs/captures/支払い方法ごとの支出.png" width="300px" border="1px">
+
+* 店ごとの支出画面
+<img alt="店ごとの支出" src="docs/captures/店ごとの支出.png" width="300px" border="1px">
+
+* 設定画面
+<img alt="設定" src="docs/captures/設定.png" width="300px" border="1px">
